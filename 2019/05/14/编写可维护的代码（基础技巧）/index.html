@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="舒小琦的Blog">
 <meta property="og:description" content="尽量少用全局变量 Javascript 使用的是函数作用域，在函数内声明的变量，只有在函数内有效，不能在函数外使用。全局变量则是在函数外部声明，在函数内无需声明就可以使用。 每一个javascript环境都有一个全局对象，在函数外部使用this进行访问。创建的全局变量都归全局对象所有。 在浏览器中，使用window表示全局变量本身 1234myName = &quot;haha&quot;console.log(m">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-15T14:12:58.657Z">
+<meta property="og:updated_time" content="2019-05-18T15:35:35.095Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="编写可维护的代码（基础技巧）">
 <meta name="twitter:description" content="尽量少用全局变量 Javascript 使用的是函数作用域，在函数内声明的变量，只有在函数内有效，不能在函数外使用。全局变量则是在函数外部声明，在函数内无需声明就可以使用。 每一个javascript环境都有一个全局对象，在函数外部使用this进行访问。创建的全局变量都归全局对象所有。 在浏览器中，使用window表示全局变量本身 1234myName = &quot;haha&quot;console.log(m">
@@ -344,7 +344,7 @@
 <li><p><strong>提升：凌散变量的的问题</strong></p>
 <p>javascript允许在任何地方声明变量，无论在哪里声明，效果都等同于在函数顶部进行声明。这就是<strong>变量声明提升</strong>。注意：提升的只是声明部分，赋值部分不声明。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">name = <span class="string">"shu"</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">alertName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(name) </span><br><span class="line">	<span class="keyword">var</span> name = <span class="string">"liqi"</span></span><br><span class="line">	<span class="built_in">console</span>.log(name)</span><br><span class="line">&#125;</span><br><span class="line">alertName();</span><br></pre></td></tr></table></figure>
-<p><strong>结果：</strong>‘undefined’， liqi</p>
+<p><strong>结果：</strong>‘undefined’，’ liqi’</p>
 <p><strong>原因：</strong>在函数alertName作用域内，name被看做声明为函数作用域内的变量。所有的变量声明都会被提升的函数的最顶成，但是赋值部分位置不变。所以导致log出：’undefined’， liqi。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">name = <span class="string">"shu"</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">alertName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="keyword">var</span> name;</span><br><span class="line">	<span class="built_in">console</span>.log(name) </span><br><span class="line">	name = <span class="string">"liqi"</span></span><br><span class="line">	<span class="built_in">console</span>.log(name)</span><br><span class="line">&#125;</span><br><span class="line">alertName();</span><br></pre></td></tr></table></figure>
 </li>
@@ -368,6 +368,32 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> key <span class="keyword">in</span> obj) &#123;</span><br><span class="line">	<span class="keyword">if</span> (obj.hasOwnProperty(key)) &#123;</span><br><span class="line">		<span class="built_in">console</span>.log(key,<span class="string">':'</span>, obj[key] )</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>结果：</strong> name : shu， age : 12</p>
 </li>
+<li><p><strong>不要增加内置的原型</strong></p>
+<p>增加构造函数的原型属性是以恶搞增强功能性的强大的方法，但是有时候该方法会过于强大。</p>
+<p>增加内置构造函数（Object(),Array(),Fuction()等）的原型是很有诱惑力的，但是这可能会严重影响可维护性。因为这种做法使得代码更加不可预测。其他开发中在使用你的代码的时候可能期望的内置的Javascript方法的使用不一致，而不是期望有一些你自己添加的方法。</p>
+<p>并且，给原型添加属性在没有使用hasOwnproperpty()时可能会在循环中出现。这会导致一些混乱。</p>
+</li>
+<li><p><strong>switch模式</strong></p>
+<p>可以使用一下模式来提高switch的可读性和健壮性</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> type = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> result = <span class="string">''</span>;</span><br><span class="line"><span class="keyword">switch</span> (type) &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">		result = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">  <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">		result = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		result = <span class="string">'default'</span>;</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注：每个case都有一个明确的break语句</p>
+</li>
+<li><p><strong>避免使用隐式类型转换</strong></p>
+<p>JavaScript在语句比较时会执行隐式类型转换。例如：fasle == 0和 “ “ == 0等这类语句后面都会返回true。</p>
+<p>为了避免隐式类型转换导致混淆不清， 子啊使用语句比较时使用 === 和 !===操作符来对数值和类型做比较。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> zero = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">if</span> (zero === <span class="literal">false</span>) &#123;</span><br><span class="line">	<span class="comment">//	因为zero是0， 不是false，所以代码为执行</span></span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'==='</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (zero == <span class="literal">false</span> ) &#123;</span><br><span class="line">	<span class="comment">// 代码将会执行。zero会隐式转换成false</span></span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'=='</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>避免使用eval()</strong></p>
+<p>eval()可以将任意字符串当作一个javascript代码来执行。当代码预先就编译好了的（不需要动态运行时决定），就没有理由需要使用eval(). 如果需要在动态时运行生成，也应该有更好的方式在实现。</p>
+</li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
+<li></li>
 </ul>
 <p>​        </p>
 
