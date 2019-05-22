@@ -386,15 +386,13 @@
 </li>
 <li><p><strong>避免使用eval()</strong></p>
 <p>eval()可以将任意字符串当作一个javascript代码来执行。当代码预先就编译好了的（不需要动态运行时决定），就没有理由需要使用eval(). 如果需要在动态时运行生成，也应该有更好的方式在实现。</p>
+<p>setIntval(),setTimeout,function()等构造函数来传递参数。很特殊情况下，会导致类似eval()的隐患。</p>
+<p>setIntval可以看这篇文章：<a href="https://blog.csdn.net/jxqiaole/article/details/51673765" target="_blank" rel="noopener">https://blog.csdn.net/jxqiaole/article/details/51673765</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不推荐这种方式</span></span><br><span class="line">setTimeout(<span class="string">"myFun()"</span>, <span class="number">1000</span>)</span><br><span class="line">setTimeout(<span class="string">"myFun(1,2,3)"</span>, <span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 推荐这种方式</span></span><br><span class="line">setTimeout(myFun, <span class="number">1000</span>)</span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	myFun(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+<p>new Fuction()构造函数和eval()比较类似。如果一定需要使用eval()，那么可以考虑使用new Fuction()来代替eval()。这样的好处是：<strong>new Function()中的代码将在局部函数空间中运行， 因此代码中的任何采用var定义的变量不会自定成为全局变量</strong>。另一种使变量不会自定成为全局变量的方法是：将eval()的调用封装到一个即时函数中。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> one); <span class="comment">// "undefine"</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> two); <span class="comment">// "undefine"</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> three); <span class="comment">// "undefine"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">eval</span>(<span class="string">'var one = 1; console.log(one);'</span>) <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Function</span>(<span class="string">'var two = 2; console.log(two);'</span>)() <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">eval</span>(<span class="string">'var three = 3; console.log(three);'</span>);  <span class="comment">// 3</span></span><br><span class="line">&#125;());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> one); <span class="comment">// number</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> two); <span class="comment">// "undefine"</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> three); <span class="comment">// "undefine"</span></span><br></pre></td></tr></table></figure>
+<p>另外：eval()可以访问和修改它外部作用域的变量</p>
 </li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
 </ul>
 <p>​        </p>
 
