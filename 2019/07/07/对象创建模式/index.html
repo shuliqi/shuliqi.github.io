@@ -79,19 +79,17 @@
 
 
 
-<meta name="description" content="拆解的学习小目标（先把手上现有的书看完） Javascript模式 Javascript高级程序设计（第三版） 学习Javascript数据结构与算法 Node.js实战  这是2019年的计划， 加油！！！ 每天至少一个小时的学习时间 前端学习计划总的方向： https://www.zhihu.com/question/22146521/answer/633571058 从中查缺补漏">
+<meta name="description" content="JavaScript 是一种简洁明了的语言，其中并没有在其他语言经常使用的一些特殊语法的特征：命名空间，模块，包，私有属性，以及静态成员等。让我们用JavaScript来实现。 命名空间模式命名空间有助于减少程序中所需要的全局变量的数量，并且同时还哟助于避免命名冲突或者过长的名字前缀。 可以为应用程序或者库创建一个全局对象，然后将所有的功能添加到全局对象中，从而在具有大量函数，对象和其他变量的情况">
 <meta property="og:type" content="article">
-<meta property="og:title" content="学习计划">
-<meta property="og:url" content="http://yoursite.com/2019/05/12/学习计划/index.html">
+<meta property="og:title" content="对象创建模式">
+<meta property="og:url" content="http://yoursite.com/2019/07/07/对象创建模式/index.html">
 <meta property="og:site_name" content="舒小琦的Blog">
-<meta property="og:description" content="拆解的学习小目标（先把手上现有的书看完） Javascript模式 Javascript高级程序设计（第三版） 学习Javascript数据结构与算法 Node.js实战  这是2019年的计划， 加油！！！ 每天至少一个小时的学习时间 前端学习计划总的方向： https://www.zhihu.com/question/22146521/answer/633571058 从中查缺补漏">
+<meta property="og:description" content="JavaScript 是一种简洁明了的语言，其中并没有在其他语言经常使用的一些特殊语法的特征：命名空间，模块，包，私有属性，以及静态成员等。让我们用JavaScript来实现。 命名空间模式命名空间有助于减少程序中所需要的全局变量的数量，并且同时还哟助于避免命名冲突或者过长的名字前缀。 可以为应用程序或者库创建一个全局对象，然后将所有的功能添加到全局对象中，从而在具有大量函数，对象和其他变量的情况">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*YTP0ii6kEqZtxUN0bOKADA.png">
-<meta property="og:updated_time" content="2019-05-12T14:00:07.198Z">
+<meta property="og:updated_time" content="2019-07-07T15:42:26.563Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="学习计划">
-<meta name="twitter:description" content="拆解的学习小目标（先把手上现有的书看完） Javascript模式 Javascript高级程序设计（第三版） 学习Javascript数据结构与算法 Node.js实战  这是2019年的计划， 加油！！！ 每天至少一个小时的学习时间 前端学习计划总的方向： https://www.zhihu.com/question/22146521/answer/633571058 从中查缺补漏">
-<meta name="twitter:image" content="https://cdn-images-1.medium.com/max/1600/1*YTP0ii6kEqZtxUN0bOKADA.png">
+<meta name="twitter:title" content="对象创建模式">
+<meta name="twitter:description" content="JavaScript 是一种简洁明了的语言，其中并没有在其他语言经常使用的一些特殊语法的特征：命名空间，模块，包，私有属性，以及静态成员等。让我们用JavaScript来实现。 命名空间模式命名空间有助于减少程序中所需要的全局变量的数量，并且同时还哟助于避免命名冲突或者过长的名字前缀。 可以为应用程序或者库创建一个全局对象，然后将所有的功能添加到全局对象中，从而在具有大量函数，对象和其他变量的情况">
 
 
 
@@ -121,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/05/12/学习计划/">
+  <link rel="canonical" href="http://yoursite.com/2019/07/07/对象创建模式/">
 
 
 
 
 
-  <title>学习计划 | 舒小琦的Blog</title>
+  <title>对象创建模式 | 舒小琦的Blog</title>
   
 
 
@@ -234,7 +232,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/05/12/学习计划/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/07/对象创建模式/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="舒小琦">
@@ -251,7 +249,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">学习计划</h1>
+          <h1 class="post-title" itemprop="name headline">对象创建模式</h1>
         
 
         <div class="post-meta">
@@ -263,8 +261,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-12T21:01:24+08:00">
-                2019-05-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-07T22:48:43+08:00">
+                2019-07-07
               </time>
             
 
@@ -301,16 +299,26 @@
       
 
       
-        <h3 id="拆解的学习小目标（先把手上现有的书看完）"><a href="#拆解的学习小目标（先把手上现有的书看完）" class="headerlink" title="拆解的学习小目标（先把手上现有的书看完）"></a>拆解的学习小目标（先把手上现有的书看完）</h3><ul>
-<li>Javascript模式</li>
-<li>Javascript高级程序设计（第三版）</li>
-<li>学习Javascript数据结构与算法</li>
-<li>Node.js实战</li>
-</ul>
-<p>这是2019年的计划， 加油！！！ 每天至少一个小时的学习时间</p>
-<h4 id="前端学习计划"><a href="#前端学习计划" class="headerlink" title="前端学习计划"></a>前端学习计划</h4><p>总的方向： <a href="https://www.zhihu.com/question/22146521/answer/633571058" target="_blank" rel="noopener">https://www.zhihu.com/question/22146521/answer/633571058</a></p>
-<p>从中查缺补漏</p>
-<p><img src="https://cdn-images-1.medium.com/max/1600/1*YTP0ii6kEqZtxUN0bOKADA.png" alt="img"></p>
+        <p>JavaScript 是一种简洁明了的语言，其中并没有在其他语言经常使用的一些特殊语法的特征：命名空间，模块，包，私有属性，以及静态成员等。让我们用JavaScript来实现。</p>
+<h3 id="命名空间模式"><a href="#命名空间模式" class="headerlink" title="命名空间模式"></a>命名空间模式</h3><p>命名空间有助于减少程序中所需要的全局变量的数量，并且同时还哟助于避免命名冲突或者过长的名字前缀。</p>
+<p>可以为应用程序或者库创建一个全局对象，然后将所有的功能添加到全局对象中，从而在具有大量函数，对象和其他变量的情况下并不会污染全局范围。</p>
+<p>例如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构造函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add1</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 变量</span></span><br><span class="line"><span class="keyword">var</span> some_var = <span class="string">"shud"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象</span></span><br><span class="line"><span class="keyword">var</span> <span class="built_in">module</span> = &#123;&#125;;</span><br><span class="line"><span class="built_in">module</span>.data = &#123; <span class="attr">a</span>:<span class="string">'a'</span>, <span class="attr">b</span>: <span class="string">'b'</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>这种方式将会导致很多全局变量。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全局变量</span></span><br><span class="line"><span class="keyword">var</span> MYAPP = &#123;&#125;;</span><br><span class="line">MYAPP.dd1= &#123;&#125;;</span><br><span class="line">MYAPP.some_var = <span class="string">"shud"</span>;</span><br><span class="line">MYAPP.module = &#123;&#125;;</span><br><span class="line"><span class="built_in">module</span>.module.data = &#123; <span class="attr">a</span>:<span class="string">'a'</span>, <span class="attr">b</span>: <span class="string">'b'</span>&#125;;</span><br></pre></td></tr></table></figure>
+<p>这就避免了代码中的命名冲突。推荐使用这种方式。</p>
+<p><strong>缺点</strong></p>
+<ol>
+<li>需要输入更多的字符，每个变量都需要添加前缀。</li>
+<li>任何闭门的代码都可以修改全局实例。</li>
+<li>长嵌套命名意味着的属性查询时间。</li>
+</ol>
+<h4 id="1-通用命名空间函数"><a href="#1-通用命名空间函数" class="headerlink" title="1.通用命名空间函数"></a>1.通用命名空间函数</h4><p>由于程序的复杂性。上面的做法已经变得不再健全。添加到命名空间中的属性可能已经存在，这将导致覆盖它们。因此在添一个属性或者创建一个命名空间之前，最好先检查它是否已经存在。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 不健全的代码</span></span><br><span class="line"><span class="keyword">var</span> MYAPP = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 更好的代码风格</span></span><br><span class="line"><span class="keyword">if</span> ( <span class="keyword">typeof</span> MYAPP === <span class="string">'undefined'</span>) &#123;</span><br><span class="line">  <span class="keyword">var</span> MYAPP = &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 或者更短的语句</span></span><br><span class="line"><span class="keyword">var</span> MYAPP = MYAPP || &#123;&#125;;</span><br></pre></td></tr></table></figure>
+<p>但是这样每次检查读要针对一个对象或者属性。检查代码量太大。这就需要一个通用命名空间函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用命名空间函数</span></span><br><span class="line">MYAPP.namespace(<span class="string">'MYAPP.modules.module2'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 相当于如下代码</span></span><br><span class="line"><span class="comment">// var MYAPP = &#123;</span></span><br><span class="line"><span class="comment">//  modules: &#123;</span></span><br><span class="line"><span class="comment">//    module2: &#123;&#125;</span></span><br><span class="line"><span class="comment">//  &#125;</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br></pre></td></tr></table></figure>
+<p>一个命名空间函数的实现事例。这个实现是肥破坏性的，也就是说，，如果已经存在一个命名空间， 将不会再重新创建。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> MYAPP = MYAPP || &#123;&#125;;</span><br><span class="line">MYAPP.namespace = <span class="function"><span class="keyword">function</span>(<span class="params">ns_string</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> parts = ns_string.splict(<span class="string">'.'</span>),</span><br><span class="line">      parent = MYAPP,</span><br><span class="line">      i,</span><br><span class="line">   <span class="comment">// 剥离最前面的多余的全局变量</span></span><br><span class="line">   <span class="keyword">if</span> (parent[<span class="number">0</span>] === <span class="string">'MYAPP'</span>) &#123;</span><br><span class="line">     parent = parts.slice(<span class="number">1</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; parts.length; i += <span class="number">1</span>) &#123;</span><br><span class="line">     <span class="keyword">if</span> (<span class="keyword">typeof</span> parent[parts[i]] === <span class="string">'undefined'</span>) &#123;</span><br><span class="line">        parent[parts[i]] = &#123;&#125;;</span><br><span class="line">     &#125;</span><br><span class="line">     parent = parent[parts[i]]</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> parent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -335,15 +343,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2019/06/15/函数/" rel="next" title="函数">
+                <i class="fa fa-chevron-left"></i> 函数
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/14/编写可维护的代码（基础技巧）/" rel="prev" title="编写可维护的代码（基础技巧）">
-                编写可维护的代码（基础技巧） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -485,7 +493,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#拆解的学习小目标（先把手上现有的书看完）"><span class="nav-number">1.</span> <span class="nav-text">拆解的学习小目标（先把手上现有的书看完）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端学习计划"><span class="nav-number">1.1.</span> <span class="nav-text">前端学习计划</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#命名空间模式"><span class="nav-number">1.</span> <span class="nav-text">命名空间模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-通用命名空间函数"><span class="nav-number">1.1.</span> <span class="nav-text">1.通用命名空间函数</span></a></li></ol></li></ol></div>
             
 
           </div>
