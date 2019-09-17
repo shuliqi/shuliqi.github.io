@@ -302,13 +302,15 @@
           
             <blockquote>
 <p><strong>获得Git项目的仓库有两种方式：</strong></p>
-<ul>
-<li>在现有的目录下面通过导入所有的文件夹来创建Git仓库</li>
-<li>从已有的仓库克隆一个新新的镜像仓库来使用</li>
-</ul>
+<ol>
+<li><p>在现有的目录下面通过导入所有的文件夹来创建Git仓库</p>
+</li>
+<li><p>从已有的仓库克隆一个新新的镜像仓库来使用</p>
+</li>
+</ol>
 </blockquote>
 <h3 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h3><p>在现有的工作目录中初始化新仓库：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+<img src="/2019/09/17/git命令/git_init.png">
 <p>初始化完成后，在当前的目录下面会出现一个名为.git的目录。</p>
 <h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><p>从现有的仓库克隆。</p>
 <p>克隆的命令：<code>git clone [url]</code></p>
@@ -320,13 +322,18 @@
 <p><code>未跟踪：</code>没有上次的更新时的快照，也不在当前的暂存区域（即不是已跟踪文件就是未更新文件）。</p>
 <p>初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
 </blockquote>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch BUGS<span class="number">-6021</span>-candidate-total</span><br><span class="line">nothing to commit, working tree clean</span><br></pre></td></tr></table></figure>
-
+<img src="/2019/09/17/git命令/no_status.png">
 <p>说明当前的工作目录很干净。所有的跟踪文件在上次提交之后没有更新过。</p>
 <p>我们新建一个文件，1.js。 通过 <code>git status</code> 可看出我们新建的文件在未跟踪的文件列表里面.</p>
-<p><strong><img src="/2019/09/17/git命令/WX20190917-221822@2x.png" title="This is an test image"></strong></p>
-<h4 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a><code>git add</code></h4><p>跟踪一个新文件。例如，要跟踪一个新文件1.js, 则可以:</p>
+<img src="/2019/09/17/git命令/add-status.png">
+<h3 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h3><p>跟踪一个新文件。例如，要跟踪一个新文件1.js, 则可以:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add <span class="number">1.</span>js</span><br></pre></td></tr></table></figure>
+<p>添加跟踪完之后，我们再根据<code>git status</code> 查看状态，可看出该文件已经添加到已追踪列表.</p>
+<img src="/2019/09/17/git命令/git_new_status.png">
+<p>只要在 “Changes to be committed” 这行下面的，就说明是已暂存状态。如果此时提交，那么该文件此时此刻的版本将被留存在历史记录中</p>
+<p> 当我们在修改1.js 文件。再<code>git status</code>：</p>
+<img src="/2019/09/17/git命令/edit_status.png">
+<p>文件 1.js  出现在 “Changes not staged for commit”  这行下面，说明已跟踪文件的内容发生了变化，但还没有放到暂存区。要暂存这次更新，需要运行 <code>git add</code> 命令。</p>
 <h4 id><a href="#" class="headerlink" title=" "></a> </h4>
           
         
