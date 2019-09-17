@@ -86,13 +86,12 @@
 <meta property="og:site_name" content="舒小琦的Blog">
 <meta property="og:description" content="获得Git项目的仓库有两种方式：  在现有的目录下面通过导入所有的文件夹来创建Git仓库 从已有的仓库克隆一个新新的镜像仓库来使用   git init在现有的工作目录中初始化新仓库： 1git init 初始化完成后，在当前的目录下面会出现一个名为.git的目录。 git clone从现有的仓库克隆。 克隆的命令：git clone [url] 1git clone git@github.co">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://shuliqi.github.io/.io//shuliqi/myBlog/blog/source/_posts/git的一些常用操作/WX20190917-205011@2x.png">
-<meta property="og:image" content="https://shuliqi.github.io/.io//WX20190917-221822@2x.png">
-<meta property="og:updated_time" content="2019-09-17T14:24:09.656Z">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/WX20190917-221822@2x.png">
+<meta property="og:updated_time" content="2019-09-17T15:09:55.517Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git命令">
 <meta name="twitter:description" content="获得Git项目的仓库有两种方式：  在现有的目录下面通过导入所有的文件夹来创建Git仓库 从已有的仓库克隆一个新新的镜像仓库来使用   git init在现有的工作目录中初始化新仓库： 1git init 初始化完成后，在当前的目录下面会出现一个名为.git的目录。 git clone从现有的仓库克隆。 克隆的命令：git clone [url] 1git clone git@github.co">
-<meta name="twitter:image" content="https://shuliqi.github.io/.io//shuliqi/myBlog/blog/source/_posts/git的一些常用操作/WX20190917-205011@2x.png">
+<meta name="twitter:image" content="https://shuliqi.github.io/2019/09/17/git命令/WX20190917-221822@2x.png">
 
 
 
@@ -309,13 +308,13 @@
 <li>从已有的仓库克隆一个新新的镜像仓库来使用</li>
 </ul>
 </blockquote>
-<h4 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a><code>git init</code></h4><p>在现有的工作目录中初始化新仓库：</p>
+<h3 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h3><p>在现有的工作目录中初始化新仓库：</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
 <p>初始化完成后，在当前的目录下面会出现一个名为.git的目录。</p>
-<h4 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a><code>git clone</code></h4><p>从现有的仓库克隆。</p>
+<h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><p>从现有的仓库克隆。</p>
 <p>克隆的命令：<code>git clone [url]</code></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:shuliqi/echarts-vue.git</span><br></pre></td></tr></table></figure>
-<h4 id="git-status"><a href="#git-status" class="headerlink" title="git status"></a><code>git status</code></h4><p>检查当前文件的状态。</p>
+<h3 id="git-status"><a href="#git-status" class="headerlink" title="git status"></a>git status</h3><p>检查当前文件的状态。</p>
 <blockquote>
 <p>git的工作目录下的所有文件都不外呼两种状态：已跟踪，未跟踪</p>
 <p><code>已跟踪：</code> 指被纳入版本控制管理的文件，在上次快照中有它们的记录，工作一段时间之后，它们的状态可能是<code>未更新</code>，<code>已修改</code>，<code>已放入暂存入</code></p>
@@ -323,11 +322,10 @@
 <p>初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
 </blockquote>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch BUGS<span class="number">-6021</span>-candidate-total</span><br><span class="line">nothing to commit, working tree clean</span><br></pre></td></tr></table></figure>
-<p><img src="/.io//shuliqi/myBlog/blog/source/_posts/git的一些常用操作/WX20190917-205011@2x.png" alt="WX20190917-205011@2x"></p>
+
 <p>说明当前的工作目录很干净。所有的跟踪文件在上次提交之后没有更新过。</p>
 <p>我们新建一个文件，1.js。 通过 <code>git status</code> 可看出我们新建的文件在未跟踪的文件列表里面.</p>
-<p><img src="/.io//WX20190917-221822@2x.png" alt="WX20190917-221822@2x" style="zoom:50%;"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><strong><img src="/2019/09/17/git命令/WX20190917-221822@2x.png" title="This is an test image"></strong></p>
 <h4 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a><code>git add</code></h4><p>跟踪一个新文件。例如，要跟踪一个新文件1.js, 则可以:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add <span class="number">1.</span>js</span><br></pre></td></tr></table></figure>
 <h4 id><a href="#" class="headerlink" title=" "></a> </h4>
@@ -504,7 +502,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#git-init"><span class="nav-number">1.</span> <span class="nav-text">git init</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git-clone"><span class="nav-number">2.</span> <span class="nav-text">git clone</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git-status"><span class="nav-number">3.</span> <span class="nav-text">git status</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git-add"><span class="nav-number">4.</span> <span class="nav-text">git add</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">5.</span> <span class="nav-text"> </span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-init"><span class="nav-number">1.</span> <span class="nav-text">git init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-clone"><span class="nav-number">2.</span> <span class="nav-text">git clone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-status"><span class="nav-number">3.</span> <span class="nav-text">git status</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#git-add"><span class="nav-number">3.1.</span> <span class="nav-text">git add</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#"><span class="nav-number">3.2.</span> <span class="nav-text"> </span></a></li></ol></li></ol></div>
             
 
           </div>
