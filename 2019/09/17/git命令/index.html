@@ -96,11 +96,23 @@
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_commit.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_commit_m.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_commit_a.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_commit_amend1.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_commit_amend3.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_commit_amend3.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git-commit-amend6.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git-commit-amend7.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_rm.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_rm_2.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_rm_cached.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_mv.png">
-<meta property="og:updated_time" content="2019-09-18T14:49:05.195Z">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_log.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_log_p.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_log_1.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_log_word.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_log_stat.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_reset.png">
+<meta property="og:image" content="https://shuliqi.github.io/2019/09/17/git命令/git_reset1.png">
+<meta property="og:updated_time" content="2019-09-19T11:15:42.260Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git操作整理">
 <meta name="twitter:description" content="获得Git项目的仓库有两种方式：  在现有的目录下面通过导入所有的文件夹来创建Git仓库  从已有的仓库克隆一个新新的镜像仓库来使用    git init在现有的工作目录中初始化新仓库：  初始化完成后，在当前的目录下面会出现一个名为.git的目录。 git clone从现有的仓库克隆。 克隆的命令：git clone [url] 1git clone git@github.com:shuli">
@@ -323,13 +335,13 @@
 </li>
 </ol>
 </blockquote>
-<h3 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h3><p>在现有的工作目录中初始化新仓库：</p>
+<h2 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h2><p>在现有的工作目录中初始化新仓库：</p>
 <img src="/2019/09/17/git命令/git_init.png">
 <p>初始化完成后，在当前的目录下面会出现一个名为.git的目录。</p>
-<h3 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h3><p>从现有的仓库克隆。</p>
+<h2 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h2><p>从现有的仓库克隆。</p>
 <p>克隆的命令：<code>git clone [url]</code></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:shuliqi/echarts-vue.git</span><br></pre></td></tr></table></figure>
-<h3 id="git-status"><a href="#git-status" class="headerlink" title="git status"></a>git status</h3><p>检查当前文件的状态。</p>
+<h2 id="git-status"><a href="#git-status" class="headerlink" title="git status"></a>git status</h2><p>检查当前文件的状态。</p>
 <blockquote>
 <p>git的工作目录下的所有文件都不外呼两种状态：已跟踪，未跟踪</p>
 <p><code>已跟踪：</code> 指被纳入版本控制管理的文件，在上次快照中有它们的记录，工作一段时间之后，它们的状态可能是<code>未更新</code>，<code>已修改</code>，<code>已放入暂存入</code></p>
@@ -340,7 +352,8 @@
 <p>说明当前的工作目录很干净。所有的跟踪文件在上次提交之后没有更新过。</p>
 <p>我们新建一个文件，1.js。 通过 <code>git status</code> 可看出我们新建的文件在未跟踪的文件列表里面.</p>
 <img src="/2019/09/17/git命令/add-status.png">
-<h3 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h3><p>跟踪一个新文件。例如，要跟踪一个新文件1.js, 则可以:</p>
+<h2 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h2><p>跟踪一个新文件。</p>
+<p>例如，要跟踪一个新文件1.js, 则可以:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add <span class="number">1.</span>js</span><br></pre></td></tr></table></figure>
 <p>添加跟踪完之后，我们再根据<code>git status</code> 查看状态，可看出该文件已经添加到已追踪列表.</p>
 <img src="/2019/09/17/git命令/git_new_status.png">
@@ -348,7 +361,7 @@
 <p> 当我们在修改1.js 文件。再<code>git status</code>：</p>
 <img src="/2019/09/17/git命令/edit_status.png">
 <p>文件 1.js  出现在 “Changes not staged for commit”  这行下面，说明已跟踪文件的内容发生了变化，但还没有放到暂存区。要暂存这次更新，需要运行 <code>git add</code> 命令。</p>
-<h3 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h3><p>有一些文件我们不需要纳入git版本控制。但是我们也不希望它出现在未跟踪的文件列表中。我们可以创建一个名为：.gitignore的文件。里面列出需要忽略的文件的模式。</p>
+<h2 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h2><p>有一些文件我们不需要纳入git版本控制。但是我们也不希望它出现在未跟踪的文件列表中。我们可以创建一个名为：.gitignore的文件。里面列出需要忽略的文件的模式。</p>
 <img src="/2019/09/17/git命令/gitignore.png">
 <p>文件<code>.gitignore</code>的格式如下：</p>
 <ul>
@@ -358,7 +371,7 @@
 <li>要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（<code>!</code>）取反。</li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 此为注释 – 将被 Git 忽略</span><br><span class="line"># 忽略所有 .js 结尾的文件</span><br><span class="line">*.js</span><br><span class="line"># 但 lib.a 除外</span><br><span class="line">!shuliqi.js</span><br><span class="line"># 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO</span><br><span class="line">/TODO</span><br><span class="line"># 忽略 build/ 目录下的所有文件</span><br><span class="line">build/</span><br><span class="line"># 忽略 doc/ 目录下所有扩展名为 txt 的文件</span><br><span class="line">doc<span class="comment">/**/</span>*.txt</span><br><span class="line"># 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt</span><br><span class="line">doc<span class="comment">/*.txt</span></span><br></pre></td></tr></table></figure>
-<h3 id="git-diff"><a href="#git-diff" class="headerlink" title="git diff"></a>git diff</h3><p><code>git status</code> 显示比较简单，仅仅是列出了修改过的文件。如果要看文件具体修改了哪些地方，可以使用<code>git diff</code></p>
+<h2 id="git-diff"><a href="#git-diff" class="headerlink" title="git diff"></a>git diff</h2><p><code>git status</code> 显示比较简单，仅仅是列出了修改过的文件。如果要看文件具体修改了哪些地方，可以使用<code>git diff</code></p>
 <p>如果我们修改了文件。再使用<code>git diff</code> 查看：</p>
 <img src="/2019/09/17/git命令/git_diff_1.png">
 <p>比较的是工作目录中当前文件和暂存区域快照之间的差异，也就是修改之后还没有暂存起来的变化内容。</p>
@@ -371,7 +384,8 @@
 <li><p><code>git diff HEAD:</code> 对比工作区(未 git add)和版本库(git commit 之后)</p>
 </li>
 </ul>
-<h3 id="git-commit"><a href="#git-commit" class="headerlink" title="git commit"></a>git commit</h3><p>提交更新。使用<code>git commit</code> 提交暂存区代码。</p>
+<h2 id="git-commit"><a href="#git-commit" class="headerlink" title="git commit"></a>git commit</h2><p>提交更新。</p>
+<p>使用<code>git commit</code> 提交暂存区代码。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit</span><br></pre></td></tr></table></figure>
 <p>这种方式会启动文本编辑器以便输入本次提交的说明。</p>
 <img src="/2019/09/17/git命令/git_commit.png">
@@ -382,7 +396,28 @@
 <p>那么使用 <code>git commit -a -m&quot;跳过暂存区提交&quot;</code></p>
 <img src="/2019/09/17/git命令/git_commit_a.png">
 <p>提交之前不再需要 <code>git add</code> 文件了。</p>
-<h3 id="git-rm"><a href="#git-rm" class="headerlink" title="git rm"></a>git rm</h3><p>移除文件。如果想在git 删除某个文件，就必须得从已跟踪（暂存区）的文件清单中移除。然后再提交。使用<code>git rm</code> 移除文件。那么移除的文件就不会出现在未跟踪的清单中了。</p>
+<p><strong><code>git commit --amend</code> </strong> 此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命令的话，相当于有机会重新编辑提交说明，但将要提交的文件快照和之前的一样。</p>
+<p>我们使用<code>git log  -1</code> 查看上一次commit的简要信息</p>
+<img src="/2019/09/17/git命令/git_commit_amend1.png">
+<p>撤销上次的commit, 重新编辑提交说明。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
+<p>提交说明改成: “提交新东西(git commit —amend)”</p>
+
+<p>再<code>git log</code> 查看当前的提交历史</p>
+<img src="/2019/09/17/git命令/git_commit_amend3.png">
+<p>从图中看看出，我们的提交说明已经改变了。并且提交历史也没有我们第一次的commit(我们已经改变了)</p>
+<p>如果上次的提交我们有些文件改动没有暂存，我们可以补上暂存操作，然后再<code>git commit --ammend</code>提交。</p>
+<p>例如： 我们提交了一次commit</p>
+<img src="/2019/09/17/git命令/git_commit_amend3.png">
+<p>当前的更新历史为：</p>
+
+<p>补上一个暂存操作，再<code>git commit --ammend</code>，可更改上次的提交了.</p>
+<img src="/2019/09/17/git命令/git-commit-amend6.png">
+<img src="/2019/09/17/git命令/git-commit-amend7.png">
+<p>总结：以下的操作只会产生一个commit</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">'提交'</span></span><br><span class="line">git add forgotten_file</span><br><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
+<h2 id="git-rm"><a href="#git-rm" class="headerlink" title="git rm"></a>git rm</h2><p>移除文件。</p>
+<p>如果想在git 删除某个文件，就必须得从已跟踪（暂存区）的文件清单中移除。然后再提交。使用<code>git rm</code> 移除文件。那么移除的文件就不会出现在未跟踪的清单中了。</p>
 <p>如果手动删除了一个文件，再使用<code>git status</code>查看：</p>
 <img src="/2019/09/17/git命令/git_rm.png">
 <p>显示在“Changes not staged for commit”。也就是文件还在跟踪中。</p>
@@ -391,10 +426,123 @@
 <p>那么最后提交的时候，该文件就不再纳入版本管理了。</p>
 <p>如果我们想把文件从 Git 仓库中删除（亦即从暂存区域移除），但仍然希望保留在当前工作目录中。换句话说，仅是从跟踪清单中删除。则可以使用git rm –cached 文件</p>
 <img src="/2019/09/17/git命令/git_rm_cached.png">
-<h3 id="git-mv"><a href="#git-mv" class="headerlink" title="git mv"></a>git mv</h3><p>移除文件（更改文件名）。git 无法跟踪文件的移除操作。如果我们改了一个文件名。 Git 并不会体现出这一操作。如果想给一个文件改名，则可以使用：</p>
+<h2 id="git-mv"><a href="#git-mv" class="headerlink" title="git mv"></a>git mv</h2><p>移除文件（更改文件名）。</p>
+<p>git 无法跟踪文件的移除操作。如果我们改了一个文件名。 Git 并不会体现出这一操作。如果想给一个文件改名，则可以使用：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mv old_name new_name</span><br></pre></td></tr></table></figure>
 <img src="/2019/09/17/git命令/git_mv.png">
-<p><code>git mv</code>命令相当于一下命令</p>
+<p><code>git mv</code>命令相当于以下命令:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mv old.txt new.txt</span><br><span class="line">$ git rm old.txt</span><br><span class="line">$ git add new.txt</span><br></pre></td></tr></table></figure>
+<h2 id="git-log"><a href="#git-log" class="headerlink" title="git log"></a>git log</h2><p>查看提交历史。</p>
+<p>使用<code>git log</code> 查看提交历史.</p>
+<img src="/2019/09/17/git命令/git_log.png">
+<p>如果默认没有参数， 会按提交的时间显示所有的更新。最近的更新排在最上面。每一次的提交都有SHA-1 校验，作者的名字和邮箱，提交的时间， 提交声明。</p>
+<p><code>git log</code>     一些常用的选项:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -p <span class="comment">// 展开显示每次提交的内容的差异</span></span><br></pre></td></tr></table></figure>
+<img src="/2019/09/17/git命令/git_log_p.png">
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -&lt;n&gt; // 加上n &gt; 0 的数字， 显示最近几次的提交</span><br></pre></td></tr></table></figure>
+<p>例如：<code>git log -1</code></p>
+<img src="/2019/09/17/git命令/git_log_1.png">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -p --word-diff. // 单词层面的比较</span><br></pre></td></tr></table></figure>
+<img src="/2019/09/17/git命令/git_log_word.png">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log --stat //显示简要的增改行数统计</span><br></pre></td></tr></table></figure>
+<img src="/2019/09/17/git命令/git_log_stat.png">
+<p><strong>整理的常用的选项：</strong></p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-p</code></td>
+<td>按补丁格式显示每个更新之间的差异。</td>
+</tr>
+<tr>
+<td><code>--word-diff</code></td>
+<td>按 word diff 格式显示差异。</td>
+</tr>
+<tr>
+<td><code>--stat</code></td>
+<td>显示每次更新的文件修改统计信息。</td>
+</tr>
+<tr>
+<td><code>--shortstat</code></td>
+<td>只显示 –stat 中最后的行数修改添加移除统计。</td>
+</tr>
+<tr>
+<td><code>--name-only</code></td>
+<td>仅在提交信息后显示已修改的文件清单。</td>
+</tr>
+<tr>
+<td><code>--name-status</code></td>
+<td>显示新增、修改、删除的文件清单。</td>
+</tr>
+<tr>
+<td><code>--abbrev-commit</code></td>
+<td>仅显示 SHA-1 的前几个字符，而非所有的 40 个字符。</td>
+</tr>
+<tr>
+<td><code>--relative-date</code></td>
+<td>使用较短的相对时间显示（比如，“2 weeks ago”）。</td>
+</tr>
+<tr>
+<td><code>--graph</code></td>
+<td>显示 ASCII 图形表示的分支合并历史。</td>
+</tr>
+<tr>
+<td><code>--pretty</code></td>
+<td>使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。</td>
+</tr>
+<tr>
+<td><code>--oneline</code></td>
+<td><code>--pretty=oneline --abbrev-commit</code> 的简化用法。</td>
+</tr>
+</tbody>
+</table>
+<p>其他的：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-(n)</code></td>
+<td>仅显示最近的 n 条提交</td>
+</tr>
+<tr>
+<td><code>--since, --after</code></td>
+<td>仅显示指定时间之后的提交。</td>
+</tr>
+<tr>
+<td><code>--until, --before</code></td>
+<td>仅显示指定时间之前的提交。</td>
+</tr>
+<tr>
+<td><code>--author</code></td>
+<td>仅显示指定作者相关的提交。</td>
+</tr>
+<tr>
+<td><code>--committer</code></td>
+<td>仅显示指定提交者相关的提交。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a>git reset</h2><p>取消已经暂存的文件。</p>
+<p>假如我们不小心<code>git add</code> 了一个文件加到暂存区。但是我们想撤消该文件加到暂存区。则可以使用<code>git reset</code>进行撤销。</p>
+<blockquote>
+<p>命令不需要我们强制记住，<code>git add</code> 之后我们使用<code>git status</code> 可以看到git 提示我们如何撤消。</p>
+</blockquote>
+<img src="/2019/09/17/git命令/git_reset.png">
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD &lt;file&gt; // 如何在暂存区撤销一个文件</span><br></pre></td></tr></table></figure>
+<img src="/2019/09/17/git命令/git_reset1.png">
+<p>即可撤消。</p>
+<h2 id="git-checkout-—"><a href="#git-checkout-—" class="headerlink" title="git checkout — "></a>git checkout — <file></file></h2><p>取消对文件的修改。</p>
+<p>如果我们觉得对一个文件的修改没有必要。想要取消修改。则可以使用<code>git checkout -- &lt;file&gt;</code></p>
 
       
     </div>
@@ -569,7 +717,7 @@ var jiathis_config={
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#git-init"><span class="nav-number">1.</span> <span class="nav-text">git init</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-clone"><span class="nav-number">2.</span> <span class="nav-text">git clone</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-status"><span class="nav-number">3.</span> <span class="nav-text">git status</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-add"><span class="nav-number">4.</span> <span class="nav-text">git add</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#gitignore"><span class="nav-number">5.</span> <span class="nav-text">.gitignore</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-diff"><span class="nav-number">6.</span> <span class="nav-text">git diff</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-commit"><span class="nav-number">7.</span> <span class="nav-text">git commit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-rm"><span class="nav-number">8.</span> <span class="nav-text">git rm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git-mv"><span class="nav-number">9.</span> <span class="nav-text">git mv</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-init"><span class="nav-number">1.</span> <span class="nav-text">git init</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-clone"><span class="nav-number">2.</span> <span class="nav-text">git clone</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-status"><span class="nav-number">3.</span> <span class="nav-text">git status</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-add"><span class="nav-number">4.</span> <span class="nav-text">git add</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gitignore"><span class="nav-number">5.</span> <span class="nav-text">.gitignore</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-diff"><span class="nav-number">6.</span> <span class="nav-text">git diff</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-commit"><span class="nav-number">7.</span> <span class="nav-text">git commit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-rm"><span class="nav-number">8.</span> <span class="nav-text">git rm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-mv"><span class="nav-number">9.</span> <span class="nav-text">git mv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-log"><span class="nav-number">10.</span> <span class="nav-text">git log</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-reset"><span class="nav-number">11.</span> <span class="nav-text">git reset</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-checkout-—"><span class="nav-number">12.</span> <span class="nav-text">git checkout — </span></a></li></ol></div>
             
 
           </div>
