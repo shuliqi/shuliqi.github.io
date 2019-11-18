@@ -229,6 +229,128 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://shuliqi.github.io/2019/11/18/异步编程的方式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="舒小琦">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/9777918.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="舒小琦的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/11/18/异步编程的方式/" itemprop="url">异步编程的方式</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-18T23:25:09+08:00">
+                2019-11-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>我们知道<code>JavaScript</code>是<code>单线程</code>工作，即只有一个脚本执行完之后才能执行下一个脚本，两个脚本是不能同时执行，如果其中的某个脚本耗时很长，后面的脚本就只能排队等着，会影响整个程序的执行。那么如何让程序可以多线程执行呢？以下是总结的几种方式。</p>
+<p>初始例子： 有两个函数f1，f2。f1是一个需要一定时间才会执行的函数。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">     <span class="built_in">console</span>.log(<span class="string">'f1 执行了'</span>)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'f2 执行了'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="回调函数"><a href="#回调函数" class="headerlink" title="回调函数"></a>回调函数</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://shuliqi.github.io/2019/10/16/TypeScript入门-一/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -409,6 +531,30 @@
 <p>联合类型 用 <code>|</code>分隔每个类型：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> haha: string | number;</span><br><span class="line">haha = <span class="string">'shuliqi'</span>;</span><br><span class="line">haha = <span class="number">12</span>;</span><br></pre></td></tr></table></figure>
 <p>以上例子表示：haha这个变量类型可以是<code>string</code> , <code>number</code>     但是不能是其他的类型。</p>
+<h4 id="对象的类型—接口"><a href="#对象的类型—接口" class="headerlink" title="对象的类型—接口"></a>对象的类型—接口</h4><p>在TypeScript中，我们使用接口来定义对象的类型。</p>
+<p>例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> shu: Person = &#123;</span><br><span class="line">  name: <span class="string">'shuliqi'</span>,</span><br><span class="line">  age: <span class="number">12</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>例子中我们定义了一个接口 Person， 然后我们定义了一个变量 shu，它的类型是 Person。这就约束了shu的形状必须和Person一致。</p>
+<p>注意：接口的首字母一般大写。</p>
+<p>如果我们定义的变量比接口少一些属性是不允许的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> shu: Person = &#123;</span><br><span class="line">  name: <span class="string">'shuliqi'</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译时会报错的</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'age'</span> is declared here.</span><br></pre></td></tr></table></figure>
+<p>如果我们定义的变量比接口多一些属性也是不允许的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> shu: Person = &#123;</span><br><span class="line">  name: <span class="string">'shuliqi'</span>,</span><br><span class="line">  age: <span class="number">12</span>,</span><br><span class="line">  parent: <span class="string">'shulina'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译报错：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">error TS2322: Type <span class="string">'&#123; name: string; age: number; parent: string; &#125;'</span> is not assignable to type <span class="string">'Person'</span>.</span><br><span class="line">  <span class="built_in">Object</span> literal may only specify known properties, and <span class="string">'parent'</span> does not exist <span class="keyword">in</span> type <span class="string">'Person'</span>.</span><br><span class="line"></span><br><span class="line"><span class="number">8</span>  parent: <span class="string">'shulina'</span></span><br></pre></td></tr></table></figure>
+<h5 id="可选属性"><a href="#可选属性" class="headerlink" title="可选属性"></a>可选属性</h5><p>有的时候我们不需要完全匹配一个形状。我们可以使用可选属性：在属性后端加 ？ 符号。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age?: number;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> shu: Person = &#123;</span><br><span class="line">  name: <span class="string">'shuliqi'</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可选属性的含义可以不存在。注意： 这时候仍然不可以添加未定义的属性。</p>
+<h5 id="任意属性"><a href="#任意属性" class="headerlink" title="任意属性"></a>任意属性</h5><p>有时候我们希望一个接口允许有任意的属性，可以使用如下的方式 ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  [propName: string]: any;s</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> shu: Person = &#123;</span><br><span class="line">  name: <span class="string">'shuliqi'</span>,</span><br><span class="line">  age: <span class="number">12</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>[propName: string ] 表示属性的类型是string</p>
+<p>注意：<strong>如果我们的定义了任意属性，那么确定属性和可选属性都必须是它值类型的子集：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">interface Person &#123;</span><br><span class="line">  name: string;</span><br><span class="line">  age?: number</span><br><span class="line">  [propName: string]: string</span><br><span class="line">&#125;</span><br><span class="line">let shu: Person = &#123;</span><br><span class="line">  name: &apos;shuliqi&apos;,</span><br><span class="line">  age: 12,</span><br><span class="line">  parent: &apos;123&apos;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译额时候会报错：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Type <span class="string">'&#123; name: string; age: number; parent: string; &#125;'</span> is not assignable to type <span class="string">'Person'</span>.</span><br><span class="line">  Property <span class="string">'age'</span> is incompatible <span class="keyword">with</span> index signature.</span><br><span class="line">    Type <span class="string">'number'</span> is not assignable to type <span class="string">'string'</span>.</span><br><span class="line"></span><br><span class="line"><span class="number">6</span> <span class="keyword">let</span> shu: Person = &#123;</span><br><span class="line">      ~~~</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Found <span class="number">2</span> errors.</span><br></pre></td></tr></table></figure>
+<p><strong>原因</strong>：可选属性age的值的类型是number， 任意属性的值的类型 是string。number 不是stringl类型。所以会报错.</p>
 <p>未整理完….待继续整理</p>
 
           
@@ -2198,138 +2344,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://shuliqi.github.io/2019/05/12/学习计划/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="舒小琦">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/9777918.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="舒小琦的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/05/12/学习计划/" itemprop="url">学习计划</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-12T21:01:24+08:00">
-                2019-05-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="拆解的学习小目标（先把手上现有的书看完）"><a href="#拆解的学习小目标（先把手上现有的书看完）" class="headerlink" title="拆解的学习小目标（先把手上现有的书看完）"></a>拆解的学习小目标（先把手上现有的书看完）</h3><ul>
-<li>Javascript模式</li>
-<li>Javascript高级程序设计（第三版）</li>
-<li>学习Javascript数据结构与算法</li>
-<li>Node.js实战</li>
-</ul>
-<p>这是2019年的计划， 加油！！！ 每天至少一个小时的学习时间</p>
-<h4 id="前端学习计划"><a href="#前端学习计划" class="headerlink" title="前端学习计划"></a>前端学习计划</h4><p>总的方向： <a href="https://www.zhihu.com/question/22146521/answer/633571058" target="_blank" rel="noopener">https://www.zhihu.com/question/22146521/answer/633571058</a></p>
-<p>从中查缺补漏</p>
-<p><img src="https://cdn-images-1.medium.com/max/1600/1*YTP0ii6kEqZtxUN0bOKADA.png" alt="img"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -2375,7 +2396,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
