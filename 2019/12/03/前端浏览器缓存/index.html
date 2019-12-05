@@ -108,7 +108,7 @@
 <meta property="og:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/25.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/26.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/27.png">
-<meta property="og:updated_time" content="2019-12-05T15:55:16.070Z">
+<meta property="og:updated_time" content="2019-12-05T15:57:05.688Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="前端浏览器缓存">
 <meta name="twitter:description" content="我们为什么要缓存 缓存可以减少用户的等待时间，提升用户的体验。  减少网络带宽消耗 对于网站运营者和用户，带宽都代表着成本，过多的带宽消耗，都需要支付额外的费用。如果可以使用缓存，只会产生极小的网络流量，这将有效的降低运营成本  降低服务器压力。 给网络资源设定有效期之后，用户可以重复使用本地的缓存，减少对源服务器的请求，降低服务器的压力。此外，搜索引擎的爬虫机器人也能根据过期机制降低爬取的频率，">
@@ -500,7 +500,7 @@
 <p><strong>2.ctl+F5/硬性重新加载/清空缓存并且硬性重新加载</strong></p>
 <p>而<code>ctl+F5/硬性重新加载/清空缓存并且硬性重新加载</code>是彻底的从server拿一份新的资源过来。所以不光耀发送HTTP request给server。而且这个请求里面连If-Modified-Since/If-None-Match都没有。这样就能逼着服务器不能返回304，而是把整个资源原原本本的返回一次。</p>
 <p>为了保证拿到的是从server上获取的。 不只是去掉了f-Modified-Since/If-None-Match， 还添加了一些头部信息，如Cache-control：no-cache。因为cache不光是存在浏览器端，在浏览器端到服务器端的中间节点（如：Proxy）也可能扮演者Cache的角色。所以为了防止从这些节点获取缓存，所以加了Cache-control：no-cache。<img src="/2019/12/03/前端浏览器缓存/27.png"></p>
-<p>最后，附上例子的代码：<a href="https://github.com/shuliqi/frontCache" target="_blank" rel="noopener">https://github.com/shuliqi/frontCache</a></p>
+<p>最后，附上以上所有例子的代码：<a href="https://github.com/shuliqi/frontCache" target="_blank" rel="noopener">https://github.com/shuliqi/frontCache</a></p>
 
       
     </div>
