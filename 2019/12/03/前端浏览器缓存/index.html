@@ -81,7 +81,7 @@
 
 <meta name="description" content="我们为什么要缓存 缓存可以减少用户的等待时间，提升用户的体验。  减少网络带宽消耗 对于网站运营者和用户，带宽都代表着成本，过多的带宽消耗，都需要支付额外的费用。如果可以使用缓存，只会产生极小的网络流量，这将有效的降低运营成本  降低服务器压力。 给网络资源设定有效期之后，用户可以重复使用本地的缓存，减少对源服务器的请求，降低服务器的压力。此外，搜索引擎的爬虫机器人也能根据过期机制降低爬取的频率，">
 <meta property="og:type" content="article">
-<meta property="og:title" content="前端浏览器缓存">
+<meta property="og:title" content="前端缓存">
 <meta property="og:url" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/index.html">
 <meta property="og:site_name" content="舒小琦的Blog">
 <meta property="og:description" content="我们为什么要缓存 缓存可以减少用户的等待时间，提升用户的体验。  减少网络带宽消耗 对于网站运营者和用户，带宽都代表着成本，过多的带宽消耗，都需要支付额外的费用。如果可以使用缓存，只会产生极小的网络流量，这将有效的降低运营成本  降低服务器压力。 给网络资源设定有效期之后，用户可以重复使用本地的缓存，减少对源服务器的请求，降低服务器的压力。此外，搜索引擎的爬虫机器人也能根据过期机制降低爬取的频率，">
@@ -108,9 +108,9 @@
 <meta property="og:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/25.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/26.png">
 <meta property="og:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/27.png">
-<meta property="og:updated_time" content="2019-12-05T15:57:05.688Z">
+<meta property="og:updated_time" content="2019-12-20T04:33:10.090Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="前端浏览器缓存">
+<meta name="twitter:title" content="前端缓存">
 <meta name="twitter:description" content="我们为什么要缓存 缓存可以减少用户的等待时间，提升用户的体验。  减少网络带宽消耗 对于网站运营者和用户，带宽都代表着成本，过多的带宽消耗，都需要支付额外的费用。如果可以使用缓存，只会产生极小的网络流量，这将有效的降低运营成本  降低服务器压力。 给网络资源设定有效期之后，用户可以重复使用本地的缓存，减少对源服务器的请求，降低服务器的压力。此外，搜索引擎的爬虫机器人也能根据过期机制降低爬取的频率，">
 <meta name="twitter:image" content="https://shuliqi.github.io/2019/12/03/前端浏览器缓存/1.jpg">
 
@@ -148,7 +148,7 @@
 
 
 
-  <title>前端浏览器缓存 | 舒小琦的Blog</title>
+  <title>前端缓存 | 舒小琦的Blog</title>
   
 
 
@@ -272,7 +272,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">前端浏览器缓存</h1>
+          <h1 class="post-title" itemprop="name headline">前端缓存</h1>
         
 
         <div class="post-meta">
@@ -338,7 +338,7 @@
 <p>后端缓存主要集中在<code>处理</code>步骤。通过保留数据库的连接，存储结果的处理等方式缩短处理时间。尽快进入“响应”步骤。本文不讲后端缓存。</p>
 <p>前端缓存则可以在剩下的两步：<code>请求</code>和<code>响应</code>中进行。在请求的过程中，浏览器也可以通过存储结果的方式直接使用资源，省去了发送请求。而响应步骤则需要浏览器和服务器共同配合。通过减少响应内容来缩短传输的时间。</p>
 <h2 id="按缓存位置分类"><a href="#按缓存位置分类" class="headerlink" title="按缓存位置分类"></a>按缓存位置分类</h2><p>按缓存位置分类可分为三个部分：<code>service worker</code>,    <code>memory cache</code>,   <code>disk cache</code> 。</p>
-<p>在Chrome 的开发者工具中，Network -&gt; Size 一列看到一个请求最终的处理方式：如果是大小 (多少 K， 多少 M 等) 就表示是网络请求，否则会列出 <code>from memory cache</code>,    <code>from disk cache</code> 和    <code>from ServiceWorker</code> </p>
+<p>在Chrome 的开发者工具中，Network -&gt; Size 一列看到一个请求最终的处理方式：如果是大小 (多少 K， 多少 M 等) 就表示是网络请求，否则会列出 <code>memory cache</code>,    <code>disk cache</code> 和    <code>ServiceWorker</code> </p>
 <p>如图：</p>
 <img src="/2019/12/03/前端浏览器缓存/1.jpg">
 <p><strong>优先级是：</strong>(由上到下寻找，找到即返回；找不到则继续)</p>
@@ -352,7 +352,7 @@
 <p>几乎所有的网络请求资源都会被浏览器自动加入到 memory cache 中。但是因为 <strong>数量很大</strong>，而且<strong>浏览器占的内存不能无限扩大</strong> 这两个原因。memory cache 就只能是个<strong>短期存储</strong>。</p>
 <p>通常的情况下，浏览器的tab 关闭后该浏览器tab的memory cache 就会失效了(为了给其他的tab腾出空间)。</p>
 <p>极端的情况下，如果一个页面的缓存用了超级多的内存，那么可能在它没有关闭前，排在前面的缓存就已经失效了。</p>
-<h4 id="disk-cache-（HTTP-cache）"><a href="#disk-cache-（HTTP-cache）" class="headerlink" title="disk cache （HTTP cache）"></a>disk cache （HTTP cache）</h4><p>disk cache 也叫HTTP cache，是存储在硬盘上的缓存。因此它是持久存储的，是实际存在于文件系统中的。而且它允许相同的资源在跨会话，甚至跨站点的情况下使用，例如两个站点都使用了同一张图片。</p>
+<h4 id="disk-cache-（HTTP-cache）"><a href="#disk-cache-（HTTP-cache）" class="headerlink" title="disk cache （HTTP cache）"></a>disk cache （HTTP cache）</h4><p>disk cache 也叫HTTP cache，是存储在硬盘上的缓存。因此它是持久存储的，是实际存在于文件系统中的。</p>
 <p>disk cache 会严格根据 HTTP 头信息中的各类字段来判定哪些资源可以缓存，哪些资源不可以缓存；哪些资源是仍然可用的，哪些资源是过时需要重新请求的。当命中缓存之后，浏览器会从硬盘中读取资源，虽然比起从内存中读取慢了一些，但比起网络请求还是快了不少的。绝大部分的缓存都来自 disk cache。</p>
 <p>凡是永久性存储都会面临容量增长的问题。disk cache也是一样的。在浏览器自动清理时， 会有神秘的算法去把“最老的”或者“最可能过时的”资源删除。是一个一个删掉的。不过每个浏览器识别“最老的”和“最可能过时的”资源的算法不尽相同，可能也是它们差异性的体现。</p>
 <h4 id="Service-Worker"><a href="#Service-Worker" class="headerlink" title="Service Worker"></a>Service Worker</h4><p>memory cache， disk cache的缓存策略以及缓存/读取/失效的动作都是由浏览器内部判断 &amp; 进行的，我们只能设置响应头的某些字段来告诉浏览器，而不能自己操作。而Service Worker是我们自己能够操作缓存的。</p>
@@ -368,7 +368,7 @@
 <p><strong>HTTP缓存：</strong>在HTTP请求传输时用到的缓存，主要在服务器代码上设置（disk cache）。</p>
 <p><strong>浏览器缓存：</strong>前端开发在前端js上进行设置(如：Service Worker )。</p>
 <img src="/2019/12/03/前端浏览器缓存/8.webp">
-<h2 id="前端缓存的分析过程"><a href="#前端缓存的分析过程" class="headerlink" title="前端缓存的分析过程"></a>前端缓存的分析过程</h2><p>浏览器与服务器通信的方式为应答模式，即是：浏览器发起HTTP请求 – 服务器响应该请求。那么浏览器第一次向服务器发起该请求后拿到请求结果，会根据响应报文中HTTP头的缓存标识，决定是否缓存结果，是则将请求结果和缓存标识存入浏览器缓存中。如图：</p>
+<h2 id="前端缓存的分析过程"><a href="#前端缓存的分析过程" class="headerlink" title="前端缓存的分析过程"></a>前端缓存的分析过程</h2><p>浏览器与服务器通信的方式为应答模式，即是：浏览器发起HTTP请求 – 服务器响应该请求。浏览器第一次向服务器发起该请求后拿到请求结果，会根据响应报文中HTTP头的缓存标识，决定是否缓存结果，是则将请求结果和缓存标识存入浏览器缓存中。如图：</p>
 <img src="/2019/12/03/前端浏览器缓存/9.webp">
 <p>浏览器每次发起请求，都会先在浏览器缓存中查找该请求的结果以及缓存标识 </p>
 <p>浏览器每次拿到返回的请求结果都会将该结果和缓存标识存入浏览器缓存中</p>
@@ -386,7 +386,7 @@
 </li>
 </ul>
 <p><strong>强制缓存的规则：</strong></p>
-<p>当浏览器向服务器发起请求时，服务器会将缓存规则放入HTTP响应报文的HTTP头中和请求结果一起返回给浏览器</p>
+<p>当浏览器向服务器发起请求时，服务器会将缓存规则放入HTTP响应头中和请求结果一起返回给浏览器</p>
 <p><strong>控制强制缓存的字段：</strong> <strong>Expires</strong>，<strong>Cache-Control</strong></p>
 <p><strong>强缓存的直接优点：</strong>直接减少请求数，是提升最大的缓存策略。</p>
 <h4 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h4><p>这是 HTTP 1.0 的字段，表示缓存到期时间，是一个绝对的时间 (当前时间+缓存时间)。再次发起该请求时，如果客户端的时间小于Expires的值时，直接使用缓存结果。</p>
@@ -490,11 +490,11 @@
 <p>后端代码如下：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 刷新/访问行为</span></span><br><span class="line">app.get(<span class="string">'/1.png'</span>, (req, res) =&gt; &#123;</span><br><span class="line">  <span class="comment">// 设置到期时间</span></span><br><span class="line">  res.setHeader(<span class="string">'Expires'</span>, <span class="string">'Thu Dec 05 2019 23:51:08 GMT+0800 (CST)'</span>);</span><br><span class="line">  res.setHeader(<span class="string">'Cache-Control'</span>, <span class="string">'public, max-age=6000'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> imgPath = path.join(__dirname, <span class="string">'./public/images/1.png'</span>);</span><br><span class="line">  <span class="comment">// 获取文件1.png的信息</span></span><br><span class="line">  fs.stat(imgPath, (err, stat) =&gt; &#123;</span><br><span class="line">    <span class="comment">// 获取文件内容被修改的时间 modify time</span></span><br><span class="line">    <span class="keyword">let</span> lastModified = stat.mtime.toUTCString();</span><br><span class="line">   <span class="comment">// 判断 if-modified-since 的时间与资源的最后修改时间是否一致</span></span><br><span class="line">    <span class="keyword">if</span> (req.headers[<span class="string">'if-modified-since'</span>] === lastModified) &#123;</span><br><span class="line">      <span class="comment">// 设置响应状态码</span></span><br><span class="line">      res.writeHead(<span class="number">304</span>, <span class="string">'not modified'</span>);</span><br><span class="line">     <span class="comment">// 响应体为空，减少传输时间</span></span><br><span class="line">      res.end();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 读取文件</span></span><br><span class="line">      fs.readFile(jsPath, (err, content) =&gt; &#123;</span><br><span class="line">        <span class="comment">// 设置Last-Modified</span></span><br><span class="line">        res.setHeader(<span class="string">'Last-Modified'</span>, lastModified);</span><br><span class="line">        <span class="comment">// 设置响应状态码</span></span><br><span class="line">        res.writeHead(<span class="number">200</span>, <span class="string">'ok'</span>);</span><br><span class="line">        <span class="comment">// 响应体为空，减少传输时间</span></span><br><span class="line">        res.end(content);</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p><strong>1.在url输入栏输入然后回车</strong></p>
-<p>我们可以看到返回的响应码是<code>200 ok (from disk cache)</code>。浏览器发现了该资源以及缓存了而且没有过期(Cache-Control或者Expires)。 没有跟服务器确认，而是直接使用了浏览器缓存的内容，其中响应的内容和上一次的响应内容是一样的。</p>
+<p>我们可以看到返回的响应码是<code>200 ok (disk cache)</code>。浏览器发现了该资源以及缓存了而且没有过期(Cache-Control或者Expires)。 没有跟服务器确认，而是直接使用了浏览器缓存的内容，其中响应的内容和上一次的响应内容是一样的。</p>
 <p>如图：</p>
 <img src="/2019/12/03/前端浏览器缓存/25.png">
 <p><strong>2.F5/点击工具栏的刷新按钮/右键菜单重新加载</strong></p>
-<p><code>F5/点击工具栏的刷新按钮/右键菜单重新加载</code> 的作用和<code>在url输入栏输入然后回车</code>的作用是不一样的。前者是无论如何都要发一个HTTP Request 给server。即使先前的响应中有Cache-Control或者Expires。而发送的请求头中，包含了这样的header信息。</p>
+<p><code>F5/点击工具栏的正常刷新按钮/右键菜单重新加载</code> 的作用和<code>在url输入栏输入然后回车</code>的作用是不一样的。前者是无论如何都要发一个HTTP Request 给server。即使先前的响应中有Cache-Control或者Expires。而发送的请求头中，包含了这样的header信息。</p>
 <img src="/2019/12/03/前端浏览器缓存/26.png">
 <p>其中Cache-Control 是浏览器强制加上的。而If-Modified-Since是因为在获取资源的时候包含了Last-Modified的头部，所以浏览器会使用If-Modified-Since头部信息重新发送改该时间确认资源是否需要重新发送。世纪server 没有改过这个1.png这个文件， 所以返回了<code>304 not modified</code>.</p>
 <p><strong>2.ctl+F5/硬性重新加载/清空缓存并且硬性重新加载</strong></p>
