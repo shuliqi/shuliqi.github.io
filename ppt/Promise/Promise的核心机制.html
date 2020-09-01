@@ -1,0 +1,260 @@
+<p>title:<br>speaker: 舒小琦<br>plugins:</p>
+<pre><code>- echarts
+</code></pre><slide class="aligncenter">
+
+<h1 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h1><p>By 舒小琦 {.tobuild.animated.fadeInUp.text-intro}</p>
+<slide class="aligncenter">
+
+<h3 id="什么是Promise？"><a href="#什么是Promise？" class="headerlink" title="什么是Promise？"></a>什么是Promise？</h3><hr>
+<p>::: steps </p>
+<p>Promise对象是一个代理对象（代理一个值）。被代理的值在Promise创建的时候可能是未知的。它允许你为异步操作的成功与失败分别绑定相应的处理方法。这让异步可以像同步方法那样返回值，但并不是立即返回最终的执行结果，而是一个能代表未来的出现的结果的promise对象。{.tobuild.animated.fadeInUp}</p>
+<slide class="aligncenter">
+
+<h3 id="Promise的创建"><a href="#Promise的创建" class="headerlink" title="Promise的创建?"></a>Promise的创建?</h3><p>::: steps</p>
+<p><strong>使用 <code>new Promise()</code>来创建一个<code>promise</code></strong></p>
+<p>即<code>new Promise()</code>构造器</p>
+<hr>
+<p><strong>使用类方法Promise.xxx()</strong></p>
+<p>Promise.all()</p>
+<p>Promise.race()</p>
+<p>Promise.resolve()</p>
+<p>Promise.reject()</p>
+<hr>
+<h5 id="使用原型形方法Promise-prototype-xxx"><a href="#使用原型形方法Promise-prototype-xxx" class="headerlink" title="使用原型形方法Promise.prototype.xxx()"></a>使用原型形方法Promise.prototype.xxx()</h5><p>promise.then()</p>
+<p>promise.catch()</p>
+<p>promise.fanally()</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<h3 id="new-Promise-构造器"><a href="#new-Promise-构造器" class="headerlink" title="new Promise()构造器"></a>new Promise()构造器</h3><p>::: flexblock{.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="comment">// 创建promise对象的构造器</span>
+<span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(executor);
+<span class="comment">// 需要用户声明的执行函数</span>
+<span class="keyword">const</span> executor = <span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>{ 
+}
+</code></pre>
+<hr>
+<p>executor 是用户声明的执行函数，当JavaScript引擎通过new promise对象时，它事实上在调用executor()之前就创建好一个新的promise对象的实例，并且得到关联给这个实例的两个置值器：resolve()，reject()函数，然后，它会调用executor()，并且把这两个置值器作为入口参数传入，而executor()函数会被执行直到退出。{.tobuild.animated.moveIn}</p>
+<p>{.tobuild.animated.moveIn}</p>
+<p>:::</p>
+<p>::: flexblock</p>
+<p>executor()函数并不通过退出时所返回的值来对系统造成影响——该返回值将会被忽略（无论是显式返回结果，还是默认返回值undefined）。executor()中的用户代码可以利用上述的两个置值器，来向promise对象“代理的那个数据”置值。也就是说，为promise绑定值的过程是由用户代码来触发的。这个过程看起来像”让用户代码回调JavaScript引擎”。{.tobuild.animated.moveIn}</p>
+<hr>
+<p>::: div {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="comment">// 用户代码通过resolve(或reject）来回调引擎以置值</span>
+<span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+  resolve(<span class="string">"shuliqi"</span>);
+})
+</code></pre>
+<p>:::</p>
+<p>:::</p>
+<p>::: flexblock</p>
+<p>executor()函数中的resolve置值器可以接受任何值（除了当前的promise本身之外）,如果使用自身来置值时，JavaScript会抛出一个异常{.tobuild.animated.moveIn}</p>
+<hr>
+<p>::: div{.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="comment">// 暂存resolve置值的变量</span>
+<span class="keyword">let</span> delayResolve;
+ <span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+    delayResolve = resolve;
+ });
+<span class="comment">// 尝试使用自身来置值</span>
+ delayResolve(p) <span class="comment">// votarot.js:7 Uncaught (in promise) TypeError: Chaining cycle detected for promise #&lt;Promise&gt;</span>
+</code></pre>
+<p>:::</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<h3 id="构建Promise对象：没有延迟"><a href="#构建Promise对象：没有延迟" class="headerlink" title="构建Promise对象：没有延迟"></a>构建Promise对象：没有延迟</h3><p>::: steps{.tobuild.animated.moveIn}</p>
+<p>在构建整个Promise对象的过程中， 是没有任何的延迟的。Promise机制中没有延迟， 也没有被延迟的行为，更没有对”时间”这个维度进行控制。因此JavaScript中创建一个promise时，创建过程时立即完成的；使用原型的方法promise.xxx来得到一个新的promise时也是立即完成的。所有promise对象都是在你需要的时候立即就生成的。</p>
+<p>:::</p>
+<p>::: flexblock{.tobuild.animated.moveIn}</p>
+<p><strong>这些<code>promise</code>所代理的那个值/数据还没有“就绪”。这个就绪的过程要推迟到“未知的将来”才会发生，而一旦数据就绪，promise.then(fun)中的fun就会被触发了</strong></p>
+<p>:::</p>
+<p><a href="https://jsbin.com/terepuj/edit?js,console">举个例子</a>{.button.ghost .tobuild.animated.moveIn} </p>
+<p>只要我们创建了<code>promise</code> 对象，这个过程是立即的，所以立马输出“shuliqi”。然后过3秒，输出 “1”。{.tobuild.animated.moveIn}</p>
+<slide class="aligncenter">
+
+<h3 id="Then-链"><a href="#Then-链" class="headerlink" title="Then 链"></a>Then 链</h3><p>::: flexblock</p>
+<h5 id="两个Promise对象之间顺序执行的关系，在JavaScript中称为“Then-链”。-tobuild-animated-moveIn"><a href="#两个Promise对象之间顺序执行的关系，在JavaScript中称为“Then-链”。-tobuild-animated-moveIn" class="headerlink" title="两个Promise对象之间顺序执行的关系，在JavaScript中称为“Then 链”。{.tobuild.animated.moveIn}"></a>两个<code>Promise</code>对象之间顺序执行的关系，在<code>JavaScript</code>中称为“Then 链”。{.tobuild.animated.moveIn}</h5><p>通过调用x xx.then()的方式来约定当前的promise 对象与下一个promise对象之间的“链”关系 {.tobuild.animated.moveIn}</p>
+<p>{.tobuild.animated.moveIn}</p>
+<hr>
+<p>:::div {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="comment">// 创建一个Promise 对象P</span>
+<span class="keyword">const</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+    resolve(<span class="string">'shuliqi'</span>)
+})
+<span class="comment">// 通过p.then()来得到新的promise对象 p2</span>
+<span class="keyword">const</span> p2 = p.then(foo() =&gt; {});
+</code></pre>
+<p>:::</p>
+<p>:::</p>
+<p>::: flexblock</p>
+<h5 id="p-then-不仅仅代表了对顺序的逻辑的理解，-同时它也隐含的说明：p2-与p1两者所代理的数据之间是有关-tobuild-animated-moveIn"><a href="#p-then-不仅仅代表了对顺序的逻辑的理解，-同时它也隐含的说明：p2-与p1两者所代理的数据之间是有关-tobuild-animated-moveIn" class="headerlink" title="p.then()不仅仅代表了对顺序的逻辑的理解， 同时它也隐含的说明：p2 与p1两者所代理的数据之间是有关{.tobuild.animated.moveIn}"></a>p.then()不仅仅代表了对顺序的逻辑的理解， 同时它也隐含的说明：p2 与p1两者所代理的数据之间是有关{.tobuild.animated.moveIn}</h5><p>在当前的promise数据就绪时，JavaScript就将根据就绪状态立即出发有p.then()方法所关联的onFulfilled/ onRejected之一，并且这个函数<strong>退出时返回的值</strong>或者<strong>终止执行时的状态</strong>作为值来调用p2的置值器{.tobuild.animated.moveIn}</p>
+<p>{.tobuild.animated.moveIn}</p>
+<hr>
+<p>:::div {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="comment">// 创建一个Promise 对象P</span>
+<span class="keyword">const</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+    resolve(<span class="string">'shuliqi'</span>);
+})
+<span class="comment">// 通过p.then()来得到新的promise对象 p2</span>
+<span class="keyword">const</span> p2 = p.then(onFulfilled, onRejected);
+<span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params">value</span>) </span>{
+   <span class="built_in">console</span>.log(value); <span class="comment">// shuliqi</span>
+}
+<span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params"></span>) </span>{}
+</code></pre>
+<p>:::</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<h3 id="then链的作用"><a href="#then链的作用" class="headerlink" title="then链的作用"></a>then链的作用</h3><p>:::steps{.tobuild.animated.moveIn}</p>
+<p>创建新的promise对象</p>
+<hr>
+<p>登记当前promise 与 下一个promise 之间的关系（顺序执行的关系和代理的数据之间是有关联的）</p>
+<hr>
+<p>将onFulfilled ，onRejected关联给下一个promise2的resolve置值器，并且确保早当前promise对象的数据就绪时调用onFulfilled， onRejected。</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<h3 id="第一个promise的置值逻辑"><a href="#第一个promise的置值逻辑" class="headerlink" title="第一个promise的置值逻辑"></a>第一个promise的置值逻辑</h3><hr>
+<p>::: flexblock</p>
+<p><strong>一个promise可能被置入两种值之一（并且一旦置入就可以变更了， 我们称为终态）</strong>{.tobuild.animated.moveIn}</p>
+<p>:::</p>
+<p>::: flexblock</p>
+<p>1.如果promise被成功 resolve，则该值为有效值（value） {.tobuild.animated.moveIn}</p>
+<hr>
+<p>2.如果promise被rejecte 或 resolve 失败，这个值就用于记录失败原因 {.tobuild.animated.moveIn}</p>
+<p> {.tobuild.animated.moveIn}</p>
+<p>:::</p>
+<hr>
+<p>无论是value 还是reason 都可以是JavaScript的任意数据类型 {.tobuild.animated.moveIn}</p>
+<slide class="aligncenter">
+
+<p>::: flexblock</p>
+<p>所以我们new Promise构造器中的执行函数可以显式的使用resolve/reject置值器来给promise置值。</p>
+<p>::: div {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+  <span class="keyword">try</span> {
+    resolve(<span class="string">'我显示使用resolve置值器置值'</span>)
+  } <span class="keyword">catch</span> (error) {
+    reject(<span class="string">'我显示使用reject 置值器置值'</span>)
+  }
+})
+</code></pre>
+<p>::: div {.tobuild.animated.moveIn}</p>
+<p>这个例子显式的使用resolve / reject 置值器来置值。 {.tobuild.animated.moveIn}</p>
+<hr>
+<p>::: div {.tobuild.animated.moveIn}</p>
+<p>如果执行函数executor在执行的过程中触发异常时， JavaScript引擎也将调用reject将异常作为reason给promise置值。</p>
+<p>::: div {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(); 
+})
+<span class="comment">// 创建异常，并且抛出，相当于reject(new Error())</span>
+</code></pre>
+<p>::::</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<p>接下来，如果在它的then 链上有promise2,那么如前所诉：onFulfilled/onRejected将被触发</p>
+<p>::: div  {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="keyword">const</span> p = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+  <span class="keyword">try</span> {
+    resolve(<span class="string">'我显示使用resolve置值器置值'</span>)
+  } <span class="keyword">catch</span> (error) {
+    reject(<span class="string">'我显示使用reject 置值器置值'</span>)
+  }
+})
+<span class="keyword">const</span> promise2 =p.then(onFulfilled, onRejected);
+
+<span class="function"><span class="keyword">function</span> <span class="title">onFulfilled</span>(<span class="params"></span>) </span>{
+    <span class="built_in">console</span>.log(<span class="string">'我是resolve置值器置值成功的回调'</span>)
+}
+<span class="function"><span class="keyword">function</span> <span class="title">onRejected</span>(<span class="params"></span>) </span>{
+    <span class="built_in">console</span>.log(<span class="string">"我是reject置值器置值或者是resolve置值器置值失败的回调"</span>)
+}
+</code></pre>
+<p><a href="https://jsbin.com/fagerel/edit?js,console">运行看看？</a>{.button.ghost .tobuild.animated.moveIn} </p>
+<slide class="aligncenter">
+
+<h3 id="Then链上其他的promise的置值逻辑"><a href="#Then链上其他的promise的置值逻辑" class="headerlink" title="Then链上其他的promise的置值逻辑"></a>Then链上其他的promise的置值逻辑</h3><hr>
+<h5 id="onFulfilled-onRejected响应的都只是p的值的状态。那么下一个promise的置值逻辑是什么呢-tobuild-animated-moveIn"><a href="#onFulfilled-onRejected响应的都只是p的值的状态。那么下一个promise的置值逻辑是什么呢-tobuild-animated-moveIn" class="headerlink" title="onFulfilled/onRejected响应的都只是p的值的状态。那么下一个promise的置值逻辑是什么呢{.tobuild.animated.moveIn}"></a>onFulfilled/onRejected响应的都只是p的值的状态。那么下一个promise的置值逻辑是什么呢{.tobuild.animated.moveIn}</h5><slide class="aligncenter">
+
+<p>::: flexblock</p>
+<pre><code class="javascript"><span class="keyword">const</span> resolvedForP1 = <span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>{
+    <span class="keyword">return</span> value;
+}
+<span class="keyword">const</span> rejectedForP1 = <span class="function"><span class="keyword">function</span>(<span class="params">reason</span>) </span>{
+    <span class="keyword">return</span> reason;
+}
+<span class="keyword">const</span> resolvedForP2 = <span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>{
+    <span class="built_in">console</span>.log(<span class="string">'我是p2 resolved状态,'</span>, value);
+}
+<span class="keyword">const</span> rejectedForP2= <span class="function"><span class="keyword">function</span>(<span class="params">reason</span>) </span>{
+    <span class="built_in">console</span>.log(<span class="string">'我是p2 rejected状态,'</span>, reason);
+}
+<span class="keyword">const</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> {
+      <span class="comment">// 顺便调用p1的resolve置值器，还是reject置值器</span>
+      <span class="comment">// resolve('p1 resolve'); </span>
+      reject(<span class="string">'p1 reject'</span>);
+  }, <span class="number">1000</span>)
+})
+<span class="keyword">const</span> p2 = p1.then(resolvedForP1, rejectedForP1);
+p2.then(resolvedForP2, rejectedForP2)
+</code></pre>
+<p><a href="https://jsbin.com/edit?js,console">运行看看？</a>{.button.ghost} </p>
+<hr>
+<h3 id="所以Then链上其他的promise的置值逻辑结论为：-tobuild-animated-moveIn"><a href="#所以Then链上其他的promise的置值逻辑结论为：-tobuild-animated-moveIn" class="headerlink" title="所以Then链上其他的promise的置值逻辑结论为：  {.tobuild.animated.moveIn}"></a>所以Then链上其他的promise的置值逻辑结论为：  {.tobuild.animated.moveIn}</h3><h3 id="tobuild-animated-moveIn"><a href="#tobuild-animated-moveIn" class="headerlink" title="{.tobuild.animated.moveIn}"></a>{.tobuild.animated.moveIn}</h3><p>::: steps  {.tobuild.animated.moveIn}</p>
+<p><strong>无论上一个promise的resolved，rejected函数无论返回何值，都将作为resolve值直接绑定给下一个promise</strong></p>
+<p>即：resolved, rejected函数会关联在promise2的resolve 值值器上</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<h3 id="then-链中“产生”-reject值的方法"><a href="#then-链中“产生”-reject值的方法" class="headerlink" title="then 链中“产生” reject值的方法"></a>then 链中“产生” reject值的方法</h3><hr>
+<p>::: flexblock </p>
+<ul>
+<li><p>1.通过抛出异常来使得JavaScript引擎捕获异常对象。   {.tobuild.animated.moveIn}</p>
+<p>::: div    {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="keyword">const</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+    resolve(<span class="string">'我是舒丽琦'</span>)
+});
+<span class="comment">// 方法1: 通过抛出异常来使得JavaScript引擎捕获异常对象</span>
+<span class="keyword">const</span> p2 = p1.then(<span class="function">(<span class="params">value</span>)=&gt;</span> {
+    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'通过抛出异常来使得JavaScript引擎捕获异常对象'</span>);
+});
+p2.then(<span class="function">(<span class="params">value</span>) =&gt;</span> {
+    <span class="built_in">console</span>.log(value);
+})
+
+<span class="comment">// 结果：</span>
+<span class="comment">// UnhandledPromiseRejectionWarning: Error: 通过抛出异常来使得JavaScript引擎捕获异常对象....</span>
+</code></pre>
+</li>
+</ul>
+<hr>
+<ul>
+<li><p>2.通过显式的调用Promise.reject()   {.tobuild.animated.moveIn}</p>
+<p>::: div  {.tobuild.animated.moveIn}</p>
+<pre><code class="javascript"><span class="keyword">const</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> {
+    resolve(<span class="string">'我是舒丽琦'</span>)
+});
+<span class="comment">// 方法2: 显式的调用Promise.reject() </span>
+<span class="keyword">const</span> p2 = p1.then(<span class="function">(<span class="params">value</span>)=&gt;</span> {
+    <span class="built_in">Promise</span>.reject(<span class="string">'显式的调用Promise.reject() '</span>)
+});
+p2.then(<span class="function">(<span class="params">value</span>) =&gt;</span> {
+    <span class="built_in">console</span>.log(value);
+})
+
+<span class="comment">// 结果：</span>
+<span class="comment">// UnhandledPromiseRejectionWarning: 显式的调用Promise.reject() ...</span>
+</code></pre>
+</li>
+</ul>
+<p>:::</p>
+<p>:::</p>
+<slide class="aligncenter">
+
+<h3 id="Then-链对值的传递"><a href="#Then-链对值的传递" class="headerlink" title="Then 链对值的传递"></a>Then 链对值的传递</h3><p>如果promise2 的resolve 并没有关联有效的响应函数 ？ 或者 promise2 根本没响应函数 函数呢？那么还会生成promise2 吗？ 如果生成， 那么它的值是什么呢？ {.tobuild.animated.moveIn}</p>
