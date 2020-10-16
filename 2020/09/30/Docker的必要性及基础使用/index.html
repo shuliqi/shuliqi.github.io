@@ -1,0 +1,226 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Docker的必要性及基础使用"><meta name="keywords" content><meta name="author" content="舒小琦"><meta name="copyright" content="舒小琦"><title>Docker的必要性及基础使用 | 舒小琦的Blog</title><link rel="shortcut icon" href="/img/melody-favicon.ico"><link rel="stylesheet" href="/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  }
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#环境配置的难题"><span class="toc-number">1.</span> <span class="toc-text">环境配置的难题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#虚拟机"><span class="toc-number">2.</span> <span class="toc-text">虚拟机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux容器"><span class="toc-number">3.</span> <span class="toc-text">Linux容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker是什么？"><span class="toc-number">4.</span> <span class="toc-text">Docker是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-的用途"><span class="toc-number">5.</span> <span class="toc-text">Docker 的用途</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dcoker-的安装"><span class="toc-number">6.</span> <span class="toc-text">Dcoker 的安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#image-文件"><span class="toc-number">7.</span> <span class="toc-text">image 文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hello-world-实例"><span class="toc-number">8.</span> <span class="toc-text">hello world 实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容器文件"><span class="toc-number">9.</span> <span class="toc-text">容器文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile-文件"><span class="toc-number">10.</span> <span class="toc-text">Dockerfile 文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例：制作自己的-Docker-容器"><span class="toc-number">11.</span> <span class="toc-text">实例：制作自己的 Docker 容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#编写-Dockerfile-文件"><span class="toc-number">11.1.</span> <span class="toc-text">编写 Dockerfile 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-image-文件"><span class="toc-number">11.2.</span> <span class="toc-text">创建 image 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成容器"><span class="toc-number">11.3.</span> <span class="toc-text">生成容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CMD-命令"><span class="toc-number">11.4.</span> <span class="toc-text">CMD 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#发布-image-文件"><span class="toc-number">11.5.</span> <span class="toc-text">发布 image 文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#其他的命令"><span class="toc-number">12.</span> <span class="toc-text">其他的命令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-container-start"><span class="toc-number">12.1.</span> <span class="toc-text">docker container start</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-container-stop"><span class="toc-number">12.2.</span> <span class="toc-text">docker container stop</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-container-exec"><span class="toc-number">12.3.</span> <span class="toc-text">docker container exec</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#docker-container-cp"><span class="toc-number">12.4.</span> <span class="toc-text">docker container cp</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/img/avatar.png"></div><div class="author-info__name text-center">舒小琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">29</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">7</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒小琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a></span></div><div id="post-info"><div id="post-title">Docker的必要性及基础使用</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-09-30</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/学习笔记/">学习笔记</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>在阅读我们Docker的 <a href="https://www.docker.com/" target="_blank" rel="noopener">官方文档</a>我们知道：</p>
+<ul>
+<li>Docker  是世界领先的软件容器平台。</li>
+<li>使用Docker 可以使开发人员消除一起协作开发遇到的一些问题；如”在我的电脑上可正常运行”。</li>
+<li>使用Docker 可以使运维人员在隔离容器中并行运行和管理应用，获得更好的计算密度。</li>
+<li>使用Docker 企业可以构建敏捷的软件交付管道，以更快的速度，更高的安全性和可靠的信誉为 Linux 和 Wiindows Server 应用发布新功能。</li>
+</ul>
+<p>那么我们为什么需要 Docker 呢？</p>
+<h2 id="环境配置的难题"><a href="#环境配置的难题" class="headerlink" title="环境配置的难题"></a>环境配置的难题</h2><p>我们开发一般在写程序，需要好多个环境，主要的可以分为：</p>
+<ul>
+<li><strong>开发环境：</strong>我们自己本地写代码的环境；</li>
+<li><strong>测试环境：</strong> 提供给测试伙伴测试的环境；</li>
+<li><p><strong>生产环境：</strong>测试完成可以上线的环境；</p>
+<p>我们在开发和学习编辑过程中， 好多时间都浪费在环境上：</p>
+</li>
+<li><p>如果重装了系统。我之前的项目，就得弄好多的配置，才能跑起来。比如配置MySQL，配置各种的环境变量等；</p>
+</li>
+<li>假如我们在网上学习跟这老师的步骤去写Demo,不知道你们遇到没，反正有些Demo我总有Bug。</li>
+<li>我们在本地开发环境一切安好， 但是在测试环境上就出错了，或者测试环境是好的，一上线也是各种报错(心累~~);</li>
+</ul>
+<p>所以就有“千万不要和程序员说，你的代码有bug”这样的笑话：</p>
+<ul>
+<li>程序员的第一反应是你的环境有问题，第二就是你不会使用吧。</li>
+<li>你要是跟他说“这个程序运行的怎么跟预期的不一样啊，是不是我操作的问题啊？”。</li>
+<li>我们就会第一反应:“这是不是出bug了”</li>
+</ul>
+<h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><p>虚拟机就是带环境安装的一种解决方案。它可以在一种操作系统里面运行另外一种操作系统，比如我在 Windows 系统里面运行 Linnux 系统。应用程序对此是毫无感知的，，因为虚拟机看上去跟真实系统一摸一样，对于底成系统来说，虚拟机就是一个普通的文件，不需要了就删掉，对其他部分毫无影响。</p>
+<p>虽然我们可以通过虚拟机还原软件的的原始环境，但是这个方案有几点缺点：</p>
+<ul>
+<li><p><strong>资源占用多</strong></p>
+<p>虚拟机会独自占用一部分内存和硬盘空间，它运行的时候其他程序就无法使用这些资源了，哪怕虚拟机里面的应用程序真正使用的内存只有1MB，虚拟机依然会需要几百MB的内存才能运行。</p>
+</li>
+<li><p><strong>繁琐的步骤多</strong></p>
+<p>虚拟机是完整的操作系统，一些系统级别的步骤是无法跳过的，如用户登陆。</p>
+</li>
+<li><p><strong>启动慢</strong></p>
+<p>启动操作系统需要多久的时间，启动虚拟机就需要多久的时间，可能需要等特别长的时间，应用程序才会运行。</p>
+</li>
+</ul>
+<h2 id="Linux容器"><a href="#Linux容器" class="headerlink" title="Linux容器"></a>Linux容器</h2><p>由于虚拟机存在这些缺点，Linux发明出了另外一种虚拟化技术；linux容器(Linux Container)LXC.。</p>
+<p>Linux容器不是模拟一个完整的的操作系统，而是对进程进行隔离。或者说，在正常的进程外面套了一个保护层，对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。</p>
+<p>由于容器是进程级别的，所以相比虚拟机有很多的优势：</p>
+<ul>
+<li><p><strong>启动快</strong></p>
+<p>容器里面的应用直接就是底层系统的一个进程，，而不是虚拟机内部的进程，所以启动容器就相当于启动本机的一个进程，而不是启动一个操作系统，速度就快很多了。</p>
+</li>
+<li><p><strong>资源占用小</strong></p>
+<p>容器只占用需要的资源，不占用那些不需要额资源；虚拟机由于是完整的操作系统，不可避免的要占用所有的资源，另外，多个容器可以共享资源，虚拟机都是独享资源。</p>
+</li>
+<li><p><strong>体积小</strong></p>
+<p>容器只需要打包用到的组件即可，而虚拟机是整个系统的打包，所以容器文件比虚拟机文件要小很多。</p>
+</li>
+</ul>
+<p>最后说明，容器有点像轻量级的虚拟机，能够提供虚拟化的环境，但是成本开销就小很多。</p>
+<h2 id="Docker是什么？"><a href="#Docker是什么？" class="headerlink" title="Docker是什么？"></a>Docker是什么？</h2><p>Docker 属于 Linux 容器的一种封装，提供简单易用的容器使用接口。</p>
+<p>它是目前最流行额 Linux 容器解决方案。</p>
+<p>Docker 将应用程序与该程序的依赖打包在一个文件里面，运行这个文件，就会生成一个虚容器。程序在这个虚拟容器运行， 就好像在真实的物理机上运行一样。有了 Docker 就不用担心环境问题。</p>
+<p>总体来说，Docker 的接口相当的简单， 用户可以方便的创建和使用容器，把自己的应用放入容器，容器还可以进行版本管理，复制，分享，修改，就像管理普通的代码一样。</p>
+<h2 id="Docker-的用途"><a href="#Docker-的用途" class="headerlink" title="Docker 的用途"></a>Docker 的用途</h2><p>Docker 的主要用途，目前主要有三大类：</p>
+<ul>
+<li><p><strong>提供一次性的环境</strong></p>
+<p>比如：本地测试他人的软件，持续集成的时候提供单元测试和构建环境。</p>
+</li>
+<li><p><strong>提供弹性的云服务</strong></p>
+<p>因为 Docker 容器可以随关随开，，很适合动态扩容和缩容。</p>
+</li>
+<li><p><strong>组建微服务架构</strong></p>
+<p>通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构</p>
+</li>
+</ul>
+<h2 id="Dcoker-的安装"><a href="#Dcoker-的安装" class="headerlink" title="Dcoker 的安装"></a>Dcoker 的安装</h2><p>我们一般开发的话只需要安装社区版的就可以了。社区版是免费的。</p>
+<p>可以到 Docker 官网进行下载安装  <a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener">Docker 官网</a></p>
+<p>安装完成之后，可以使用一下命令检测 Docker 是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
+<p>或者：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker info</span><br></pre></td></tr></table></figure>
+<p>  如果安装了就会得到关于 docker 的信息</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/1.png">
+<h2 id="image-文件"><a href="#image-文件" class="headerlink" title="image 文件"></a>image 文件</h2><p>Docker 把应用程序及其依赖，打包在 image 文件里面。image 是二进制文件。</p>
+<p>只有通过这个文件，才能生成 Docker 容器，image文件可以看成是容器的模版。Docker 根据 image 文件生成容器的实例。同一个image文件可以生成多个同时运行的容器实例。</p>
+<p>可以使用以下命令找出本机的所有的 image 文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
+<p>如果你本机有 image 文件， 则会打印出来：</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/2.png">
+<p> image 文件是通用的，一台机器的 image 文件拷贝到另外一台机器，依然是可以使用的。所以一般来说，为了节省时间，我们应该尽量使用别人制作好的 image 文件，而不是自己制作，即使自己制作，也应该基于别人 image 文件进行加工，而不是从零制作。</p>
+<p>为了方便共享，inage 文件制作完成之后可以上传到网上的仓库。Docker 的官方仓库 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker hub</a> 应该是最常用的。</p>
+<h2 id="hello-world-实例"><a href="#hello-world-实例" class="headerlink" title="hello world 实例"></a>hello world 实例</h2><p>现在我们通过简单的 image 文件 <a href="https://hub.docker.com/_/hello-world" target="_blank" rel="noopener">hello world</a> 来感受一下 Docker</p>
+<p>运行下面的命令，将image 文件从 仓库拉取到本地</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image pull library/hello-world</span><br></pre></td></tr></table></figure>
+<p>这个代码中的 <code>docker image pull</code>  是抓取 image 文件的命令。<code>library/hello-world</code>是 image 文件在仓库里面的位置。·<code>library</code>是 image 文件所在的组<code>hello-world</code>是image文件的名称。</p>
+<p>由于是 Docker 官方提供的image 文件，都放在 <code>library</code>组里面，属于默认组， 所以我们在抓取 Docker 官方 image 文件的时候，可以省略 <code>library</code>·。</p>
+<p>所以上面的命令可以写成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image pull hello-world</span><br></pre></td></tr></table></figure>
+<p>抓取过程：</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/3.png">
+<p>抓取成功之后，我们查看本机是否有该 image 文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
+<img src="/2020/09/30/Docker的必要性及基础使用/4.png">
+<p>我们可以看出本机是有该 image 文件了的、</p>
+<p>接下来，我们运行这个 image 文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container run hello-world</span><br></pre></td></tr></table></figure>
+<p><code>docker container run</code>命令会从 image 文件 生成一个正在运行的容器。</p>
+<p>注意：<code>docker container run</code>命令具有 自动抓取 image 文件的功能，如果发现本地没有指定的 image 文件，就会从仓库自动抓取。</p>
+<p>如果运行成功，就会在屏幕上得到以下的输出：</p>
+
+<p>输出这些提示之后就会自动停止运行，容器就会自动终止。</p>
+<p>有些容器不会自动终止，因为有些容器提到的是服务。所以我们需要手动命令终止：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container kill [containerID]</span><br></pre></td></tr></table></figure>
+<h2 id="容器文件"><a href="#容器文件" class="headerlink" title="容器文件"></a>容器文件</h2><p>image 文件生成的容器实例，本身也是一个文件，成为容器文件。</p>
+<p>一般来说，一旦容器生成，就会同时存在两个文件： image 文件 和 容器文件，而且关闭容器不会删除容器文件。只是容器停止运行而已。</p>
+<p>列出本机正在运行的容器命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container ls</span><br></pre></td></tr></table></figure>
+<p>列出本机所有的容器，包括终止运行的容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container ls --all</span><br></pre></td></tr></table></figure>
+<p>上面的命令执行之后，可以得到如下的结果：</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/6.png">
+<p>得到的结果之中有容器的ID。这个ID的使用场景就很多，比如终止容器的时候需要提供。</p>
+<p>终止运行的容器文件，依然会占据硬盘空间，可以使用<code>docker container rm</code>命令来删除</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm [containerID]</span><br></pre></td></tr></table></figure>
+<p>运行上面的命令删除容器文件之后，再使用<code>docker container ls --all</code>命令，就会发现被删除的容器文件已经不见了。</p>
+<h2 id="Dockerfile-文件"><a href="#Dockerfile-文件" class="headerlink" title="Dockerfile 文件"></a>Dockerfile 文件</h2><p>以上的内容我们学会了如何使用 image 文件，但是如何生成 image 文件呢？</p>
+<p>这就需要 DockerFile 文件，它是一个文本文件，用来配置 image，Docker 根据该文件生成二进制的 image 文件。</p>
+<p>那么我们就通过一个实例，来演示如何编写 DcokerFile 文件吧。</p>
+<h2 id="实例：制作自己的-Docker-容器"><a href="#实例：制作自己的-Docker-容器" class="headerlink" title="实例：制作自己的 Docker 容器"></a>实例：制作自己的 Docker 容器</h2><p>我们先创建一个 express 搭建的项目传到自己的 github。我已经创建完了 <a href="https://github.com/shuliqi/express-for-docker" target="_blank" rel="noopener">express-for-docker</a>。怎么创建 express 实例，可以看<a href="https://expressjs.com/zh-cn/starter/hello-world.html" target="_blank" rel="noopener">express的官网</a>。</p>
+<p>接下来我们开始制作自己的 Docker 容器</p>
+<h3 id="编写-Dockerfile-文件"><a href="#编写-Dockerfile-文件" class="headerlink" title="编写 Dockerfile 文件"></a>编写 Dockerfile 文件</h3><p>首先， 我们在项目的根目录下新建一个文本文件 <code>.dockerignore</code>,并写下下面的内容：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.git</span><br><span class="line">node-modules</span><br><span class="line">npm-debug.log</span><br></pre></td></tr></table></figure>
+<p>上面的代码表示，这三个路径需要排除，不要打包进 image 文件。如果没有路径需要排除，则这个文件不需要新建。</p>
+<p>然后我们在项目的根目录下新建一个文本文件 <code>.Dockerfile</code>,写入下面的内容：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">12.17</span>.<span class="number">0</span></span><br><span class="line"><span class="keyword">COPY</span> . /shuliqi</span><br><span class="line"><span class="keyword">WORKDIR</span> /shuliqi</span><br><span class="line"><span class="keyword">RUN</span> ["npm", "install"]</span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3000</span>/tcp</span><br></pre></td></tr></table></figure>
+<p>上面的五行代码分别代表什么意思呢？</p>
+<ul>
+<li><p><strong>FROM node:12.17.0</strong></p>
+<p>这个 image 文件继承官方的得 node image，冒号表示标签，这里的标签是12.17.0。即12.17.0 版本的node</p>
+</li>
+<li><p><strong>COPY . /app</strong></p>
+<p>将当前目录下的所有文件（除了.dockerignore排除的路径）都拷贝到 image 文件的/app目录下面。</p>
+</li>
+<li><p><strong>WORKDIR /app</strong></p>
+<p>指定接下来的工作路径为/app</p>
+</li>
+<li><p><strong>RUN [“npm”, “install”]</strong></p>
+<p>在/app目录下面，运行 npm install 安装依赖。注意：安装后的所有依赖，都将打包进入  image 文件</p>
+</li>
+<li><p><strong>EXPOSE 3000</strong></p>
+<p>将容器的 3000 端口暴露出来，允许外部连接这个端口。</p>
+</li>
+</ul>
+<p>关于完整的一个 Dockerfile各种命令的使用，我们在下一节讲， 请继续关注哦(<em> ￣3)(ε￣ </em>)！！</p>
+<h3 id="创建-image-文件"><a href="#创建-image-文件" class="headerlink" title="创建 image 文件"></a>创建 image 文件</h3><p>有了 .Dockerfile 文件之后， 就可以使用 <code>docker image build</code>命令创建 image 文件了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker image build -t express=for-docker .</span><br><span class="line">//或者</span><br><span class="line">docker image build -t express=for-docker:0.0.1 .</span><br></pre></td></tr></table></figure>
+<p>这个命令中的 <code>-t</code>参数用来指定 image 文件的名字。后面还可以使用冒号来指定标签。如果不指定的话，默认的标签就是 latest。最后那个表示表示 Dockerfile文件所在的路径。</p>
+<p>打包完成后，我们在使用 <code>docker image ls</code>查看所有的image文件，是可以看到我们刚刚打包的image的</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/7.png">
+<h3 id="生成容器"><a href="#生成容器" class="headerlink" title="生成容器"></a>生成容器</h3><p>使用<code>docker container run</code>命令就会从image 文件生成容器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container run -t -p 8000:3000  express-for-docker:0.0.1 /bin/bash</span><br></pre></td></tr></table></figure>
+<p>上面命令的参数含义如下：</p>
+<ul>
+<li><strong>-p参数：</strong> 容器的 3000 端口 映射到 本机的 8000 端口</li>
+<li><strong>-t 参数：</strong> 容器额 Shell  映射到当前的 Shell，然后在本机窗口输入命令，就会传入容易</li>
+<li><strong>express-for-docker:0.0.1</strong>： image文件的文件名和tag</li>
+<li><strong>/bin/bash：</strong>容器启动后，内部第一个执行的命令。这里是启动 Bash，保证用户可以使用 Shell。</li>
+</ul>
+<p>执行上面的命令，如果一切正常，那么就会返回命令行提示符号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@622773f4bec9:/app#</span><br></pre></td></tr></table></figure>
+<p>这个提示就说明你已经在容器里面了，返回的提示符就是容器里面的 Shell 提示符。</p>
+<p>接下来我们执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@622773f4bec9:/app# node app.js</span><br></pre></td></tr></table></figure>
+<p>这命令就是启动我们这个项目的， 这时打开 <a href="http://127.0.0.1:8000" target="_blank" rel="noopener">http://127.0.0.1:8000</a> 网页显示 “Hello World!”</p>
+<p>我们可以使用 <code>docker container kill</code> 命令来终止容器的运行。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 首先查询容器的id</span><br><span class="line">docker container ls</span><br><span class="line"></span><br><span class="line"># 停止指定的容器运行</span><br><span class="line">docker container kill [containerId]</span><br></pre></td></tr></table></figure>
+<p>容器停止运行之后，但是不会消失。我们可以使用 <code>docker container rm</code> 来删除容器文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 首先查找容器的id</span><br><span class="line">docker container ls</span><br><span class="line"></span><br><span class="line"># 删除指定的容器文件</span><br><span class="line">docker container rm [containerId]</span><br></pre></td></tr></table></figure>
+<h3 id="CMD-命令"><a href="#CMD-命令" class="headerlink" title="CMD 命令"></a>CMD 命令</h3><p>上面的例子， 容器启动后，我们需要手动的 输入 <code>node app.js</code>来启动项目。其实我们可以吧这个命令写在 Dockerfile 文件里面，这样容器启动后，这个命令就会执行了，不需要我们手动输入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FROM node:12.17.0</span><br><span class="line">COPY . /shuliqi</span><br><span class="line">WORKDIR /shuliqi</span><br><span class="line">RUN [&quot;npm&quot;, &quot;install&quot;]</span><br><span class="line">EXPOSE 3000/tcp</span><br><span class="line">CMD node app.js</span><br></pre></td></tr></table></figure>
+<p>多出来的这与 一个命令<code>CMD node app.js</code> 它表示容器启动后自动执行  <code>node app.js</code>.。</p>
+<p><strong>CMD 和 RUN 命令的区别：</strong></p>
+<p><code>RUN</code>命令在 image 文件构建阶段执行，执行结果都会打包进入 image 文件</p>
+<p><code>CMD</code>命令则是在容器启动后执行</p>
+<p>一个Dockerfile文件可以包含多个 <code>RUN</code>命令，但是只能有一个<code>CMD</code> 命令</p>
+<h3 id="发布-image-文件"><a href="#发布-image-文件" class="headerlink" title="发布 image 文件"></a>发布 image 文件</h3><p>容器运行成功了之后，就说明 image 文件是有效的。那么我们可以考虑把 image 文件分享到网上， 让其他人也可以使用。</p>
+<p>首先，我们需要去 <a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a>注册账号，然后使用如下的命令登录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login</span><br></pre></td></tr></table></figure>
+<p>然后输入注册的用户名和密码。如果成功登录的话，会显示</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/8.png">
+<p>那么接下来继续我们的发布，我们给本地的 image 标注用户名和版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image tag [imageName] [userNane]/[repository]:[tag]</span><br></pre></td></tr></table></figure>
+<p>我们给自己的 <code>express-for-docker</code>标注用户名和版本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image tag express-for-docker:0.0.1 shuliqi/express-for-docker:0.0.1</span><br></pre></td></tr></table></figure>
+<p>标注完之后，我们就可以往 <a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a>发布我们的image包了。使用如下的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image push express-for-docker:0.0.1</span><br></pre></td></tr></table></figure>
+<p>如发布成功，则会显示：</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/9.png">
+<p>我们到 <a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a> 上就会看到已经上传的 image 文件</p>
+<img src="/2020/09/30/Docker的必要性及基础使用/10.png">
+<p>这样我们就成功发布了一个 image 文件</p>
+<h2 id="其他的命令"><a href="#其他的命令" class="headerlink" title="其他的命令"></a>其他的命令</h2><h3 id="docker-container-start"><a href="#docker-container-start" class="headerlink" title="docker container start"></a>docker container start</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container start [containerID]</span><br></pre></td></tr></table></figure>
+<p>此命令用来启动一个已经生成的，已停止运行的容器文件。</p>
+<p>前面的命令<code>docker container run</code>是新建一个容器，每次运行一次， 就会新建一个容器。同样的命令多少次，就会生成多少个这样一模一样的容器文件。所以希望重复使用容器文件，就是用 <code>docker container start</code>命令。</p>
+<h3 id="docker-container-stop"><a href="#docker-container-stop" class="headerlink" title="docker container stop"></a>docker container stop</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container stop [containerID]</span><br></pre></td></tr></table></figure>
+<p>此命令用来终止容器的执行。相当于向容器里面的主进程发出 SIGTERM 信号。然后过一段时间再发出 SIGKILL信号。</p>
+<p>前面的<code>docker container kill</code>命令也是用来终止容器的运行的，相当于向容器的主进程发出 SIGKILL信号。</p>
+<p>这两种信号的差别是：</p>
+<ul>
+<li>应用程序收到 SIGTERM 信号以后，可以自行进行收尾清理的工作，但是也可以不理会这个信号</li>
+<li>如果应用程序收到 SIGKILL 信号，就会立即终止，那些正在进行中的操作会全部丢失。</li>
+</ul>
+<h3 id="docker-container-exec"><a href="#docker-container-exec" class="headerlink" title="docker container exec"></a>docker container exec</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container exec -t [containerID] /lib/bash</span><br></pre></td></tr></table></figure>
+<p>此命令用于进入一个正在运行的 docker 容器。一旦进入了容器就可以在容器的 Shell 执行命令了。</p>
+<h3 id="docker-container-cp"><a href="#docker-container-cp" class="headerlink" title="docker container cp"></a>docker container cp</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container cp [containID]:[/path/to/file] .</span><br></pre></td></tr></table></figure>
+<p>此命令用于从正在运行的容器里面，将文件拷贝的本地。</p>
+<p>文章使用的例子 <a href="https://github.com/shuliqi/express-for-docker" target="_blank" rel="noopener">express-for-docker</a></p>
+<p>感谢阅读！！</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/">https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="next-post pull-right"><a href="/2020/08/31/封装axios取消重复请求/"><span>手把手封装axios取消重复请求</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+}</script></body></html>
