@@ -72,7 +72,7 @@
 <p><strong>注意:</strong><code>RUN</code>指令创建的中间镜像会被缓存，并且在下次构建中使用。如果不想使用这些缓存镜像，可以在创建时指定<code>--no-cache</code>参数，如：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ocker build --no-cache .</span><br></pre></td></tr></table></figure>
 <p>例如：</p>
-<img src="/2020/10/16/Dockerfile文件的使用/1.png">
+
 <p>这样构建镜像的步骤就没有使用缓存，使得每一层的镜像ID都与之前的不同。</p>
 <h2 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h2><p> <code>CMD</code>用于在指定容器启动时所有执行的命令。<code>CMD</code>有以下三种格式：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CMD &lt;commond&gt; // shell 格式</span><br><span class="line">CMD [&quot;executable&quot;, &quot;param1&quot;, &quot;param2&quot;] // exec格式，推荐格式</span><br><span class="line">CMD [&quot;param1&quot;, &quot;param2&quot;] // 为ENTRYPOINT指令提供参数</span><br></pre></td></tr></table></figure>
@@ -86,12 +86,12 @@
 <p>我们构建一个新的镜像，镜像的名字叫：test，构建完成之后， 我们使用这个镜像运行一个容器，运行效果如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -t test:0.0.1</span><br></pre></td></tr></table></figure>
 <p>执行完命令之后，将会：</p>
-<img src="/2020/10/16/Dockerfile文件的使用/2.png">
+
 <p>我们看到使用了 shell 。说明  <code>Dockfile</code>文件中的<code>CMD</code>起作用了。</p>
 <p>但是我们不想使用 <code>Dockfile</code>文件中的<code>CMD</code>指定的命令。我们可以：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -t test:0.0.1 /bin/ps</span><br></pre></td></tr></table></figure>
 <p>就会看到：</p>
-<img src="/2020/10/16/Dockerfile文件的使用/3.png">
+
 <p>这时，<code>docker run</code>结尾指定的<code>/bin/ps</code>命令覆盖了<code>Dockerfile</code>的<code>CMD</code>中指定的命令。</p>
 <h2 id="ENTRYPOINT"><a href="#ENTRYPOINT" class="headerlink" title="ENTRYPOINT"></a>ENTRYPOINT</h2><p><code>ENTRYPOINT</code>与 <code>CMD</code>类似。</p>
 <p><code>ENTRYPOINT</code>有两种模式：</p>
@@ -110,7 +110,7 @@
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">LABEL</span> name="shuliqi" age="23"</span><br></pre></td></tr></table></figure>
 <p>构建容器完后才能之后， 可以使用<code>docker inspect</code>查看</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect test3:<span class="number">0.0</span>.<span class="number">1</span></span><br></pre></td></tr></table></figure>
-<img src="/2020/10/16/Dockerfile文件的使用/4.png">
+
 <p><strong>注意：</strong><code>Dockerfile</code>中还有个 <code>MAINTAINER</code>用来指定镜像的作者。但是<code></code>MAINTAINER<code>并不推荐使用，更推荐使用</code>LATER`来指定镜像作者。如：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">LABEL</span> maintainer="itbilu.com"</span><br></pre></td></tr></table></figure>
 <h2 id="EXPOSE"><a href="#EXPOSE" class="headerlink" title="EXPOSE"></a>EXPOSE</h2><p><code>EXPOSE</code>用来指定容器在运行的时监听的端口。</p>
@@ -153,7 +153,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">FROM node:12.17.0</span><br><span class="line">COPY . /shuliqi</span><br><span class="line">WORKDIR /shuliqi</span><br><span class="line">RUN [&quot;npm&quot;, &quot;install&quot;]</span><br><span class="line">EXPOSE 3000/tcp</span><br><span class="line">CMD [&quot;/bin/bash&quot;]</span><br><span class="line"># `VOLUME`创建一个挂载点</span><br><span class="line">ENV SHULIQI_PATH /myblog/</span><br><span class="line">VOLUME [$SHULIQI_PATH]</span><br></pre></td></tr></table></figure>
 <p>构建的镜像，并指定镜像名为<code>express-for-docker</code>。构建镜像后，使用新构建的运行一个容器。运行容器时，需<code>-v</code>参将能本地目录绑定到容器的卷（挂载点）上，以使容器可以访问宿主机的数据。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -i -t -v ~/myblog:/myblog/  express-for-docker:0.0.1</span><br><span class="line">root@31b0fac536c4:/# cd /myblog/</span><br><span class="line">root@31b0fac536c4:/myblog# ls</span><br><span class="line">blog</span><br></pre></td></tr></table></figure>
-<img src="/2020/10/16/Dockerfile文件的使用/5.png">
+
 <p>如上所示，我们已经可以容器的<code>/home/myblog/</code>目录下访问到宿主机`~/myblog目录下的数据了。</p>
 <h2 id="USER"><a href="#USER" class="headerlink" title="USER"></a>USER</h2><p><code>USER</code>用于指定运行镜像所使用的用户：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">USER daemon</span><br></pre></td></tr></table></figure>
