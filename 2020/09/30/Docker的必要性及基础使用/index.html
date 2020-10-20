@@ -87,13 +87,13 @@
 <p>或者：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker info</span><br></pre></td></tr></table></figure>
 <p>  如果安装了就会得到关于 docker 的信息</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/1.png">
 <h2 id="image-文件"><a href="#image-文件" class="headerlink" title="image 文件"></a>image 文件</h2><p>Docker 把应用程序及其依赖，打包在 image 文件里面。image 是二进制文件。</p>
 <p>只有通过这个文件，才能生成 Docker 容器，image文件可以看成是容器的模版。Docker 根据 image 文件生成容器的实例。同一个image文件可以生成多个同时运行的容器实例。</p>
 <p>可以使用以下命令找出本机的所有的 image 文件:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
 <p>如果你本机有 image 文件， 则会打印出来：</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/2.png">
 <p> image 文件是通用的，一台机器的 image 文件拷贝到另外一台机器，依然是可以使用的。所以一般来说，为了节省时间，我们应该尽量使用别人制作好的 image 文件，而不是自己制作，即使自己制作，也应该基于别人 image 文件进行加工，而不是从零制作。</p>
 <p>为了方便共享，inage 文件制作完成之后可以上传到网上的仓库。Docker 的官方仓库 <a href="https://hub.docker.com/" target="_blank" rel="noopener">Docker hub</a> 应该是最常用的。</p>
 <h2 id="hello-world-实例"><a href="#hello-world-实例" class="headerlink" title="hello world 实例"></a>hello world 实例</h2><p>现在我们通过简单的 image 文件 <a href="https://hub.docker.com/_/hello-world" target="_blank" rel="noopener">hello world</a> 来感受一下 Docker</p>
@@ -104,10 +104,10 @@
 <p>所以上面的命令可以写成：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image pull hello-world</span><br></pre></td></tr></table></figure>
 <p>抓取过程：</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/3.png">
 <p>抓取成功之后，我们查看本机是否有该 image 文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/4.png">
 <p>我们可以看出本机是有该 image 文件了的、</p>
 <p>接下来，我们运行这个 image 文件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container run hello-world</span><br></pre></td></tr></table></figure>
@@ -125,7 +125,7 @@
 <p>列出本机所有的容器，包括终止运行的容器</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container ls --all</span><br></pre></td></tr></table></figure>
 <p>上面的命令执行之后，可以得到如下的结果：</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/6.png">
 <p>得到的结果之中有容器的ID。这个ID的使用场景就很多，比如终止容器的时候需要提供。</p>
 <p>终止运行的容器文件，依然会占据硬盘空间，可以使用<code>docker container rm</code>命令来删除</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container rm [containerID]</span><br></pre></td></tr></table></figure>
@@ -163,7 +163,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker image build -t express=for-docker .</span><br><span class="line">//或者</span><br><span class="line">docker image build -t express=for-docker:0.0.1 .</span><br></pre></td></tr></table></figure>
 <p>这个命令中的 <code>-t</code>参数用来指定 image 文件的名字。后面还可以使用冒号来指定标签。如果不指定的话，默认的标签就是 latest。最后那个表示表示 Dockerfile文件所在的路径。</p>
 <p>打包完成后，我们在使用 <code>docker image ls</code>查看所有的image文件，是可以看到我们刚刚打包的image的</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/7.png">
 <h3 id="生成容器"><a href="#生成容器" class="headerlink" title="生成容器"></a>生成容器</h3><p>使用<code>docker container run</code>命令就会从image 文件生成容器：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container run -t -p 8000:3000  express-for-docker:0.0.1 /bin/bash</span><br></pre></td></tr></table></figure>
 <p>上面命令的参数含义如下：</p>
@@ -194,7 +194,7 @@
 <p>首先，我们需要去 <a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a>注册账号，然后使用如下的命令登录：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login</span><br></pre></td></tr></table></figure>
 <p>然后输入注册的用户名和密码。如果成功登录的话，会显示</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/8.png">
 <p>那么接下来继续我们的发布，我们给本地的 image 标注用户名和版本：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image tag [imageName] [userNane]/[repository]:[tag]</span><br></pre></td></tr></table></figure>
 <p>我们给自己的 <code>express-for-docker</code>标注用户名和版本：</p>
@@ -202,9 +202,9 @@
 <p>标注完之后，我们就可以往 <a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a>发布我们的image包了。使用如下的命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image push express-for-docker:0.0.1</span><br></pre></td></tr></table></figure>
 <p>如发布成功，则会显示：</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/9.png">
 <p>我们到 <a href="https://hub.docker.com/" target="_blank" rel="noopener">hub.docker.com</a> 上就会看到已经上传的 image 文件</p>
-
+<img src="/2020/09/30/Docker的必要性及基础使用/10.png">
 <p>这样我们就成功发布了一个 image 文件</p>
 <h2 id="其他的命令"><a href="#其他的命令" class="headerlink" title="其他的命令"></a>其他的命令</h2><h3 id="docker-container-start"><a href="#docker-container-start" class="headerlink" title="docker container start"></a>docker container start</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container start [containerID]</span><br></pre></td></tr></table></figure>
 <p>此命令用来启动一个已经生成的，已停止运行的容器文件。</p>
@@ -223,7 +223,7 @@
 <p>此命令用于从正在运行的容器里面，将文件拷贝的本地。</p>
 <p>文章使用的例子 <a href="https://github.com/shuliqi/express-for-docker" target="_blank" rel="noopener">express-for-docker</a></p>
 <p>感谢阅读！！</p>
-</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/">https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/10/16/Dockerfile文件的使用/"><i class="fa fa-chevron-left">  </i><span>Dockerfile文件的使用</span></a></div><div class="next-post pull-right"><a href="/2020/08/31/封装axios取消重复请求/"><span>手把手封装axios取消重复请求</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/">https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/10/20/Dockerfile文件的使用/"><i class="fa fa-chevron-left">  </i><span>Dockerfile文件的使用</span></a></div><div class="next-post pull-right"><a href="/2020/08/31/封装axios取消重复请求/"><span>手把手封装axios取消重复请求</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
 }</script></body></html>

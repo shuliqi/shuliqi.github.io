@@ -39,7 +39,7 @@
 </ul>
 </blockquote>
 <p>打开index.html</p>
-   
+   <img src="/2020/05/15/从零学习webpack（一）/1.jpg">
 <p>可以看出页面打印出了我们期望的log。</p>
 <h3 id="添加配置文件"><a href="#添加配置文件" class="headerlink" title="添加配置文件"></a>添加配置文件</h3><p>在我们的目录下面新建一个<code>webpack.config.js</code>。 所以我们的项目结构是这样的。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">| --- dist</span><br><span class="line">| --- index.js</span><br><span class="line">| --- packge.jspn</span><br><span class="line">| --- webpack.config.js</span><br><span class="line">| --- node_modules</span><br></pre></td></tr></table></figure>
@@ -69,7 +69,7 @@
 <p>打包后的目录如下：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">| --- dist</span><br><span class="line">|       | --- index.js</span><br><span class="line">| --- index.js</span><br><span class="line">| --- index.html</span><br><span class="line">| --- packge.jspn</span><br><span class="line">| --- webpack.config.js</span><br><span class="line">| --- node_modules</span><br></pre></td></tr></table></figure>
 <p>执行打包命令之后， 在控制台上有一些内容的输出， 分贝是什么意思呢？</p>
- 
+ <img src="/2020/05/15/从零学习webpack（一）/3.png">
 <ol>
 <li><p><strong>Hash</strong>： 表示本次打包的唯一hash值， 每次打包的hash值是不一样的。</p>
 </li>
@@ -123,7 +123,7 @@
 <p>就可以得到这样的目录结构：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">| --- dist</span><br><span class="line">|       | --- index.js</span><br><span class="line">|       | --- 51d83ae69d23a6a1aba9eb2c83d0ac39.jpg</span><br><span class="line">|       | --- index.js</span><br><span class="line">| --- index.js</span><br><span class="line">| --- packge.jspn</span><br><span class="line">| --- webpack.config.js</span><br><span class="line">| --- node_modules</span><br></pre></td></tr></table></figure>
 <p>我们打开index.html。 得到的是这样的结果：</p>
-   
+   <img src="/2020/05/15/从零学习webpack（一）/4.png">
 <h5 id="占位符的应用"><a href="#占位符的应用" class="headerlink" title="占位符的应用"></a>占位符的应用</h5><p>我们以上的打包过程中， 打包出来的图片名字是一串乱码，我们有没有可以有一些设置可以是输出文件名的？ 答案是有的。那就是<strong>占位符</strong>了</p>
 <p>占位符的规则：</p>
 <ol>
@@ -137,14 +137,14 @@
 <p>打包之后我们可以看到dist 目录下面的图片的名称：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">| --- dist</span><br><span class="line">|       | --- index.js</span><br><span class="line">|       | --- lazyload-51d83ae69d23a6a1aba9eb2c83d0ac39.jpg</span><br></pre></td></tr></table></figure>
 <h5 id="压缩图片"><a href="#压缩图片" class="headerlink" title="压缩图片"></a>压缩图片</h5><p>在上面的例子我们可以看到打包出来的图片其实是比较大的。</p>
-   
+   <img src="/2020/05/15/从零学习webpack（一）/8.png">
 <p>那有没有什么好的办法可以压缩图片呢？ <code>image-webpack-loader</code>就可以 ，可以移步去 <a href="https://www.npmjs.com/package/image-webpack-loader" target="_blank" rel="noopener"><strong>了解image-webpack-loader</strong></a></p>
 <p>根据了解我们知道<code>image-webpack-loader</code>是可以压缩图片的，并且我们可以设置在debugger的时候不进行压缩</p>
 <p><strong>修改webpack.config.js</strong></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  test: <span class="regexp">/\.jpg|png|gif$/</span>, <span class="comment">// 匹配jpg，png，gif类型的图片</span></span><br><span class="line">  use: [</span><br><span class="line">    &#123;</span><br><span class="line">      loader: <span class="string">"file-loader"</span>,</span><br><span class="line">      options: &#123;</span><br><span class="line">        name: <span class="string">"[name]-[hash].[ext]"</span>, <span class="comment">// 命名了打包出来的图片的名字</span></span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      loader: <span class="string">"image-webpack-loader"</span>,</span><br><span class="line">      options: &#123;</span><br><span class="line">        bypassOnDebug: <span class="literal">true</span>, <span class="comment">// 在debug的时候不用压缩</span></span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  ],</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
 <p><strong>结果</strong></p>
 <p>我们再进行打包看看</p>
-   
+   <img src="/2020/05/15/从零学习webpack（一）/9.png">
 <p>我们可以看出， 图片被压缩了了很多。</p>
 <h4 id="loader-打包样式"><a href="#loader-打包样式" class="headerlink" title="loader 打包样式"></a>loader 打包样式</h4><p>每种样式文件， 需要不同的<code>loader</code>来处理</p>
 <ol>
@@ -165,7 +165,7 @@
 <p><strong>打包</strong></p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm run build</span><br></pre></td></tr></table></figure>
 <p>之后我们看看结果</p>
-   
+   <img src="/2020/05/15/从零学习webpack（一）/5.png">
 <p>我们可以看出来，图片变小了。</p>
 <h5 id="打包-sass-scss-的文件"><a href="#打包-sass-scss-的文件" class="headerlink" title="打包.sass , .scss 的文件"></a>打包.sass , .scss 的文件</h5><p>使用同样的方式我们可以打包sass 方式</p>
 <p>首先先安装<code>sass-loader</code>  <code>node-loader</code></p>
@@ -177,7 +177,7 @@
 <p><strong>index.js</strong>添加index.sass文件</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">"./index.sass"</span>;</span><br></pre></td></tr></table></figure>
 <p><strong>结果</strong></p>
-   
+   <img src="/2020/05/15/从零学习webpack（一）/6.png">
 <p>我们可以看出sass设置的样式有效了</p>
 <h5 id="css厂商前缀自动添加"><a href="#css厂商前缀自动添加" class="headerlink" title="css厂商前缀自动添加"></a>css厂商前缀自动添加</h5><p>当我们在<code>css</code>文件中写一些需要处理兼容性的样式的时候，需要我们分别对于不同的浏览器书添加不同的厂商前缀，使用 <a href="https://www.npmjs.com/package/postcss-loader" target="_blank" rel="noopener"><strong>postcss-loader</strong></a> 可以帮我们在<code>webpack</code>打包的时候自动添加这些厂商前缀。 自动添加厂商前缀需要<code>npm install</code>安装 <a href="https://www.npmjs.com/package/postcss-loader" target="_blank" rel="noopener"><strong>postcss-loader</strong></a> 和 <a href="https://www.npmjs.com/package/autoprefixer" target="_blank" rel="noopener"><strong>autoprefixer</strong></a>  </p>
 <p><strong>postcss-loader有什么用？</strong></p>
@@ -199,7 +199,7 @@
 <p>例如：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="built_in">require</span>(<span class="string">'autoprefixer'</span>)(&#123;</span><br><span class="line">      browsers: [<span class="string">'Android &gt;= 4.0'</span>, <span class="string">'iOS &gt;= 7'</span>]</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p> <strong>结果</strong>：这时候我们打包</p>
-  
+  <img src="/2020/05/15/从零学习webpack（一）/7.png">
 <p>如图， 我们就知道浏览器后缀名加上了。</p>
 <h5 id="css模块化打包"><a href="#css模块化打包" class="headerlink" title="css模块化打包"></a>css模块化打包</h5><p>css的模块化打包： 除非我引用你的样式， 否则你的样式不会影响到我。</p>
 </div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/05/15/从零学习webpack（一）/">https://shuliqi.github.io/2020/05/15/从零学习webpack（一）/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/06/06/关于Delete`CR`eslint-prettier-prettier-报错的解决方案/"><i class="fa fa-chevron-left">  </i><span>关于Delete`CR`eslint(prettier/prettier) 报错的解决方案</span></a></div><div class="next-post pull-right"><a href="/2020/04/21/MutationObserver-监听DOM树变化/"><span>MutationObserver 追踪DOM的变化</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2020 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.6.1"></script><script src="/js/fancybox.js?version=1.6.1"></script><script src="/js/sidebar.js?version=1.6.1"></script><script src="/js/copy.js?version=1.6.1"></script><script src="/js/fireworks.js?version=1.6.1"></script><script src="/js/transition.js?version=1.6.1"></script><script src="/js/scroll.js?version=1.6.1"></script><script src="/js/head.js?version=1.6.1"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
