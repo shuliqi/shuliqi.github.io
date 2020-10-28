@@ -267,7 +267,7 @@
 <h3 id="编写-Dockerfile-文件"><a href="#编写-Dockerfile-文件" class="headerlink" title="编写 Dockerfile 文件"></a>编写 Dockerfile 文件</h3><p>首先， 我们在项目的根目录下新建一个文本文件 <code>.dockerignore</code>,并写下下面的内容：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.git</span><br><span class="line">node-modules</span><br><span class="line">npm-debug.log</span><br></pre></td></tr></table></figure>
 <p>上面的代码表示，这三个路径需要排除，不要打包进 image 文件。如果没有路径需要排除，则这个文件不需要新建。</p>
-<p>然后我们在项目的根目录下新建一个文本文件 <code>.Dockerfile</code>,写入下面的内容：</p>
+<p>然后我们在项目的根目录下新建一个文本文件 <code>Dockerfile</code>,写入下面的内容：</p>
 <figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">8.4</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> . /shuliqi</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /shuliqi</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> [<span class="string">"npm"</span>, <span class="string">"install"</span>]</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3000</span>/tcp</span><br></pre></td></tr></table></figure>
 <p>上面的五行代码分别代表什么意思呢？</p>
 <ul>
