@@ -1096,6 +1096,14 @@ footer.is-mobile {
     transform: translate3d(0, 6.5rem, 0);
   }
 }
+.article-container code {
+  padding: 3px 5px;
+  color: #c7254e;
+  background: #e6e6e6;
+}
+.article-container a {
+  color: #0269c8;
+}
 #pagination {
   overflow: hidden;
   margin-top: 1rem;
