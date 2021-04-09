@@ -1,5 +1,5 @@
-<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="git操作整理"><meta name="keywords" content="工具"><meta name="author" content="舒小琦"><meta name="copyright" content="舒小琦"><title>git操作整理 | 舒小琦的Blog</title><link rel="shortcut icon" href="shuliqi.github.io/melody-favicon.ico"><link rel="stylesheet" href="shuliqi.github.io/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
-  root: 'shuliqi.github.io/',
+<!DOCTYPE html><html lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="git操作整理"><meta name="keywords" content="工具"><meta name="author" content="舒小琦"><meta name="copyright" content="舒小琦"><title>git操作整理 | 舒小琦的Blog</title><link rel="shortcut icon" href="/blog/melody-favicon.ico"><link rel="stylesheet" href="/blog/css/index.css?version=1.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.6.1"><link rel="dns-prefetch" href="https://cdn.staticfile.org"><link rel="dns-prefetch" href="https://cdn.bootcss.com"><link rel="dns-prefetch" href="https://creativecommons.org"><script>var GLOBAL_CONFIG = { 
+  root: '/blog/',
   algolia: undefined,
   localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
   copy: {
@@ -7,7 +7,7 @@
     error: '复制错误',
     noSupport: '浏览器不支持'
   }
-} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#git-init"><span class="toc-number">1.</span> <span class="toc-text">git init</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-clone"><span class="toc-number">2.</span> <span class="toc-text">git clone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-status"><span class="toc-number">3.</span> <span class="toc-text">git status</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-add"><span class="toc-number">4.</span> <span class="toc-text">git add</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitignore"><span class="toc-number">5.</span> <span class="toc-text">.gitignore</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-diff"><span class="toc-number">6.</span> <span class="toc-text">git diff</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-commit"><span class="toc-number">7.</span> <span class="toc-text">git commit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-rm"><span class="toc-number">8.</span> <span class="toc-text">git rm</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-mv"><span class="toc-number">9.</span> <span class="toc-text">git mv</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-log"><span class="toc-number">10.</span> <span class="toc-text">git log</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset"><span class="toc-number">11.</span> <span class="toc-text">git reset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-checkout-–-file"><span class="toc-number">12.</span> <span class="toc-text">git checkout – file</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-remote"><span class="toc-number">13.</span> <span class="toc-text">git remote</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-fetch"><span class="toc-number">14.</span> <span class="toc-text">git fetch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-push"><span class="toc-number">15.</span> <span class="toc-text">git push</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-tag"><span class="toc-number">16.</span> <span class="toc-text">git tag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看标签"><span class="toc-number">16.0.1.</span> <span class="toc-text">查看标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#新建含附注标签"><span class="toc-number">16.0.2.</span> <span class="toc-text">新建含附注标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#轻量级标签"><span class="toc-number">16.0.3.</span> <span class="toc-text">轻量级标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分享标签"><span class="toc-number">16.0.4.</span> <span class="toc-text">分享标签</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="shuliqi.github.io/img/avatar.png"></div><div class="author-info__name text-center">舒小琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="shuliqi.github.io/archives"><span class="pull-left">文章</span><span class="pull-right">37</span></a><a class="author-info-articles__tags article-meta" href="shuliqi.github.io/tags"><span class="pull-left">标签</span><span class="pull-right">9</span></a><a class="author-info-articles__categories article-meta" href="shuliqi.github.io/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="shuliqi.github.io/">舒小琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span></div><div id="post-info"><div id="post-title">git操作整理</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-17</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><blockquote>
+} </script></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#git-init"><span class="toc-number">1.</span> <span class="toc-text">git init</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-clone"><span class="toc-number">2.</span> <span class="toc-text">git clone</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-status"><span class="toc-number">3.</span> <span class="toc-text">git status</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-add"><span class="toc-number">4.</span> <span class="toc-text">git add</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#gitignore"><span class="toc-number">5.</span> <span class="toc-text">.gitignore</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-diff"><span class="toc-number">6.</span> <span class="toc-text">git diff</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-commit"><span class="toc-number">7.</span> <span class="toc-text">git commit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-rm"><span class="toc-number">8.</span> <span class="toc-text">git rm</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-mv"><span class="toc-number">9.</span> <span class="toc-text">git mv</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-log"><span class="toc-number">10.</span> <span class="toc-text">git log</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-reset"><span class="toc-number">11.</span> <span class="toc-text">git reset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-checkout-–-file"><span class="toc-number">12.</span> <span class="toc-text">git checkout – file</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-remote"><span class="toc-number">13.</span> <span class="toc-text">git remote</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-fetch"><span class="toc-number">14.</span> <span class="toc-text">git fetch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-push"><span class="toc-number">15.</span> <span class="toc-text">git push</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#git-tag"><span class="toc-number">16.</span> <span class="toc-text">git tag</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看标签"><span class="toc-number">16.0.1.</span> <span class="toc-text">查看标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#新建含附注标签"><span class="toc-number">16.0.2.</span> <span class="toc-text">新建含附注标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#轻量级标签"><span class="toc-number">16.0.3.</span> <span class="toc-text">轻量级标签</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分享标签"><span class="toc-number">16.0.4.</span> <span class="toc-text">分享标签</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="/blog/img/avatar.png"></div><div class="author-info__name text-center">舒小琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/blog/archives"><span class="pull-left">文章</span><span class="pull-right">37</span></a><a class="author-info-articles__tags article-meta" href="/blog/tags"><span class="pull-left">标签</span><span class="pull-right">9</span></a><a class="author-info-articles__categories article-meta" href="/blog/categories"><span class="pull-left">分类</span><span class="pull-right">1</span></a></div></div></div><div id="content-outer"><div class="no-bg" id="top-container"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/blog/">舒小琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a><a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于我</a></span></div><div id="post-info"><div id="post-title">git操作整理</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2019-09-17</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><blockquote>
 <p><strong>获得Git项目的仓库有两种方式：</strong></p>
 <ol>
 <li><p>在现有的目录下面通过导入所有的文件夹来创建Git仓库</p>
@@ -18,7 +18,7 @@
 </blockquote>
 <a id="more"></a>
 <h2 id="git-init"><a href="#git-init" class="headerlink" title="git init"></a>git init</h2><p>在现有的工作目录中初始化新仓库：</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_init.png">
+<img src="/blog/2019/09/17/git命令/git_init.png">
 <p>初始化完成后，在当前的目录下面会出现一个名为.git的目录。</p>
 <h2 id="git-clone"><a href="#git-clone" class="headerlink" title="git clone"></a>git clone</h2><p>从现有的仓库克隆。</p>
 <p>克隆的命令：<code>git clone [url]</code></p>
@@ -30,21 +30,21 @@
 <p><code>未跟踪：</code>没有上次的更新时的快照，也不在当前的暂存区域（即不是已跟踪文件就是未更新文件）。</p>
 <p>初次克隆某个仓库时，工作目录中的所有文件都属于已跟踪文件，且状态为未修改。</p>
 </blockquote>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/no_status.png">
+<img src="/blog/2019/09/17/git命令/no_status.png">
 <p>说明当前的工作目录很干净。所有的跟踪文件在上次提交之后没有更新过。</p>
 <p>我们新建一个文件，1.js。 通过 <code>git status</code> 可看出我们新建的文件在未跟踪的文件列表里面.</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/add-status.png">
+<img src="/blog/2019/09/17/git命令/add-status.png">
 <h2 id="git-add"><a href="#git-add" class="headerlink" title="git add"></a>git add</h2><p>跟踪一个新文件。</p>
 <p>例如，要跟踪一个新文件1.js, 则可以:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add <span class="number">1.</span>js</span><br></pre></td></tr></table></figure>
 <p>添加跟踪完之后，我们再根据<code>git status</code> 查看状态，可看出该文件已经添加到已追踪列表.</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_new_status.png">
+<img src="/blog/2019/09/17/git命令/git_new_status.png">
 <p>只要在 “Changes to be committed” 这行下面的，就说明是已暂存状态。如果此时提交，那么该文件此时此刻的版本将被留存在历史记录中</p>
 <p> 当我们在修改1.js 文件。再<code>git status</code>：</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/edit_status.png">
+<img src="/blog/2019/09/17/git命令/edit_status.png">
 <p>文件 1.js  出现在 “Changes not staged for commit”  这行下面，说明已跟踪文件的内容发生了变化，但还没有放到暂存区。要暂存这次更新，需要运行 <code>git add</code> 命令。</p>
 <h2 id="gitignore"><a href="#gitignore" class="headerlink" title=".gitignore"></a>.gitignore</h2><p>有一些文件我们不需要纳入git版本控制。但是我们也不希望它出现在未跟踪的文件列表中。我们可以创建一个名为：.gitignore的文件。里面列出需要忽略的文件的模式。</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/gitignore.png">
+<img src="/blog/2019/09/17/git命令/gitignore.png">
 <p>文件<code>.gitignore</code>的格式如下：</p>
 <ul>
 <li>所有的以<code>#</code>符号开头，所有的空行都会被省略。</li>
@@ -55,7 +55,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 此为注释 – 将被 Git 忽略</span><br><span class="line"># 忽略所有 .js 结尾的文件</span><br><span class="line">*.js</span><br><span class="line"># 但 lib.a 除外</span><br><span class="line">!shuliqi.js</span><br><span class="line"># 仅仅忽略项目根目录下的 TODO 文件，不包括 subdir/TODO</span><br><span class="line">/TODO</span><br><span class="line"># 忽略 build/ 目录下的所有文件</span><br><span class="line">build/</span><br><span class="line"># 忽略 doc/ 目录下所有扩展名为 txt 的文件</span><br><span class="line">doc<span class="comment">/**/</span>*.txt</span><br><span class="line"># 会忽略 doc/notes.txt 但不包括 doc/server/arch.txt</span><br><span class="line">doc<span class="comment">/*.txt</span></span><br></pre></td></tr></table></figure>
 <h2 id="git-diff"><a href="#git-diff" class="headerlink" title="git diff"></a>git diff</h2><p><code>git status</code> 显示比较简单，仅仅是列出了修改过的文件。如果要看文件具体修改了哪些地方，可以使用<code>git diff</code></p>
 <p>如果我们修改了文件。再使用<code>git diff</code> 查看：</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_diff_1.png">
+<img src="/blog/2019/09/17/git命令/git_diff_1.png">
 <p>比较的是工作目录中当前文件和暂存区域快照之间的差异，也就是修改之后还没有暂存起来的变化内容。</p>
 <p><strong>注意</strong></p>
 <ul>
@@ -70,64 +70,64 @@
 <p>使用<code>git commit</code> 提交暂存区代码。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit</span><br></pre></td></tr></table></figure>
 <p>这种方式会启动文本编辑器以便输入本次提交的说明。</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_commit.png">
+<img src="/blog/2019/09/17/git命令/git_commit.png">
 <p>还有一种提交的方式，不需要启动文本编辑器来提交本次的说明。</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_commit_m.png">
+<img src="/blog/2019/09/17/git命令/git_commit_m.png">
 <p>提交后它会告诉你，当前是在哪个分支（master）提交的，本次提交的完整 SHA-1 校验和是什么（<code>463dc4f</code>），以及在本次提交中，有多少文件修订过，多少行添改和删改过。</p>
 <p>虽然使用暂存区域的方式可以精心准备要提交的细节，但有时候这么做略显繁琐。</p>
 <p>那么使用 <code>git commit -a -m&quot;跳过暂存区提交&quot;</code></p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_commit_a.png">
+<img src="/blog/2019/09/17/git命令/git_commit_a.png">
 <p>提交之前不再需要 <code>git add</code> 文件了。</p>
 <p><strong><code>git commit --amend</code> </strong> 此命令将使用当前的暂存区域快照提交。如果刚才提交完没有作任何改动，直接运行此命令的话，相当于有机会重新编辑提交说明，但将要提交的文件快照和之前的一样。</p>
 <p>我们使用<code>git log  -1</code> 查看上一次commit的简要信息</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_commit_amend1.png">
+<img src="/blog/2019/09/17/git命令/git_commit_amend1.png">
 <p>撤销上次的commit, 重新编辑提交说明。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
 <p>提交说明改成: “提交新东西(git commit —amend)”</p>
 
 <p>再<code>git log</code> 查看当前的提交历史</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_commit_amend3.png">
+<img src="/blog/2019/09/17/git命令/git_commit_amend3.png">
 <p>从图中看看出，我们的提交说明已经改变了。并且提交历史也没有我们第一次的commit(我们已经改变了)</p>
 <p>如果上次的提交我们有些文件改动没有暂存，我们可以补上暂存操作，然后再<code>git commit --ammend</code>提交。</p>
 <p>例如： 我们提交了一次commit</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_commit_amend3.png">
+<img src="/blog/2019/09/17/git命令/git_commit_amend3.png">
 <p>当前的更新历史为：</p>
 
 <p>补上一个暂存操作，再<code>git commit --ammend</code>，可更改上次的提交了.</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git-commit-amend6.png">
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git-commit-amend7.png">
+<img src="/blog/2019/09/17/git命令/git-commit-amend6.png">
+<img src="/blog/2019/09/17/git命令/git-commit-amend7.png">
 <p>总结：以下的操作只会产生一个commit</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">'提交'</span></span><br><span class="line">git add forgotten_file</span><br><span class="line">git commit --amend</span><br></pre></td></tr></table></figure>
 <h2 id="git-rm"><a href="#git-rm" class="headerlink" title="git rm"></a>git rm</h2><p>移除文件。</p>
 <p>如果想在git 删除某个文件，就必须得从已跟踪（暂存区）的文件清单中移除。然后再提交。使用<code>git rm</code> 移除文件。那么移除的文件就不会出现在未跟踪的清单中了。</p>
 <p>如果手动删除了一个文件，再使用<code>git status</code>查看：</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_rm.png">
+<img src="/blog/2019/09/17/git命令/git_rm.png">
 <p>显示在“Changes not staged for commit”。也就是文件还在跟踪中。</p>
 <p>如果使用<code>git rm</code></p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_rm_2.png">
+<img src="/blog/2019/09/17/git命令/git_rm_2.png">
 <p>那么最后提交的时候，该文件就不再纳入版本管理了。</p>
 <p>如果我们想把文件从 Git 仓库中删除（亦即从暂存区域移除），但仍然希望保留在当前工作目录中。换句话说，仅是从跟踪清单中删除。则可以使用git rm –cached 文件</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_rm_cached.png">
+<img src="/blog/2019/09/17/git命令/git_rm_cached.png">
 <h2 id="git-mv"><a href="#git-mv" class="headerlink" title="git mv"></a>git mv</h2><p>移除文件（更改文件名）。</p>
 <p>git 无法跟踪文件的移除操作。如果我们改了一个文件名。 Git 并不会体现出这一操作。如果想给一个文件改名，则可以使用：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git mv old_name new_name</span><br></pre></td></tr></table></figure>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_mv.png">
+<img src="/blog/2019/09/17/git命令/git_mv.png">
 <p><code>git mv</code>命令相当于以下命令:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">➜ mv old.txt new.txt</span><br><span class="line">➜ git rm old.txt</span><br><span class="line">➜ git add new.txt</span><br></pre></td></tr></table></figure>
 <h2 id="git-log"><a href="#git-log" class="headerlink" title="git log"></a>git log</h2><p>查看提交历史。</p>
 <p>使用<code>git log</code> 查看提交历史.</p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_log.png">
+<img src="/blog/2019/09/17/git命令/git_log.png">
 <p>如果默认没有参数， 会按提交的时间显示所有的更新。最近的更新排在最上面。每一次的提交都有SHA-1 校验，作者的名字和邮箱，提交的时间， 提交声明。</p>
 <p><code>git log</code>     一些常用的选项:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -p <span class="comment">// 展开显示每次提交的内容的差异</span></span><br></pre></td></tr></table></figure>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_log_p.png">
+<img src="/blog/2019/09/17/git命令/git_log_p.png">
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -<span class="xml"><span class="tag">&lt;<span class="name">n</span>&gt;</span> // 加上n &gt; 0 的数字， 显示最近几次的提交</span></span><br></pre></td></tr></table></figure>
 <p>例如：<code>git log -1</code></p>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_log_1.png">
+<img src="/blog/2019/09/17/git命令/git_log_1.png">
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log -p --word-diff. // 单词层面的比较</span><br></pre></td></tr></table></figure>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_log_word.png">
+<img src="/blog/2019/09/17/git命令/git_log_word.png">
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log --stat //显示简要的增改行数统计</span><br></pre></td></tr></table></figure>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_log_stat.png">
+<img src="/blog/2019/09/17/git命令/git_log_stat.png">
 <p><strong>整理的常用的选项：</strong></p>
 <table>
 <thead>
@@ -219,17 +219,17 @@
 <blockquote>
 <p>命令不需要我们强制记住，<code>git add</code> 之后我们使用<code>git status</code> 可以看到git 提示我们如何撤消。</p>
 </blockquote>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_reset.png">
+<img src="/blog/2019/09/17/git命令/git_reset.png">
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD &lt;file&gt; // 如何在暂存区撤销一个文件</span><br></pre></td></tr></table></figure>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_reset1.png">
+<img src="/blog/2019/09/17/git命令/git_reset1.png">
 <p>即可撤消。</p>
 <h2 id="git-checkout-–-file"><a href="#git-checkout-–-file" class="headerlink" title="git checkout – file"></a>git checkout – file</h2><p>取消对文件的修改。</p>
 <p>如果我们觉得对一个文件的修改没有必要。想要取消修改。则可以使用<code>git checkout -- &lt;file&gt;</code></p>
 <blockquote>
 <p>命令不需要我们强制记住，<code>git add</code> 之后我们使用<code>git status</code> 可以看到git 提示我们如何取消对一个文件的修改。</p>
 </blockquote>
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_checkout-file.png">
-<img src="shuliqi.github.io//shuliqi.github.io/2019/09/17/git命令/2019/09/17/git命令/git_checkout_file1.png">
+<img src="/blog/2019/09/17/git命令/git_checkout-file.png">
+<img src="/blog/2019/09/17/git命令/git_checkout_file1.png">
 <p>撤消之后，再<code>git status</code>该文件则已经回到没有修改过的状态了。</p>
 <h2 id="git-remote"><a href="#git-remote" class="headerlink" title="git remote"></a>git remote</h2><p>查看远程仓库。</p>
 <p> <code>git remote</code>: 会显示每个远程仓库的简短的名字.如：</p>
@@ -292,7 +292,7 @@
 <p>可以使用<code>git push origin --tags</code> 命令推送所有的tag 到远端。</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">➜  git push origin --tags</span><br><span class="line">Counting objects: 2, done.</span><br><span class="line">Delta compression using up to 4 threads.</span><br><span class="line">Compressing objects: 100% (2/2), done.</span><br><span class="line">Writing objects: 100% (2/2), 194 bytes | 194.00 KiB/s, done.</span><br><span class="line">Total 2 (delta 1), reused 0 (delta 0)</span><br><span class="line"><span class="comment">remote: Resolving deltas: 100% (1/1), done.</span></span><br><span class="line">To github.com:shuliqi/rzfx.git</span><br><span class="line"> * [new tag]         show -&gt; show</span><br><span class="line"> * [new tag]         v0.0.2 -&gt; v0.0.2</span><br><span class="line"> * [new tag]         v0.0.3 -&gt; v0.0.3</span><br><span class="line"> * [new tag]         v1.1.6 -&gt; v1.1.6</span><br></pre></td></tr></table></figure>
 <p>​    </p>
-</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2019/09/17/git命令/">https://shuliqi.github.io/2019/09/17/git命令/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="shuliqi.github.io/tags/工具/">工具</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="shuliqi.github.io/2019/10/16/TypeScript入门-一/"><i class="fa fa-chevron-left">  </i><span>TypeScript 入门教程</span></a></div><div class="next-post pull-right"><a href="shuliqi.github.io/2019/09/04/window-open被浏览器拦截的解决方案/"><span>window.open被浏览器拦截的解决方案</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="shuliqi.github.io/js/utils.js?version=1.6.1"></script><script src="shuliqi.github.io/js/fancybox.js?version=1.6.1"></script><script src="shuliqi.github.io/js/sidebar.js?version=1.6.1"></script><script src="shuliqi.github.io/js/copy.js?version=1.6.1"></script><script src="shuliqi.github.io/js/fireworks.js?version=1.6.1"></script><script src="shuliqi.github.io/js/transition.js?version=1.6.1"></script><script src="shuliqi.github.io/js/scroll.js?version=1.6.1"></script><script src="shuliqi.github.io/js/head.js?version=1.6.1"></script><script src="shuliqi.github.io/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2019/09/17/git命令/">https://shuliqi.github.io/2019/09/17/git命令/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/blog/tags/工具/">工具</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/blog/2019/10/16/TypeScript入门-一/"><i class="fa fa-chevron-left">  </i><span>TypeScript 入门教程</span></a></div><div class="next-post pull-right"><a href="/blog/2019/09/04/window-open被浏览器拦截的解决方案/"><span>window.open被浏览器拦截的解决方案</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file-o"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/blog/js/utils.js?version=1.6.1"></script><script src="/blog/js/fancybox.js?version=1.6.1"></script><script src="/blog/js/sidebar.js?version=1.6.1"></script><script src="/blog/js/copy.js?version=1.6.1"></script><script src="/blog/js/fireworks.js?version=1.6.1"></script><script src="/blog/js/transition.js?version=1.6.1"></script><script src="/blog/js/scroll.js?version=1.6.1"></script><script src="/blog/js/head.js?version=1.6.1"></script><script src="/blog/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
   $('#nav').addClass('is-mobile')
   $('footer').addClass('is-mobile')
 }</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
