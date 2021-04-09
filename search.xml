@@ -104,6 +104,44 @@
       </categories>
   </entry>
   <entry>
+    <title>Debounce和Throttle的原理及实现</title>
+    <url>/shuliqi.github.io/2018/04/16/Debounce%E5%92%8CThrottle%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<h1 id="问题引出"><a href="#问题引出" class="headerlink" title="问题引出"></a>问题引出</h1><p>在处理诸如<code>resize</code>,<code>scroll</code>,<code>mousemove</code> 和 <code>keydown</code>, <code>keyup</code>,<code>keypress</code>等事件的时候， 我们通常不希望这些事件太过频繁的触发。尤其是监听程序中涉及到大量的计算或者是非常耗资源的操作。</p>
+ <a id="more"></a>
+<p>有多频繁呢？ 我们以<code>mousemove</code>为例，根据 <a href="https://www.w3.org/TR/DOM-Level-3-Events/#event-type-mousemove" target="_blank" rel="noopener">DOM Level 3</a> 的规定,。</p>
+<blockquote>
+<p>A <a href="https://www.w3.org/TR/DOM-Level-3-Events/#user-agent" target="_blank" rel="noopener">user agent</a> MUST dispatch this event when a pointing device is moved while it is over an element. The frequency rate of events while the pointing device is moved is implementation-, device-, and platform-specific, but multiple consecutive <a href="https://www.w3.org/TR/DOM-Level-3-Events/#mousemove" target="_blank" rel="noopener"><code>mousemove</code></a> events SHOULD be fired for sustained pointer-device movement, rather than a single event for each instance of mouse movement. Implementations are encouraged to determine the optimal frequency rate to balance responsiveness with performance.</p>
+</blockquote>
+<p>大概的意思就是：<strong>如果鼠标连续的移动，那么浏览器就应该触发多个连续的<code>mousemove</code>事件。</strong></p>
+<p>这就说明了浏览器在其内部计时器允许的情况下，根据用户鼠标的速度来触发<code>mousemove</code>事件。(当然了， 如果移动鼠标足够快，比如“刷”的一下扫过去，浏览器是不会触发的这个事件的），<code>resize</code>,<code>scroll</code> 和<code>key*</code>等事件于此类似。</p>
+<p>具体的可以看例子体会下 <a href="https://codepen.io/shuliqi/pen/NWGNXWv?editors=1010" target="_blank" rel="noopener">鼠标滑动 </a></p>
+<h1 id="Debounce"><a href="#Debounce" class="headerlink" title="Debounce"></a>Debounce</h1><p> DOM事件里的<code>debounce</code>概念其实是从机械开关和继电器的“去弹跳(debounce)”衍生出来的，基本的思路就是把多个信号的合并为一个信号。</p>
+<p>在Javascript中， <code>debounce</code>函数所做的事情就是：强制某一个函数在某个连续的时间段内只执行一次，哪怕它本来会被调用很多次。即我们希望用户在停止某个操作一段时间之后才执行相应的舰艇函数，而不是在用户操作的过程中，浏览器触发多少次事件，就执行多少次舰艇函数。</p>
+<p>比如，在某个5s的时间段内连续移动了鼠标，浏览器就可能会触发几十个（甚至几百个）<code>mousemove</code> 事件， 不使用<code>debounce</code>的话，监听函数就要执行这么多次；如果对监听函数使用1000ms的“去弹跳”。 那么浏览器就只会<strong>执行一次</strong>这个监听函数， 而且是在第6s的时候执行的。</p>
+<p>那如何实现一个<code>ddebunce</code> 函数呢？</p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>我们<code>debunce</code>函数接受三个参数， 第一个参数是要“去弹跳”的回调函数<strong>func</strong>, 第二个参数是延迟的时间<strong>wait</strong>，第三个参数<strong>immediate</strong>表示在wait 这个时间区间内做开始执行(<strong>immediate = true</strong>)还是最后执行(<strong>immediate = false</strong>)。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* debounce函数， 返回函数连续调用时， 空闲时间必须大于或者等于wait, func 才会执行</span></span><br><span class="line"><span class="comment">* @param &#123;function&#125; func 回调函数</span></span><br><span class="line"><span class="comment">* @param &#123;number&#125; wait 回调函数延迟调用的时间</span></span><br><span class="line"><span class="comment">* param &#123;booleam&#125; 是否为立即调用</span></span><br><span class="line"><span class="comment">* @return &#123;function&#125; 返回客户调用函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">debounce</span>(<span class="params">func, wait, immediate = true</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> timer, args;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 延迟执行函数</span></span><br><span class="line">  <span class="keyword">const</span> later = <span class="function"><span class="params">()</span> =&gt;</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 延迟执行函数执行完毕，  需要清除定时器序号</span></span><br><span class="line">    timer = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (!immediate) &#123;</span><br><span class="line">      func.apply(context, args);</span><br><span class="line">      context = args = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, wait);</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 首次进入， 没有延迟函数，创建一个</span></span><br><span class="line">    <span class="keyword">if</span> (!timer) &#123;</span><br><span class="line">      timer = later();</span><br><span class="line">      <span class="keyword">if</span> (immediate) &#123;</span><br><span class="line">        <span class="comment">// 如果立即执行， 则调用函数</span></span><br><span class="line">        func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 缓存调用函数时的上下文和参数</span></span><br><span class="line">        context = <span class="keyword">this</span>;</span><br><span class="line">        args = <span class="built_in">arguments</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 如果已经存在延迟函数，清除，再重新设定</span></span><br><span class="line">      clearTimeout(timer);</span><br><span class="line">      timer = later()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>其实原理很简单，<code>debounce</code>返回了一个闭包， 这个闭包依然会被连续的频繁的调用。但是在闭包的内部， 却限制了原始函数<strong>func</strong>的执行， 强制<strong>func</strong>只能在连续操作停止后只执行一次。</p>
+<h3 id="调用及例子"><a href="#调用及例子" class="headerlink" title="调用及例子"></a>调用及例子</h3><p>调用方式如下:</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wwindow.addEventListener(<span class="string">'resize'</span>, debounce(handle, <span class="number">1000</span>, <span class="literal">false</span>))</span><br></pre></td></tr></table></figure>
+<p><strong><a href="https://codepen.io/shuliqi/pen/vYNGeZR" target="_blank" rel="noopener">一个小小的keydown例子</a></strong></p>
+<h1 id="Throttle"><a href="#Throttle" class="headerlink" title="Throttle"></a>Throttle</h1><p><code>throttle</code>理解起来更容易，就是<code>固定函数执行的速率</code> 即所谓的<code>节流</code>。举个例子，正常的情况下，<code>mousemove</code>的监听函数可能会20ms(假设)执行一， 如果设置200ms的”节流“。那么它就会<strong>每200ms</strong>执行一次。 比如在1s的时间段内，正常的监听函数可能会执行50（1000/20）次。”节流”的就会执行5（1000/200）次。</p>
+<p>我们来看个例子：<strong><a href="https://codepen.io/shuliqi/pen/WNQGQbV" target="_blank" rel="noopener">例子</a></strong>无论我鼠标移动的有多快， 我的count 都是匀速（每隔1s）增加。</p>
+<h3 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h3><p>与<code>debounce</code>类似， 我们<code>throttle</code>    也接收<code>func</code>（一个实际要执行的函数），<code>wait</code>一个执行时间间隔值。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* @param func &#123;Function&#125;   实际要执行的函数</span></span><br><span class="line"><span class="comment">* @param wait &#123;Number&#125;  执行间隔，单位是毫秒（ms）</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* @return &#123;Function&#125;     返回一个“节流”函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">func, wait</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> context, args;</span><br><span class="line">  <span class="comment">// 设置前一个函数调用的时间戳</span></span><br><span class="line">  <span class="keyword">let</span> previous = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> now = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</span><br><span class="line">    <span class="keyword">if</span> (!previous) &#123;</span><br><span class="line">      <span class="comment">// 首次进入</span></span><br><span class="line">      previous = now;</span><br><span class="line">     </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      context = <span class="keyword">this</span>;</span><br><span class="line">      args = <span class="built_in">arguments</span>;</span><br><span class="line">      <span class="keyword">let</span> remaining = wait - (now - previous);</span><br><span class="line">      <span class="keyword">if</span> (remaining &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        func.apply(context, args);</span><br><span class="line">        previous = now;</span><br><span class="line">        context = args = <span class="literal">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="调用及例子-1"><a href="#调用及例子-1" class="headerlink" title="调用及例子"></a>调用及例子</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, throttle(handle, <span class="number">1000</span>));</span><br></pre></td></tr></table></figure>
+<p><code>throttle</code>常用的场景是限制<code>resize</code>和<code>scroll</code>的触发频率。我们以scroll 为例子<strong><a href="https://codepen.io/shuliqi/pen/NWGRGQr" target="_blank" rel="noopener">scroll例子</a> <a href="https://codepen.io/shuliqi/pen/ExVKwEW" target="_blank" rel="noopener">resize例子</a> </strong> </p>
+<h1 id="可视化解释"><a href="#可视化解释" class="headerlink" title="可视化解释"></a>可视化解释</h1><p>如果还是不能完全体会<code>debounce</code>和<code>throttle</code>的差异， 可以看这个例子 <strong><a href="http://demo.nimius.net/debounce_throttle/" target="_blank" rel="noopener">可视化例子</a></strong></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>debounce</code>强制函数在某段时间内只执行一次，<code>throttle</code>强制函数以固定的速率执行，在处理一些高频率触发的DOM 事件的时候， 它们都能极大提高用户体验。</p>
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CSS Grid网格布局</title>
     <url>/shuliqi.github.io/2020/12/04/CSS-Grid%E7%BD%91%E6%A0%BC%E5%B8%83%E5%B1%80/</url>
     <content><![CDATA[<p>最近在参加一个小程序比赛，其中在做瀑布流布局的时候，有人拿Grid网格布局来做的，但是我觉得瀑布流并不是个用Grid网格布局来做，因为它每一个项目占多少网格，都需要人工去指定。虽然我觉得Grid网格布局不是个做瀑布流， 但是我觉得它还是非常强大的，甚至觉得比Flex强大。那么这篇文章就是来记录Grid网格布局的一个使用教程的。当翻阅可看。</p>
@@ -279,44 +317,6 @@
 
 <p>第一个项目的左右边框，上下边框都跨越2个网格（绿色部分）。</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>Debounce和Throttle的原理及实现</title>
-    <url>/shuliqi.github.io/2018/04/16/Debounce%E5%92%8CThrottle%E7%9A%84%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<h1 id="问题引出"><a href="#问题引出" class="headerlink" title="问题引出"></a>问题引出</h1><p>在处理诸如<code>resize</code>,<code>scroll</code>,<code>mousemove</code> 和 <code>keydown</code>, <code>keyup</code>,<code>keypress</code>等事件的时候， 我们通常不希望这些事件太过频繁的触发。尤其是监听程序中涉及到大量的计算或者是非常耗资源的操作。</p>
- <a id="more"></a>
-<p>有多频繁呢？ 我们以<code>mousemove</code>为例，根据 <a href="https://www.w3.org/TR/DOM-Level-3-Events/#event-type-mousemove" target="_blank" rel="noopener">DOM Level 3</a> 的规定,。</p>
-<blockquote>
-<p>A <a href="https://www.w3.org/TR/DOM-Level-3-Events/#user-agent" target="_blank" rel="noopener">user agent</a> MUST dispatch this event when a pointing device is moved while it is over an element. The frequency rate of events while the pointing device is moved is implementation-, device-, and platform-specific, but multiple consecutive <a href="https://www.w3.org/TR/DOM-Level-3-Events/#mousemove" target="_blank" rel="noopener"><code>mousemove</code></a> events SHOULD be fired for sustained pointer-device movement, rather than a single event for each instance of mouse movement. Implementations are encouraged to determine the optimal frequency rate to balance responsiveness with performance.</p>
-</blockquote>
-<p>大概的意思就是：<strong>如果鼠标连续的移动，那么浏览器就应该触发多个连续的<code>mousemove</code>事件。</strong></p>
-<p>这就说明了浏览器在其内部计时器允许的情况下，根据用户鼠标的速度来触发<code>mousemove</code>事件。(当然了， 如果移动鼠标足够快，比如“刷”的一下扫过去，浏览器是不会触发的这个事件的），<code>resize</code>,<code>scroll</code> 和<code>key*</code>等事件于此类似。</p>
-<p>具体的可以看例子体会下 <a href="https://codepen.io/shuliqi/pen/NWGNXWv?editors=1010" target="_blank" rel="noopener">鼠标滑动 </a></p>
-<h1 id="Debounce"><a href="#Debounce" class="headerlink" title="Debounce"></a>Debounce</h1><p> DOM事件里的<code>debounce</code>概念其实是从机械开关和继电器的“去弹跳(debounce)”衍生出来的，基本的思路就是把多个信号的合并为一个信号。</p>
-<p>在Javascript中， <code>debounce</code>函数所做的事情就是：强制某一个函数在某个连续的时间段内只执行一次，哪怕它本来会被调用很多次。即我们希望用户在停止某个操作一段时间之后才执行相应的舰艇函数，而不是在用户操作的过程中，浏览器触发多少次事件，就执行多少次舰艇函数。</p>
-<p>比如，在某个5s的时间段内连续移动了鼠标，浏览器就可能会触发几十个（甚至几百个）<code>mousemove</code> 事件， 不使用<code>debounce</code>的话，监听函数就要执行这么多次；如果对监听函数使用1000ms的“去弹跳”。 那么浏览器就只会<strong>执行一次</strong>这个监听函数， 而且是在第6s的时候执行的。</p>
-<p>那如何实现一个<code>ddebunce</code> 函数呢？</p>
-<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>我们<code>debunce</code>函数接受三个参数， 第一个参数是要“去弹跳”的回调函数<strong>func</strong>, 第二个参数是延迟的时间<strong>wait</strong>，第三个参数<strong>immediate</strong>表示在wait 这个时间区间内做开始执行(<strong>immediate = true</strong>)还是最后执行(<strong>immediate = false</strong>)。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* debounce函数， 返回函数连续调用时， 空闲时间必须大于或者等于wait, func 才会执行</span></span><br><span class="line"><span class="comment">* @param &#123;function&#125; func 回调函数</span></span><br><span class="line"><span class="comment">* @param &#123;number&#125; wait 回调函数延迟调用的时间</span></span><br><span class="line"><span class="comment">* param &#123;booleam&#125; 是否为立即调用</span></span><br><span class="line"><span class="comment">* @return &#123;function&#125; 返回客户调用函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">debounce</span>(<span class="params">func, wait, immediate = true</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> timer, args;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 延迟执行函数</span></span><br><span class="line">  <span class="keyword">const</span> later = <span class="function"><span class="params">()</span> =&gt;</span> setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// 延迟执行函数执行完毕，  需要清除定时器序号</span></span><br><span class="line">    timer = <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (!immediate) &#123;</span><br><span class="line">      func.apply(context, args);</span><br><span class="line">      context = args = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, wait);</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 首次进入， 没有延迟函数，创建一个</span></span><br><span class="line">    <span class="keyword">if</span> (!timer) &#123;</span><br><span class="line">      timer = later();</span><br><span class="line">      <span class="keyword">if</span> (immediate) &#123;</span><br><span class="line">        <span class="comment">// 如果立即执行， 则调用函数</span></span><br><span class="line">        func.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 缓存调用函数时的上下文和参数</span></span><br><span class="line">        context = <span class="keyword">this</span>;</span><br><span class="line">        args = <span class="built_in">arguments</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// 如果已经存在延迟函数，清除，再重新设定</span></span><br><span class="line">      clearTimeout(timer);</span><br><span class="line">      timer = later()</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>其实原理很简单，<code>debounce</code>返回了一个闭包， 这个闭包依然会被连续的频繁的调用。但是在闭包的内部， 却限制了原始函数<strong>func</strong>的执行， 强制<strong>func</strong>只能在连续操作停止后只执行一次。</p>
-<h3 id="调用及例子"><a href="#调用及例子" class="headerlink" title="调用及例子"></a>调用及例子</h3><p>调用方式如下:</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">wwindow.addEventListener(<span class="string">'resize'</span>, debounce(handle, <span class="number">1000</span>, <span class="literal">false</span>))</span><br></pre></td></tr></table></figure>
-<p><strong><a href="https://codepen.io/shuliqi/pen/vYNGeZR" target="_blank" rel="noopener">一个小小的keydown例子</a></strong></p>
-<h1 id="Throttle"><a href="#Throttle" class="headerlink" title="Throttle"></a>Throttle</h1><p><code>throttle</code>理解起来更容易，就是<code>固定函数执行的速率</code> 即所谓的<code>节流</code>。举个例子，正常的情况下，<code>mousemove</code>的监听函数可能会20ms(假设)执行一， 如果设置200ms的”节流“。那么它就会<strong>每200ms</strong>执行一次。 比如在1s的时间段内，正常的监听函数可能会执行50（1000/20）次。”节流”的就会执行5（1000/200）次。</p>
-<p>我们来看个例子：<strong><a href="https://codepen.io/shuliqi/pen/WNQGQbV" target="_blank" rel="noopener">例子</a></strong>无论我鼠标移动的有多快， 我的count 都是匀速（每隔1s）增加。</p>
-<h3 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h3><p>与<code>debounce</code>类似， 我们<code>throttle</code>    也接收<code>func</code>（一个实际要执行的函数），<code>wait</code>一个执行时间间隔值。</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* @param func &#123;Function&#125;   实际要执行的函数</span></span><br><span class="line"><span class="comment">* @param wait &#123;Number&#125;  执行间隔，单位是毫秒（ms）</span></span><br><span class="line"><span class="comment">*</span></span><br><span class="line"><span class="comment">* @return &#123;Function&#125;     返回一个“节流”函数</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">throttle</span>(<span class="params">func, wait</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> context, args;</span><br><span class="line">  <span class="comment">// 设置前一个函数调用的时间戳</span></span><br><span class="line">  <span class="keyword">let</span> previous = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> now = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</span><br><span class="line">    <span class="keyword">if</span> (!previous) &#123;</span><br><span class="line">      <span class="comment">// 首次进入</span></span><br><span class="line">      previous = now;</span><br><span class="line">     </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      context = <span class="keyword">this</span>;</span><br><span class="line">      args = <span class="built_in">arguments</span>;</span><br><span class="line">      <span class="keyword">let</span> remaining = wait - (now - previous);</span><br><span class="line">      <span class="keyword">if</span> (remaining &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        func.apply(context, args);</span><br><span class="line">        previous = now;</span><br><span class="line">        context = args = <span class="literal">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="调用及例子-1"><a href="#调用及例子-1" class="headerlink" title="调用及例子"></a>调用及例子</h3><figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'resize'</span>, throttle(handle, <span class="number">1000</span>));</span><br></pre></td></tr></table></figure>
-<p><code>throttle</code>常用的场景是限制<code>resize</code>和<code>scroll</code>的触发频率。我们以scroll 为例子<strong><a href="https://codepen.io/shuliqi/pen/NWGRGQr" target="_blank" rel="noopener">scroll例子</a> <a href="https://codepen.io/shuliqi/pen/ExVKwEW" target="_blank" rel="noopener">resize例子</a> </strong> </p>
-<h1 id="可视化解释"><a href="#可视化解释" class="headerlink" title="可视化解释"></a>可视化解释</h1><p>如果还是不能完全体会<code>debounce</code>和<code>throttle</code>的差异， 可以看这个例子 <strong><a href="http://demo.nimius.net/debounce_throttle/" target="_blank" rel="noopener">可视化例子</a></strong></p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><code>debounce</code>强制函数在某段时间内只执行一次，<code>throttle</code>强制函数以固定的速率执行，在处理一些高频率触发的DOM 事件的时候， 它们都能极大提高用户体验。</p>
-]]></content>
-      <categories>
-        <category>学习笔记</category>
-      </categories>
-      <tags>
-        <tag>JavaScript</tag>
-      </tags>
   </entry>
   <entry>
     <title>Dockerfile文件的使用</title>
@@ -2411,70 +2411,6 @@
       </tags>
   </entry>
   <entry>
-    <title>window.open被浏览器拦截的解决方案</title>
-    <url>/shuliqi.github.io/2019/09/04/window-open%E8%A2%AB%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8B%A6%E6%88%AA%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</url>
-    <content><![CDATA[<h3 id="存在的现象"><a href="#存在的现象" class="headerlink" title="存在的现象"></a>存在的现象</h3><p>最近在做一个需求，遇到了使用window.open()跳转到一个新的页面会被浏览器拦截的情况。虽然在开发环境。我们会手动放行。但是对于客户来说，不能要求用户都来通过拦截。而且在出现拦截的时候。很多小白客户根本不知道发生了啥，以为系统出来安全性问题。</p>
-<p>此外，还发现：<strong>当window.open为用户触发事件内部或者加载时，不会被拦截，一旦将弹出代码移动到ajax或者一段异步代码内部，马上就出现被拦截的表现了</strong>。</p>
-<a id="more"></a>
-<h3 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h3><p>当浏览器检测到非用户操作产生的新弹出窗口，则会对其进行阻止。因为浏览器认为这不是一个用户希望看到的页面。</p>
-<p><strong>例1：</strong>直接打开一个页面</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.open(<span class="string">'https://app.mokahr.com'</span>, <span class="string">'_blank'</span>);</span><br></pre></td></tr></table></figure>
-<p>在各个浏览器的表现：</p>
-<table>
-<thead>
-<tr>
-<th>浏览器</th>
-<th>ie8</th>
-<th><strong>chrome 40</strong></th>
-<th><strong>firefox 34</strong></th>
-<th><strong>opera 27</strong></th>
-<th><strong>safari 5.1.7</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>是否拦截</strong></td>
-<td><strong>NO</strong></td>
-<td><strong>NO</strong></td>
-<td><strong>YES</strong></td>
-<td><strong>YES</strong></td>
-<td><strong>YES</strong></td>
-</tr>
-</tbody>
-</table>
-<p><strong>例2：</strong>ajax中的使用window.open</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    type:<span class="string">"post"</span>,</span><br><span class="line">    url:<span class="string">"Webservices/WS_BBS_Login.asmx/GetUserInfo"</span>,</span><br><span class="line">    data:<span class="string">"&#123;&#125;"</span>,</span><br><span class="line">    dataType:<span class="string">"json"</span>,</span><br><span class="line">    success:<span class="function"><span class="keyword">function</span>(<span class="params">result</span>)</span>&#123;</span><br><span class="line">      <span class="built_in">window</span>.open(result.url, <span class="string">'_blank'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
-<p>也会出现浏览器拦截的情况。</p>
-<p><strong>例3：</strong>但是对于这样的代码：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">window</span>.open(<span class="string">'https://app.mokahr.com'</span>, <span class="string">'_blank'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<p>所有的浏览器都不会被拦截</p>
-<p><strong>结论：各浏览器对拦截时机的判断不一致，而对于放在ajax回调中的代码，也会被拦截。但是，被浏览器拦截我们代码中要弹出的窗口并不是程序员所希望的。</strong></p>
-<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><ol>
-<li><p><strong>用a标签代替，这样用户点击这个超链接，浏览器会认为它是打开一个新的链接，所以就不会拦截</strong></p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;a href=&quot;url&quot; target=&quot;_blank&quot; /&gt;</span><br></pre></td></tr></table></figure>
-<p>也可以自己创建一个<code>a</code>标签。</p>
-<p>给出如下函数，将此函数绑定到click的事件回调中，就可以避免大部分浏览器对窗口弹出的拦截。</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function newWin(url, id) &#123;</span><br><span class="line">  var a = document.createElement(&apos;a&apos;);</span><br><span class="line">  a.setAttribute(&apos;href&apos;, url);</span><br><span class="line">  a.setAttribute(&apos;target&apos;, &apos;_blank&apos;);</span><br><span class="line">  a.setAttribute(&apos;id&apos;, id);</span><br><span class="line">  // 防止反复添加</span><br><span class="line">  if(!document.getElementById(id)) document.body.appendChild(a);</span><br><span class="line">  a.click();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用form的submit方法打开一个页面</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;header&gt;</span><br><span class="line">  &lt;/header&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">     &lt;form id=&quot;shu&quot; action=&quot;form_action.asp&quot; method=&quot;get&quot;&gt;&lt;/form&gt; </span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      $(&quot;#shu&quot;).attr(&apos;target&apos;, &apos;_blank&apos;);</span><br><span class="line">      $(&quot;#shu&quot;).submit();</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/html&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过定时器</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var newOpenWindow=window.open();</span><br><span class="line">setTimeout(function()&#123;</span><br><span class="line">　　newOpenWindow.location=locationurl;</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>终极解决方案–先弹出窗口，然后重定向</p>
-<p><strong>注意：大家注意，以上方法不适合放在ajax的回调函数中，如果放在回调函数中，依然会被浏览器拦截。</strong></p>
-<p>这种方法的核心思想就是：先通过用户点击打开页面，然后再对页面进行重定向。代码如下：</p>
-<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">xx.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 打开页面，此处最好使用提示页面</span></span><br><span class="line">    <span class="keyword">var</span> newWin = <span class="built_in">window</span>.open(<span class="string">'loading page'</span>);</span><br><span class="line"></span><br><span class="line">    ajax().done(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 重定向到目标页面</span></span><br><span class="line">        newWin.location.href = <span class="string">'target url'</span>;</span><br><span class="line">    &#125;);</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>此篇文章是参考： <a href="http://zakwu.me/2015/03/03/dan-chu-chuang-kou-bei-liu-lan-qi-lan-jie-de-jie-jue-fang-an/" target="_blank" rel="noopener">window.open被浏览器拦截的解决方案</a>， <a href="https://www.cnblogs.com/hss-blog/p/10194830.html" target="_blank" rel="noopener">ajax回调中window.open弹出的窗口会被浏览器拦截的解决方法</a>，</p>
-]]></content>
-      <tags>
-        <tag>工作中遇到的问题</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>模块化与Webpack属性 library,libraryTarget的关联</title>
     <url>/shuliqi.github.io/2021/02/03/webpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9Alibrary%EF%BC%8ClibraryTarget%EF%BC%8CauxiliaryComment/</url>
     <content><![CDATA[<p><code>webpack</code> 是前端目前很热门的打包工具，相信大家应该在项目中都使用过。它有很复杂的配置项。其中 <code>library</code>，<code>libraryTarget</code> 属性大家可能就更陌生了，因为在一般的项目中使用 <code>wabpacK</code> 是不需要关注 这两个属性的，但是如果我们是开发类库，如果使用webpack 来打包的话，那么<code>library</code>，<code>libraryTarget</code> 这两个属性是一定要了解的</p>
@@ -2890,6 +2826,70 @@
 ]]></content>
       <tags>
         <tag>webpack学习笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>window.open被浏览器拦截的解决方案</title>
+    <url>/shuliqi.github.io/2019/09/04/window-open%E8%A2%AB%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8B%A6%E6%88%AA%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</url>
+    <content><![CDATA[<h3 id="存在的现象"><a href="#存在的现象" class="headerlink" title="存在的现象"></a>存在的现象</h3><p>最近在做一个需求，遇到了使用window.open()跳转到一个新的页面会被浏览器拦截的情况。虽然在开发环境。我们会手动放行。但是对于客户来说，不能要求用户都来通过拦截。而且在出现拦截的时候。很多小白客户根本不知道发生了啥，以为系统出来安全性问题。</p>
+<p>此外，还发现：<strong>当window.open为用户触发事件内部或者加载时，不会被拦截，一旦将弹出代码移动到ajax或者一段异步代码内部，马上就出现被拦截的表现了</strong>。</p>
+<a id="more"></a>
+<h3 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h3><p>当浏览器检测到非用户操作产生的新弹出窗口，则会对其进行阻止。因为浏览器认为这不是一个用户希望看到的页面。</p>
+<p><strong>例1：</strong>直接打开一个页面</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">window</span>.open(<span class="string">'https://app.mokahr.com'</span>, <span class="string">'_blank'</span>);</span><br></pre></td></tr></table></figure>
+<p>在各个浏览器的表现：</p>
+<table>
+<thead>
+<tr>
+<th>浏览器</th>
+<th>ie8</th>
+<th><strong>chrome 40</strong></th>
+<th><strong>firefox 34</strong></th>
+<th><strong>opera 27</strong></th>
+<th><strong>safari 5.1.7</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>是否拦截</strong></td>
+<td><strong>NO</strong></td>
+<td><strong>NO</strong></td>
+<td><strong>YES</strong></td>
+<td><strong>YES</strong></td>
+<td><strong>YES</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>例2：</strong>ajax中的使用window.open</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    type:<span class="string">"post"</span>,</span><br><span class="line">    url:<span class="string">"Webservices/WS_BBS_Login.asmx/GetUserInfo"</span>,</span><br><span class="line">    data:<span class="string">"&#123;&#125;"</span>,</span><br><span class="line">    dataType:<span class="string">"json"</span>,</span><br><span class="line">    success:<span class="function"><span class="keyword">function</span>(<span class="params">result</span>)</span>&#123;</span><br><span class="line">      <span class="built_in">window</span>.open(result.url, <span class="string">'_blank'</span>);</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+<p>也会出现浏览器拦截的情况。</p>
+<p><strong>例3：</strong>但是对于这样的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.body.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">   <span class="built_in">window</span>.open(<span class="string">'https://app.mokahr.com'</span>, <span class="string">'_blank'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>所有的浏览器都不会被拦截</p>
+<p><strong>结论：各浏览器对拦截时机的判断不一致，而对于放在ajax回调中的代码，也会被拦截。但是，被浏览器拦截我们代码中要弹出的窗口并不是程序员所希望的。</strong></p>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><ol>
+<li><p><strong>用a标签代替，这样用户点击这个超链接，浏览器会认为它是打开一个新的链接，所以就不会拦截</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;a href=&quot;url&quot; target=&quot;_blank&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>也可以自己创建一个<code>a</code>标签。</p>
+<p>给出如下函数，将此函数绑定到click的事件回调中，就可以避免大部分浏览器对窗口弹出的拦截。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function newWin(url, id) &#123;</span><br><span class="line">  var a = document.createElement(&apos;a&apos;);</span><br><span class="line">  a.setAttribute(&apos;href&apos;, url);</span><br><span class="line">  a.setAttribute(&apos;target&apos;, &apos;_blank&apos;);</span><br><span class="line">  a.setAttribute(&apos;id&apos;, id);</span><br><span class="line">  // 防止反复添加</span><br><span class="line">  if(!document.getElementById(id)) document.body.appendChild(a);</span><br><span class="line">  a.click();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用form的submit方法打开一个页面</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">    &lt;header&gt;</span><br><span class="line">  &lt;/header&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">     &lt;form id=&quot;shu&quot; action=&quot;form_action.asp&quot; method=&quot;get&quot;&gt;&lt;/form&gt; </span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">    &lt;script&gt;</span><br><span class="line">      $(&quot;#shu&quot;).attr(&apos;target&apos;, &apos;_blank&apos;);</span><br><span class="line">      $(&quot;#shu&quot;).submit();</span><br><span class="line">    &lt;/script&gt;</span><br><span class="line">  &lt;/html&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过定时器</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var newOpenWindow=window.open();</span><br><span class="line">setTimeout(function()&#123;</span><br><span class="line">　　newOpenWindow.location=locationurl;</span><br><span class="line">&#125;, 1000);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>终极解决方案–先弹出窗口，然后重定向</p>
+<p><strong>注意：大家注意，以上方法不适合放在ajax的回调函数中，如果放在回调函数中，依然会被浏览器拦截。</strong></p>
+<p>这种方法的核心思想就是：先通过用户点击打开页面，然后再对页面进行重定向。代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">xx.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 打开页面，此处最好使用提示页面</span></span><br><span class="line">    <span class="keyword">var</span> newWin = <span class="built_in">window</span>.open(<span class="string">'loading page'</span>);</span><br><span class="line"></span><br><span class="line">    ajax().done(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 重定向到目标页面</span></span><br><span class="line">        newWin.location.href = <span class="string">'target url'</span>;</span><br><span class="line">    &#125;);</span><br><span class="line"> &#125;);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>此篇文章是参考： <a href="http://zakwu.me/2015/03/03/dan-chu-chuang-kou-bei-liu-lan-qi-lan-jie-de-jie-jue-fang-an/" target="_blank" rel="noopener">window.open被浏览器拦截的解决方案</a>， <a href="https://www.cnblogs.com/hss-blog/p/10194830.html" target="_blank" rel="noopener">ajax回调中window.open弹出的窗口会被浏览器拦截的解决方法</a>，</p>
+]]></content>
+      <tags>
+        <tag>工作中遇到的问题</tag>
       </tags>
   </entry>
   <entry>
