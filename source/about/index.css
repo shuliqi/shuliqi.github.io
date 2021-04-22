@@ -94,16 +94,27 @@ html {
 .card_left .avatar {
   width: 200px;
   height: 200px;
-  transition: all 0.6s;
   border-radius: 100%;
+  transform: scale(1);
+}
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .avatar:hover {
-  transform: scale(1.1);
   -moz-box-shadow: 0px 0px 25px #6c97b1;
   -webkit-box-shadow: 0px 0px 25px #6c97b1;
   box-shadow: 0px 0px 25px #6c97b1;
   cursor: pointer;
+  animation: scale 1s;
 }
 
 .card_right {
