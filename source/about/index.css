@@ -79,8 +79,8 @@ html {
   width: 800px;
   height: 600px;
   border-radius: 7px;
+  background: #fff;
   overflow: hidden;
-  background: #f8f8fb66;
   box-shadow: 0 0 11px 3px rgb(0 0 0 / 15%);
 }
 
@@ -88,6 +88,7 @@ html {
   flex: 300px 1 0;
   padding-top: 10%;
   box-sizing: border-box;
+  background: #f8f8fb66;
   text-align: center;
   border-right: 1px solid #e6e6e6;
 }
@@ -118,6 +119,7 @@ html {
 
 .card_right {
   padding: 20px;
+  background: #f8f8fb66;
 }
 .right_container {
   width: 100%;
