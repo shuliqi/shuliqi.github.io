@@ -9,6 +9,7 @@ html {
   height: 100%;
   overflow: auto;
   position: relative;
+  background: #49b1f5;
 }
 .page-header {
   display: flex;
@@ -20,7 +21,6 @@ html {
   padding: 10px 36px;
   width: 100%;
   border: none;
-  background: #49b1f5;
   font-size: 18px;
   -webkit-transition: all 0.2s ease-in-out;
   -moz-transition: all 0.2s ease-in-out;
@@ -80,6 +80,7 @@ html {
   height: 600px;
   border-radius: 7px;
   overflow: hidden;
+  background: #fff;
   box-shadow: 0 0 11px 3px rgb(0 0 0 / 15%);
 }
 
@@ -94,12 +95,22 @@ html {
 .card_left .avatar {
   width: 200px;
   height: 200px;
-  transition: all 0.6s;
   border-radius: 100%;
+}
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .avatar:hover {
-  transform: scale(1.1);
+  animation: scale 1s;
   -moz-box-shadow: 0px 0px 25px #6c97b1;
   -webkit-box-shadow: 0px 0px 25px #6c97b1;
   box-shadow: 0px 0px 25px #6c97b1;
@@ -109,7 +120,10 @@ html {
 .card_right {
   padding: 20px;
 }
-.container {
+.right_container {
+  width: 100%;
+  height: 100%;
+  color: #333;
   overflow: scroll;
 }
 .item {
@@ -132,4 +146,12 @@ html {
 .github {
   width: 40px;
   height: 40px;
+  border-radius: 100%;
+}
+
+.right_container a {
+  color: #333;
+}
+.right_container a:hover {
+  color: #49b1f5;
 }
