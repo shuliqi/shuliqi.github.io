@@ -67,7 +67,11 @@ algolia_search:
 # Please see doc for more details: https://molunerfinn.com/hexo-theme-melody-doc/third-party-support.html#local-search
 # ---------------
 local_search:
-  enable: false
+  enable: trouble
+  path: search.xml
+  field: post
+  content: true
+  template: ./search.xml
 
 # MathJax
 # Please see doc for more details: https://molunerfinn.com/hexo-theme-melody-doc/third-party-support.html#mathjax
