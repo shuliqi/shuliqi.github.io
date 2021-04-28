@@ -2,6 +2,7 @@
 title: 关于this的指向问题
 date: 2018-07-02 15:07:02
 tags: JavaScript
+categories: JavaScript
 ---
 
 

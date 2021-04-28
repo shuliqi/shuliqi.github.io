@@ -2,7 +2,7 @@
 title: ES6学习笔记- Proxy
 date: 2018-03-05 12:00:01
 tags: ES6
-categories: 学习笔记
+categories: ES6
 
 ---
 

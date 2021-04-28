@@ -1,8 +1,8 @@
 ---
 title: 《javascript设计模式》读书笔记三：函数
 date: 2019-06-15 19:53:18
-tags:
-categories: 学习笔记
+tags: ES6
+categories: ES6
 ---
 
 ### 一. 函数的特点
@@ -296,7 +296,6 @@ function foo() {
     这些调用不断的重写全局myFun()指针。以至于它最终被调用时，它才第一次更新函数主体。
 
  
-
 
 
 

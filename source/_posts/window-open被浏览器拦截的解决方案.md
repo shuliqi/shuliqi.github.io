@@ -1,7 +1,8 @@
 ---
 title: window.open被浏览器拦截的解决方案
 date: 2019-09-04 19:28:17
-tags: 工作中遇到的问题
+tags: 浏览器
+categories: 浏览器
 ---
 
 ### 存在的现象

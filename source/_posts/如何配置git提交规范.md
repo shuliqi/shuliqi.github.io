@@ -1,7 +1,8 @@
 ---
 title: git提交规范及如何配置
 date: 2021-01-15 16:31:20
-tags:
+tags: 工程配置
+categories: 工程配置
 ---
 
 `Git` 是现在比较流行的版本控制工具，在开发的过程中，`Git `每次提交代码，都需要写`Commit message `（即提交说明）。如果没有对 `Commit message `进行规范，会造成很多的麻烦，比如：

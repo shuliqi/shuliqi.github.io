@@ -2,6 +2,7 @@
 title: 模块化与Webpack属性 library,libraryTarget的关联
 date: 2021-02-03 14:53:43
 tags: webpack学习笔记
+categories: webpack学习笔记
 ---
 
 `webpack` 是前端目前很热门的打包工具，相信大家应该在项目中都使用过。它有很复杂的配置项。其中 `library`，`libraryTarget` 属性大家可能就更陌生了，因为在一般的项目中使用 `wabpacK` 是不需要关注 这两个属性的，但是如果我们是开发类库，如果使用webpack 来打包的话，那么`library`，`libraryTarget` 这两个属性是一定要了解的

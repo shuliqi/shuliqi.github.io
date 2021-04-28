@@ -1,7 +1,8 @@
 ---
 title: 关于Delete`CR`eslint(prettier/prettier) 报错的解决方案
 date: 2020-06-06 20:47:09
-tags: 工作中遇到的问题
+tags: JavaScript
+categories: JavaScript
 ---
 
 ## 问题的提出

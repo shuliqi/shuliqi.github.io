@@ -2,6 +2,7 @@
 title: JavaScript运行机制
 date: 2019-08-10 20:40:11
 tags: JavaScript
+categories: JavaScript
 ---
 
 ### JavaScript运行机制

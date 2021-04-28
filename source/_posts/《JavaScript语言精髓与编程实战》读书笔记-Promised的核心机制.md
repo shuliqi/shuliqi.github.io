@@ -1,8 +1,8 @@
 ---
 title: 《JavaScript语言精髓与编程实战》读书笔记-Promised的核心机制
 date: 2020-07-15 08:46:49
-tags:
-categories: 学习笔记
+tags: ES6
+categories: ES6
 ---
 
 
@@ -497,7 +497,7 @@ x是任意值，如果不指定则是undefined
   ```
 
   ```javascript
-const p = Promise.resolve();
+  const p = Promise.resolve();
   p.then((value) => console.log("resolved状态的"));
   ```
   
@@ -703,7 +703,6 @@ p2.catch((reason) => {
 });
 // 我的值是： 我在onFinally函数中显式的返回了rejected promise了
 ```
-
 
 
 

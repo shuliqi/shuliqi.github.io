@@ -2,7 +2,7 @@
 title: Debounce和Throttle的原理及实现
 date: 2018-04-16 18:55:30
 tags: JavaScript
-categories: 学习笔记
+categories: JavaScript
 ---
 
 # 问题引出

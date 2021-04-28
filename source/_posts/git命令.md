@@ -2,6 +2,7 @@
 title: git操作整理
 date: 2019-09-17 22:15:04
 tags: 工具
+categories: 工具
 ---
 
 > **获得Git项目的仓库有两种方式：**

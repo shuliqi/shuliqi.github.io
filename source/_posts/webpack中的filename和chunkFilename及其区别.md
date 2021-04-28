@@ -1,7 +1,8 @@
 ---
 title: webpack中的filename和chunkFilename及其区别
-date: 2021-03-14 19:40:07
+date: 2021-02-07 19:40:07
 tags: webpack学习笔记
+categories: webpack学习笔记
 ---
 
 `webpack`中`output`对象有很多的配置选项，其中`output.filename`和`output.chunkFilename`两者都是给输出 `bundle` 命名的。那么它们具体怎么使用呢？两者之间又有什么区别呢？

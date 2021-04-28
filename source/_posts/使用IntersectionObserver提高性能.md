@@ -2,6 +2,7 @@
 title: 使用IntersectionObserver提升性能
 date: 2020-03-26 19:08:51
 tags: JavaScript
+categories: JavaScript
 ---
 
 ## 问题引出？
@@ -355,7 +356,6 @@ io.observe($0)
      See the Pen <a href='https://codepen.io/shuliqi/pen/KKdwdNb'>KKdwdNb</a> by shuliqi
      (<a href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a href='https://codepen.io'>CodePen</a>.
    </iframe>
-   
    
 
 ## 疑问的点

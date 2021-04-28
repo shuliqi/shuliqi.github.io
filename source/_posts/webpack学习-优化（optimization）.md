@@ -1,7 +1,8 @@
 ---
 title: webpack学习--优化（optimization）
-date: 2021-03-01 17:50:57
+date: 2021-01-12 17:50:57
 tags: webpack学习笔记
+categories: webpack学习笔记
 ---
 
 `webpack`目前最新的版本是5， 但是早在`webpack4`的时候，可以通过选择不用的`mode`模式来优化打包的结果。不过所有的优化（optimization）还是可以通过手动配置和重写的。，在构建的时候我们可以针对各个环境配置最佳的输出方式；为此`webpack`提供了 `optimization`属性供使用者针对环境做配置。

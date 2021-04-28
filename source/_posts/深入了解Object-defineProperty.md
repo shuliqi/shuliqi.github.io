@@ -2,6 +2,7 @@
 title: 深入了解Object.defineProperty
 date: 2018-02-19 14:42:44
 tags: JavaScript
+categories: JavaScript
 ---
 
 

@@ -2,6 +2,7 @@
 title: 你不知道的css技巧
 date: 2019-08-27 22:37:46
 tags: CSS
+categories: CSS
 ---
 
 #### **1.用 :\*-Of-Type 选择元素**

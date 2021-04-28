@@ -2,7 +2,7 @@
 title: ES6学习笔记-Promise
 date: 2018-3-20 13:20:04
 tags: ES6
-categories: 学习笔记
+categories: ES6
 ---
 
 

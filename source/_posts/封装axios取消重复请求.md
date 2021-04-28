@@ -2,6 +2,7 @@
 title: 手把手封装axios取消重复请求
 date: 2020-08-31 19:23:16
 tags: JavaScript
+categories: JavaScript
 ---
 
 

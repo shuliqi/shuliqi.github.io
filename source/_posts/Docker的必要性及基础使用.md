@@ -1,8 +1,8 @@
 ---
 title: Docker的必要性及基础使用
 date: 2020-09-30 17:42:01
-tags:
-categories: 学习笔记
+tags: 其他
+categories: 其他
 ---
 
 在阅读我们Docker的 [官方文档](https://www.docker.com/)我们知道：

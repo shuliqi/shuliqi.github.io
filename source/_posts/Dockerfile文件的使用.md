@@ -1,7 +1,8 @@
 ---
 title: Dockerfile文件的使用
 date: 2020-10-20 14:27:40
-tags: 学习笔记
+tags: 其他
+categories: 其他
 ---
 
 在上一篇文章 [Docker的必要性及基础使用](https://shuliqi.github.io/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/)，我们知道 Dockerfile 是一个文本文件。这个文件里面包含了一系列的指令，每一条指令构建一层，每一条指令的内容及就是描述该层是如何构建的。

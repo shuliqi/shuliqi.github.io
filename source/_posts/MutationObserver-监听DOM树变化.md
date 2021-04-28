@@ -2,6 +2,7 @@
 title: MutationObserver 追踪DOM的变化
 date: 2020-04-21 18:47:51
 tags: JavaScript
+categories: JavaScript
 ---
 
 `Mutation observer`（变动观察器）是监听DOM变动的接口。当DOM对象树发生任何变动时，Mutation observer会得到通知。
