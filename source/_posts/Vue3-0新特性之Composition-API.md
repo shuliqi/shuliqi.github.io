@@ -5,11 +5,13 @@ tags: Vue
 categories: Vue
 ---
 
-`Composition API`是`Vue3.0`版本中主要特色语法，这是一个全新的逻辑重用和代码组织的方法。`Vue2.0`（选项）所有数据都定义在`data`中，方法定义在`methods`中。所以为了个组件添加逻辑， 我们可能需要填充（选项）属性`data`, `methods`,`computed`等。但是`Vue3.0`我们可以不这么写了。具体怎么写， 我们先看看`Vue2.0`的写法有什么缺陷。
+`Vue3.0`发布了很多新的特性和一些语法上的变更。其中	`Composition API`是`Vue3.0`版本中主要特色语法，这是一个全新的逻辑重用和代码组织的方法。这边文章就带你看看为啥会有`Composition API`以及如何使用`Composition API`
 
  <!--more-->
 
 # Option API 和 Composition API 的比较
+
+我们知道`Vue2.0`（选项）所有数据都定义在`data`中，方法定义在`methods`中。所以给组件添加逻辑， 我们可能需要填充（选项）属性`data`, `methods`,`computed`等。但是`Vue3.0`我们可以不这么写了。具体怎么写， 我们先看看`Vue2.0`的写法有什么缺陷。
 
 ## Option API
 
