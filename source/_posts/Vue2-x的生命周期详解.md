@@ -7,7 +7,7 @@ categories: Vue
 
 使用`Vue`开发已经有一段时间了。但发现自己对`vue`的理解还是不深刻。于是想着从观看`Vue`文档开始。在阅读文档之前，觉得需要先了解整个`Vue`的生命周期，清楚的认识到`Vue`在每个阶段的钩子函数没这样才能更好的让我们去使用`Vue`。
 
-我们先来看一张图，上面解释每个步骤是做什么的。
+我们先来看一张图，上面解释每个步骤是做什么的。可以只看这一张图就可以明白Vue实例的整个流程。
 
 {% asset_img 3.png %}
 
@@ -279,7 +279,131 @@ methods: 方法返回：舒丽琦
 
 ## beforeMount 和 mounted之前的生命周期
 
-{% asset_img 5.png %}
+{% asset_img 6.png %}
 
-这期间`Vue`实例对象添加`$el`。把内存中渲染好的html 替换到页面上。覆盖`$el`指定的页面
+这期间`Vue`实例对象添加`$el`。把内存中渲染好的html 替换到页面上。覆盖`$el`指定的页面。因为在这之前的`beforeCreate`生命周期打印的`el`还是`undefined`。
+
+## mounted生命周期
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>vue2.x生命周期学习</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <span>这是外部的html模板:{{message}}</span>
+  </div>
+</body>
+ <script>
+   var vm = new Vue({
+      el: '#app',
+    	data: {
+        message: "舒丽琦"
+      },
+      template: "<span>这是内部的模板：{{message}}</span>",
+      methods: {
+        getMessage() { 
+          return `方法返回：${this.message}`;
+        }
+      },
+      mounted() {
+        console.log("--------mounted--------");
+        console.log("el:", this.$el);
+      }
+   })
+</script>
+</html>
+```
+
+打印结果为：
+
+```
+--------mounted--------
+el: <span>​这是内部的模板：舒丽琦​</span>​
+```
+
+在这之前的`span`标签的名字是 {{message}} 占位的。这是`JavaScript`中的虚拟`DOM`形式存在的。在`mounted`之后就可以看到了内容发生了变化。
+
+## beforeUpdate 和 updated 之间的生命周期
+
+{% asset_img 7.png %}
+
+从图中可以看出来， 当`data`的数据发生了变化，先会触发`beforeUpdate`钩子。注意这时候页面的视图还没更新。然后才重新渲染组件。最后调用`updated`。调用完之后。视图和`data`都是最新的。
+
+我们看下面的例子：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>vue2.x生命周期学习</title>
+  <script src="https://cdn.bootcss.com/vue/2.4.2/vue.js"></script>
+</head>
+<body>
+  <div id="app">
+    <span>这是外部的html模板:{{message}}</span>
+  </div>
+</body>
+ <script>
+   var vm = new Vue({
+      el: '#app',
+    	data: {
+        message: "老的数据"
+      },
+      beforeUpdate() {
+        console.log("--------beforeUpdate--------");
+        console.log("el:", this.$el);
+      },
+      updated() {
+        console.log("--------updated--------");
+        console.log("el:", this.$el);
+      }
+   })
+   vm.message = "新的数据";
+</script>
+</html>
+```
+
+打印结果：
+
+{% asset_img 8.png %}
+
+当数据`data`有改变的（ vm.message = "新的数据"）。就会分别触发`beforeUpdate` 和 `updated`。
+
+## beforeDestroy 和 destroyed 之间的生命周期
+
+{% asset_img 9.png %}
+
+**beforeDestroy** 生命周期是在实例被销毁之前调用。在这一步，实例仍然是可用的。
+
+**destroyed**生命周期是在实例销毁之后调用。调用后。`Vue`实例所指的所有东西都会被解除绑定。所有的事件也会被移除。所有的子实例也会被销毁。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

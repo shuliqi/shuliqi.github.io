@@ -2,7 +2,7 @@
 title: Vue 组件 data 为什么必须是函数
 date: 2018-02-14 14:58:36
 tags: Vue
-categories: Vue
+categories: 框架
 ---
 
 在使用`vue`开发的时候，有一点觉得非常奇怪；使用`new Vue()`的时候，`data`是可以传入一个对象的；但是在组件中`data`就必须为一个函数；`vue`的官方文档是这么写的：
