@@ -17,7 +17,7 @@
 <h1 id="Vue-双向数据绑定的原理"><a href="#Vue-双向数据绑定的原理" class="headerlink" title="Vue 双向数据绑定的原理"></a>Vue 双向数据绑定的原理</h1><h2 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h2><p>从开发者的角度去看，视图到<code>data</code>的的改动只需要监听<code>DOM</code>的变化再同步赋值给<code>JavaScript</code>变量即可；如：<code>&lt;input&gt;</code>标签添加<code>change</code>或者<code>input</code>监听事件并在事件处理函数中给变量赋值。其实这也是<code>Vue</code>中<code>v-model</code>指令做的很重要事情。另外数据到视图关键是监听数据的变化，再去更新相应的<code>DOM</code>。那么监听数据的变化有哪些方式呢？。 </p>
 <p>我们知道常见架构模式有<code>MVC</code>, <code>MVP</code>,<code>MVVM</code>模式，目前前端框架基本上都是采用<code>MVVMM</code>实现双向数据绑定。<code>Vue</code>也不例外。各个框架实现双向数据板绑定的方法有有所不同，目前大概有以为这三种：</p>
 <ul>
-<li>[发布订阅模式</li>
+<li>发布订阅模式</li>
 <li>数据劫持</li>
 <li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2b61cd0bcbce">Angular 的脏查机制</a></li>
 </ul>
