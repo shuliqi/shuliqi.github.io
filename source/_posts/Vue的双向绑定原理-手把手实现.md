@@ -24,7 +24,7 @@ categories: Vue
 
 我们知道常见架构模式有`MVC`, `MVP`,`MVVM`模式，目前前端框架基本上都是采用`MVVMM`实现双向数据绑定。`Vue`也不例外。各个框架实现双向数据板绑定的方法有有所不同，目前大概有以为这三种：
 
-- [发布订阅模式
+- 发布订阅模式
 - 数据劫持
 - [Angular 的脏查机制](https://www.jianshu.com/p/2b61cd0bcbce)
 
@@ -471,6 +471,8 @@ MyVue.prototype = {
 {% asset_img 7.gif %}
 
 如果需要代码的可点击 [MyVue](https://github.com/shuliqi/MyVue/tree/master)。最后一点感触， 原理性的东西看懂了原理，还是需要手写一遍， 其中会发现很多意想不到的情况。收获颇多。
+
+
 
 
 
