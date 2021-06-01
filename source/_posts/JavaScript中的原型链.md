@@ -31,7 +31,9 @@ console.log(typeof f2); // function --> 函数对象
 console.log(typeof f3); // function --> 函数对象
 ```
 
-上面中 `obj1`,`obj2`,`obj3`都是普调对象，内置的 Function，Object
+上面中 `obj1`,`obj2`,`obj3`都是普调对象，内置的 `Function`，`Object`都是函数对象，`f1`,`f2`,`f3`都是函数对象。
+
+它们之前的区分是什么？ 
 
 # 
 
