@@ -1,6 +1,6 @@
 ---
-title: 项目中遇到的跨域问题
-date: 2021-06-05 10:19:03
+title: vue项目中遇到的跨域问题
+date: 2021-04-15 10:19:03
 tags:
 ---
 
@@ -169,7 +169,7 @@ app.listen(port, () => {
 
 上面例子中，我们由于同源策略的原因（其中域名，端口不相同）产生跨域，导致浏览器拦截并报错。那我们如何解决呢?
 
-## proxy
+## 前端proxy
 
 浏览器是禁止跨域的，但是服务器不禁止，所以我们前端可以使用`webpack`给我们的本地起一个服务，作为请求的代理对象。
 
@@ -240,9 +240,11 @@ App.vue文件修改如下：
 
 [本次例子代码](https://github.com/shuliqi/crossDomain/tree/webProxy)
 
+
+
+
+
 ## cors方式
-
-
 
 上面解决我们在开发环境遇到的跨域问题，但是我们打包上线的话， 我们做的配置是不生效的。自然而然也就产生了跨域。那么这种情况就可以使用`cors`方式来解决跨域。
 
@@ -254,7 +256,7 @@ App.vue文件修改如下：
 
 我们知道请求会分为**简单的请求**和**复杂的请求**：
 
-### 简单的请求：
+**简单的请求：**
 
 - 请求方式是 GET, POST, HEAD之一;
 
@@ -262,7 +264,7 @@ App.vue文件修改如下：
 
 那么这次的请求就是简单的请求。
 
-### 复杂的请求
+**复杂的请求：**
 
 - 请求方式是下面方式之一：PUT，
 
@@ -320,11 +322,13 @@ app.listen(port, () => {
 })
 ````
 
-然后起我们的前端服务`npm run serve` 和后端服务`node index.js`,打开我们的`http://localhost:8080/`可得到结果如下：
+然后起我们的前端服务`npm run serve` 和后端服务`node index.js`, 打开我们的`http://localhost:8080/`
 
-{% asset_img 7.png }
+可得到结果如下：
 
-[本例子的代码](https://github.com/shuliqi/crossDomain/tree/cors)
+{% asset_img 7.png %}
+
+[本例子的代码](https://github.com/shuliqi/crossDomain/tree/cors))
 
 ## 后端代理
 
@@ -355,6 +359,10 @@ app.listen(port, () => {
 })
 ```
 
+这里我们监听 8000 端口， 当接收到请求前缀是`/api`， 我们就代理到 3001 端口。
+
+
+
 我们的`index.js` 改成 `api.js`， 内容不变
 
 ```javascript
@@ -372,9 +380,11 @@ app.listen(port, () => {
 })
 ```
 
+这里我们监听的是 3001 端口。这里才是真正的接口响应的部分。
+
 我们新建 index.html. 内容如下：
 
-```javascript
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -403,19 +413,9 @@ app.listen(port, () => {
 </html>
 ```
 
+我们把我们的html静态文件放在服务的8000 端口下面。当请求的时候， 整个过程是这样：
 
-
-
-
-
-
-
-
-
-
-
-
-
+前端页面发起请求 ---> 后端的8000 服务接收请求，并代理到 3001 端口。----> 3001 端口处理响应
 
 
 

@@ -12,7 +12,7 @@ categories: Vue
 
 演示如下：
 
-{% asset_img 1.gif %}
+{% asset_img 6.gif %}
 
 # Vue 双向数据绑定的原理
 
