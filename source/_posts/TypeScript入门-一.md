@@ -3,6 +3,7 @@ title: TypeScript 入门教程
 date: 2019-10-16 13:36:19
 tags: JavaScript
 categories: JavaScript
+hidden: true
 ---
 
 最近一直在看阮一峰老师的 [TypeScript入门教程](https://ts.xcatliu.com/)。教程写的非常好，清晰明了。学习完了自己也试着写一些总结吧。
