@@ -35,6 +35,14 @@ categories: Vue
 
   
 
+当然除了实例的生命周期，还有其他的：
+
+- activated： keep-alive 缓存组件激活时使用
+- deactivated： keep-alice 缓存组件停用时使用
+- errorCaptured： 捕获一个来自子孙组件的错误时调用
+
+
+
 ## beforeCreate 之前
 
 在`beforeCreate`生命周期之前。首先是使用`new Vue`来开始创建一个`Vue`实例、接下来会初始化这个实例的生命周期事件。如下图：
@@ -383,11 +391,25 @@ el: <span>​这是内部的模板：舒丽琦​</span>​
 
 **destroyed**生命周期是在实例销毁之后调用。调用后。`Vue`实例所指的所有东西都会被解除绑定。所有的事件也会被移除。所有的子实例也会被销毁。
 
+## activated
+
+`keep-alive` 缓存组件激活的时候使用
+
+## deactivated
+
+ `keep-alive` 缓存组件停用时使用
 
 
 
+## errorCaptured
+
+捕获子孙组件的错误时调用
 
 
+
+## 数据请求在created和mouted的区别
+
+`created`是在组件实例一旦创建完成的时候立刻调用，这时候页面`dom`节点并未生成，`mounted`是在页面`dom`节点渲染完毕之后就立刻执行的，触发时机上`created`是比`mounted`要更早的：两者相同点：都能拿到实例对象的属性和方法；讨论这个问题本质就是触发的时机，放在`mounted`请求有可能导致页面闪动（页面`dom`结构已经生成），但如果在页面加载前完成则不会出现此情况建议：放在`create`生命周期当中
 
 
 
