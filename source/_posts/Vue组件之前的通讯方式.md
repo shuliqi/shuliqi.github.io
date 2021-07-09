@@ -23,7 +23,7 @@ Vue.js 中最强大的功能之一就是组件。而组件实例之间是相互�
 
 **parent.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>父级组件</p>
@@ -55,7 +55,7 @@ Vue.js 中最强大的功能之一就是组件。而组件实例之间是相互�
 
 **children.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>子组件</p>
@@ -100,7 +100,7 @@ Vue.js 中最强大的功能之一就是组件。而组件实例之间是相互�
 
 **parent.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>父组件</p>
@@ -146,7 +146,7 @@ Vue.js 中最强大的功能之一就是组件。而组件实例之间是相互�
 
 **children.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>子组件</p>
@@ -194,7 +194,7 @@ Vue.js 中最强大的功能之一就是组件。而组件实例之间是相互�
 
 **parent.vue**
 
-```vue
+```html
 <template>
   <div>
      <P>父组件</P>
@@ -230,7 +230,7 @@ export default {
 
 **children.vue**
 
-```vue
+```html
 <template>
   <div>
      <P>子组件</P>
@@ -263,7 +263,7 @@ export default {
 
 **A.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>我是最上层组件</p>
@@ -287,7 +287,7 @@ export default {
 
 **B.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>我是中间层组件</p>
@@ -308,7 +308,7 @@ export default {
 
 **C.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>我是最底层组件</p>
@@ -338,7 +338,7 @@ export default {
 
 那我们父组件改成这样是不是就可以了？
 
-```vue
+```html
 <template>
   <div>
     <p>我是最上层组件</p>
@@ -383,7 +383,7 @@ export default {
 
 `A.vue`
 
-```vue
+```html
 <template>
   <div>
     <p>我是最上层组件</p>
@@ -420,7 +420,7 @@ export default {
 
 **C.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>我是最底层组件</p>
@@ -461,7 +461,7 @@ export default {
 
 首先创建一个事件总线并将其导出，以便于其他模块可以使用或者监听它。
 
-```js
+```html
 
 // 初始化事件总线，并将其导出
 import Vue from "vue";
@@ -473,7 +473,7 @@ export default new Vue();
 
 **A.vue**
 
-```vue
+```html
 <template>
   <div>
     <B></B>
@@ -496,7 +496,7 @@ A组件引入了B,C组件，为兄弟组件
 
 **B.vue**
 
-```vue
+```html
 <template>
   <div>
     <P>B组件名字：{{ name }}</P>
@@ -531,7 +531,7 @@ B组件发送了`updateNameByB`事件和接收(监听)了`updateNameByC`组件
 
 `C.vue`
 
-```vue
+```html
 <template>
   <div>
     <P>C组件的名字： {{ name }}</P>
@@ -574,7 +574,7 @@ C组件发送了`updateNameByC`事件和接收(监听)了`updateNameByB`组件
 
 **A.vue**
 
-```vue
+```html
 <template>
   <div>
     <B  :name="name" 
@@ -611,7 +611,7 @@ C组件发送了`updateNameByC`事件和接收(监听)了`updateNameByB`组件
 
 **B.vue**
 
-```vue
+```html
 <template>
   <div>
     <C v-bind="$attrs" v-on="$listeners"></C>
@@ -634,7 +634,7 @@ C组件发送了`updateNameByC`事件和接收(监听)了`updateNameByB`组件
 
 **C.vue**
 
-```vue
+```html
 <template>
   <div>
     <p>名字：{{ name }}</p>
