@@ -17,6 +17,48 @@ categories:  Vue
 
 在网络比较好的情况下， 耗时：6.86s。 平均是 7s 左右。
 
+
+
+# 什么是首屏加载
+
+首屏时间（First Contentfull Paint）: 指的是响应用户在浏览器上输入`URL`网址， 到首屏内容渲染完后才能的一个时间。此时整个网页不一定要渲染完成，但旭要展示当前视窗需要的内容。
+
+## 首屏加载时间的计算
+
+可以通过`DOMContentLoad` 或者是 `performance` 来计算首屏时间
+
+```javascript
+windown.addEventListner("DOMContentLoad", (event) => {
+    //	....
+})
+```
+
+```javascript
+performance.getEntriesByName("first-contentfull-paint")[0].startTime;
+// performance.getEntriesByName("first-contentful-paint")[0]
+// 会返回一个 PerformancePaintTiming的实例，结构如下：
+{
+  name: "first-contentful-paint",
+  entryType: "paint",
+  startTime: 507.80000002123415,
+  duration: 0,
+};
+```
+
+
+
+# 加载慢的原因
+
+在页面渲染的过程，导致加载速度慢的因素可能如下：
+
+- 网络请求慢
+- 资源体积过大
+
+- 重复请求资源
+- 加载脚本堵塞了渲染
+
+
+
 # 解决的办法
 
 我们知道 `vue`， `react` 等框架都是`js` 渲染的`html`。是典型的单页应用，首次加载耗时多，因此优化`Vue`项目首屏加载对于提升用户体验非常重要。所以必须要等到这个` js `文件加载完成后界面才会显示。
