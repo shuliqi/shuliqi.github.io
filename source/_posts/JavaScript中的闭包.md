@@ -137,6 +137,7 @@ function foo() {
 function bar(fn) {
   fn(); // 1
 }
+foo();
 ```
 
 上面这种情况，`fn` 也是闭包。 把函数`foo`内部的函数` getValue` 传递给`bar`。 当调用` foo`时会执行`bar`函数，`bar`函数里面执行传递进来的函数`getValue`的引用。所以它是能够访问`foo`内的作用域的。
@@ -331,6 +332,27 @@ fn(); // 1
 手动修改 内部函数的引用， 就释放了当前作用域的了。
 
 
+
+
+
+# 最后
+
+最后来一个面试中经常问到的题目：实现 sum(1)(2)(3) 返回结果是 1,2,3 之和
+
+```javascript
+function sum(x) {
+  return function(y) {
+    return function(z) {
+      return x + y + z
+    }
+  }
+}
+console.log(sum(1)(2)(3)); // 6
+```
+
+如果有很多的回调呢？ 怎么办？
+
+这就需要封装一个 柯里化的函数了， 具体可移步 [什么是函数柯里化](https://shuliqi.github.io/2018/10/05/%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%9F%AF%E9%87%8C%E5%8C%96/)
 
 
 

@@ -7,7 +7,7 @@ categories: JavaScript
 
 对于`JavaScript`中的原型链，一直很疑惑，看不懂，最近读到一篇文章，觉得豁然开朗。记录一下。关于`javaScript`为什么会有原型链，可以点击 [Javascript继承机制的设计思想](http://www.ruanyifeng.com/blog/2011/06/designing_ideas_of_inheritance_mechanism_in_javascript.html)讲得非常清楚
 
-# 调对象和函数对象
+# 普通对象和函数对象
 
 在 `JavaScript`中除了基本数据类型之外（引用数据类型），都是对象，但是对象也分为**普调对象** 和 **函数对象**。`Object`和`Function` 是自带的函数对象。
 
@@ -287,19 +287,19 @@ console.log(b.__proto__ === Boolean.prototype);  // true
 
 - 每个对象都有`__proto__`属性， 指向自构造自己的构造函数的的原型。
 
-- 而构造函数的原型也是对象， 也有`__proto__`属性，构造函数和构造器一样都是函数对象，是由`Function`构造的。所以构造函数的原型的`__proto__`属性指向`Function.prototype`。
+- 构造函数和构造器一样都是函数对象，是由`Function`构造的。所以构造函数的原型的`__proto__`属性指向`Function.prototype`。
+
+- 而构造函数的原型也是对象， 也有`__proto__`属性，构造函数的原型都是普通对象。所以指向 `Object.prototype`
 
 - 而`Function.prototype`也是一个对象，也有`__proto__`属性。在`JavaScript`中万物皆对象。所以`Function.prototype`是由`Object`构造的。所以`Function.prototype`的`__proto__`属性指向 `Object`的原型。prototype`。
 
-  ```
+  ```js
   Function.prototype.__proto__ === Object.prototype; // true
   ```
 
-  Function.prototype是一个特殊的对象，它是函数对象，并且没有`prototype`属性。 
-
 - `Object.prototype`也是一个对象，也有`__proto__`属性。但是它指向 `null`， 指原型链的终点。
 
-​                                                                                                                    
+​                                                                                                                   
 
 而上面的对象也原型之前是通过`__proto__`来进行链接。这样就构成了原型链。
 
@@ -348,13 +348,36 @@ const person1 = new MyPeople();
 
   `Object.prototype`也是一个对象，也有`__proto__`属性。但是它比较特殊，它为`null`,`null`为原型链的顶端。
 
+测试结果：
+
+```javascript
+function MyPeople() {};
+const person1 = new MyPeople();
+console.log(person1.__proto__ === MyPeople.prototype);
+console.log(MyPeople.__proto__ === Function.prototype);
+console.log(MyPeople.prototype.__proto__ === Object.prototype);
+console.log(Object.__proto__ === Function.prototype)
+console.log(Function.prototype.__proto__ ===  Object.prototype)
+console.log(Object.prototype.__proto__ === null)
+
+
+// true
+// true
+// true
+// true
+// true
+// true
+```
+
 
 
 所以现在来看这个原型链图应该明白很多：
 
 {% asset_img 3.png %}
 
+也可以对比网上的图
 
+{% asset_img 4.png %}
 
 
 

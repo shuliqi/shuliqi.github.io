@@ -304,7 +304,7 @@ p2.then(resolvedForP2, rejectedForP2)
   });
   // 方法2: 显式的调用Promise.reject() 
   const p2 = p1.then((value)=> {
-      Promise.reject('显式的调用Promise.reject() ')
+      return Promise.reject('显式的调用Promise.reject() ')
   });
   p2.then((value) => {
       console.log(value);
@@ -342,29 +342,27 @@ try {
 
 ```javascript
 const p1 = new Promise((resolve, reject) => {
-    reject('调用p1的reject置值器置值')
+  reject('调用p1的reject置值器置值')
 });
 const p2 = p1.then();
-p2.then((value) => {
-    console.log(value)
-});
-// 结果：
-// UnhandledPromiseRejectionWarning: 调用p1的reject置值器置值...
 ```
+
+{% asset_img 1.png %}
 
 P1代理的值是reject 置值器置值的，在创建p2的时候， rejected 函数不存在(无效), 则抛出异常, 值为当前promise(p1)的值。
 
+
+
+
+
 ```javascript
 p1 = new Promise((resolve, reject) => {
-    resolve('调用p1的reject置值器置值')
+  resolve('调用p1的reject置值器置值')
 });
-const p2 = p1.then();
-p2.then((value) => {
-    console.log(value)
-})
-// 结果：
-// 调用p1的reject置值器置值
+p2 = p1.then();
 ```
+
+{% asset_img 2.png %}
 
 P1代理的值是resolve置值器置值的，在创建p2的时候， resolved函数不存在(无效), 则直接返回当前promise(p1)的值。
 
@@ -405,7 +403,7 @@ promise类方法有四个：
 
 ## Promise.resolve()
 
-Pomise类方法resolve()是要得到一个resolved 的 promise。如：
+作用：`Promise.resolve()`将现有的对象转成`Promise`对象
 
 ```javascript
 const p = Promise.resolve(x)
@@ -416,17 +414,44 @@ x是任意值，如果不指定则是undefined
 * 如果 x 是Promise的一个实例，那么Promise.resolve(x)， 将不会产生新的计算结果，而是直接返回x这个实例
 
   ```javascript
-  const x = new Object();
-  const p = Promise.resolve(x);
-  const p2 = Promise.resolve(p)
-  // p 与 p2 是相同的promise
-  console.log(p === p2); // true
-  // resolve的值是同一个
-  p2.then((value) =>  console.log(value === x)); // true
+  const obj = {}
+  const p1 = new Promise((resolve, reject) => {
+    reject('reject')
+  });
+  const p2 = Promise.resolve(p1);
+  console.log(p1 === p2); // true
+  // p1 与 p2 是相同的promise
   ```
-
-
-
+  
+  ```javascript
+  const obj = {}
+  const p1 = new Promise((resolve, reject) => {
+    resolve('resolve')
+  });
+  const p2 = Promise.resolve(p1);
+  console.log(p1 === p2); // true
+  // p1 与 p2 是相同的promise
+  ```
+  
+  
+  
+  说明：如果x是一个`rejected`的`promise`对象，那么`Project.resolve(x)`将会是一个`rejected`状态的`promise`对象
+  
+  ```javascript
+  const p = new Promise((resolve, reject) => {
+      reject('rejected状态')
+  })
+  const p2 = Promise.resolve(p);
+  p2.then().catch((reason) => console.log(reason));
+  
+  // 结果：
+  // rejected状态
+  ```
+  
+  {% asset_img 3.png %}
+  
+  
+  
 * 如果x是一个thenable
 
   thenable对象：指任意带有.then()方法的对象。如：
@@ -442,94 +467,68 @@ x是任意值，如果不指定则是undefined
   再看下面这个例子：
 
   ```javascript
-  const thenable = {
-    then: () => {
-        console.log('我是thenable对象');
+  const obj = {
+    then: (reaolve, reject) => {
+      console.log("我是thenable对象")
     }
-  };
-  const p = Promise.resolve(thenable);
-  // 我是thenable对象
-  
-  console.log(thenable === p); 
-  // false
+  }
+  p1 = Promise.resolve(obj);
   ```
 
-  x.then()是立即执行了， 但是这个thenable对象与最终的p没有关系，所以目前这个执行过程是没有什么意义的。因为这个thenable对象与最终的p对像之间并没有建立关系。为什么没有建立关系呢？这是因为JavaScript是试图将x.then()作为一个“类似new Promise()中的执行器（executor）”来使用的。Promise.resolve(tenable)导致.then() 被执行时，p这个promise对象的resolve与reject两个置值器被作为.then()的参数传入的，因此(与new Promise类似)，用户代码需要在.then(resolve,reject)调用这两个置值器才能真正的建立thenable与p之间的关系。
+  {% asset_img 4.png %}
+
+  `x.then()`是立即执行了， 但是这个`thenable`对象与最终的p没有关系，所以目前这个执行过程是没有什么意义的。因为这个t`henable`对象与最终的`p`对像之间并没有建立关系。为什么没有建立关系呢？这是因为`JavaScript`是试图将x.then()作为一个“类似new Promise()中的执行器（executor）”来使用的。`Promise.resolve(tenable)`导致`.then() `被执行时，`p`这个`promise`对象的`resolve`与r`eject`两个置值器被作为`.then()`的参数传入的，因此(与`new Promise`类似)，用户代码需要在`.then(resolve,reject)`调用这两个置值器才能真正的建立thenable与p之间的关系。
+
+  
+
+  
 
   所以下面这个例子，p对象与thenable才真正建立起了关系：
 
   ```javascript
-  const thenable = {
-      then: (resolve, reject) => {
-          console.log('我是thenable对象');
-          resolve('shuliqi')
-      }
-  };
-  const p = Promise.resolve(thenable);
-  p.then((value) => {
-      console.log(value)
-  })
-  // 我是thenable对象
-  // shuliqi
+  const obj = {
+    then: (resolve, reject) => {
+      console.log("我是thenable对象");
+      resolve("结果")
+    }
+  }
+  p1 = Promise.resolve(obj);
   ```
 
-* 如果x是一个rejected的promise对象，那么Project.resolve(x将会是一个rejected状态的promise对象
+  {% asset_img 5.png %}
 
-  ```javascript
-  const p = new Promise((resolve, reject) => {
-      reject('rejected状态')
-  })
-  const p2 = Promise.resolve(p);
-  p2.then().catch((reason) => console.log(reason));
   
-  // 结果：
-  // rejected状态
-  ```
 
-* x以上情况都不是，那么将会返回一个新的状态直接为resolved的promise对像，并且代理的数据与x的相同。
+* x以上情况都不是，那么将会返回一个新的`resolved`的`promise`对像，并且代理的数据与`x`的相同。
 
   ```javascript
-  const x = "shuliqi";
-  const p = Promise.resolve(x);
-  p.then((value) => console.log('resolved状态的', value));
-  // 结果：
-  //resolved状态的, shuliqi
+  p1 = Promise.resolve("111");
   ```
 
-  ```javascript
-  const p = Promise.resolve();
-  p.then((value) => console.log("resolved状态的"));
-  ```
+  {% asset_img 6.png %}
+
   
-  上面这两个例子都是调用了resoled状态的回调。
 
 ## Promise.reject()
 
-Pomise类方法Promise.reject()得到一个rejected 的promise；
+`Pomise`类方法`Promise.reject()`得到一个状态为`rejected `的`promise`；
 
 ```javascript
 Promise.reject(x)； // x是任意值，如果不指定则为undefined   
 ```
 
-Promise.reject(x)与Promise.resolve(x)不同，Promise.reject(x)是将x作为一个普通的对象。这就意味着仍然会得到一个rejected promise，并且它的值时一个（类型为Promise）的对象。
+`Promise.reject(x)`与`Promise.resolve(x)`不同，`Promise.reject(x)`是将`x`作为一个普通的对象。这就意味着仍然会得到一个`rejected promise`，并且它的值时一个（类型为Promise）的对象。
 
 ```javascript
-const p1 = Promise.resolve('shuliqi');
-const p2 =Promise.reject(p1);
-p2.then().catch((reason) => {
-    console.log('typeof reason:', typeof reason);
-    console.log('instanceof Promise:', reason instanceof Promise);
-    console.log('reason === p1:', reason === p1)
-})
-// 结果：
-// typeof reason: object
-// instanceof Promise: true
-// reason === p1: true
+p1 = Promise.resolve("111");
+p2 = Promise.reject(p1);
 ```
+
+{% asset_img 7.png %}
 
 ## Promise.all()
 
-尝试resolve所有元素。当所有的元素都resolved，得到一个将所有结果作为resolved array的promise。当任意一个元素rejected，得到一个该结果 reason 的rejected promise。
+尝试`resolve`所有元素。当所有的元素都`resolved`，得到一个将所有结果作为`resolved` array的`promise`。当任意一个元素`rejected`，得到一个该结果 `reason` 的`rejected promise`。
 
 ```javascript
 Promise.all(x); // x 必须是可迭代对象（集合对象，或者是有迭代器的对象）
@@ -538,26 +537,61 @@ Promise.all(x); // x 必须是可迭代对象（集合对象，或者是有迭�
 **可迭代的对象**：数组， Map/Set集合，字符串可迭代的对象：数组， Map/Set集合，字符串 。
 
 ```javascript
-const timeout1 = new Promise((resolve, reject) => {
-  setTimeout(resolve, 1000);
-});
+const p1 = Promise.resolve("111");
+const p2 = Promise.resolve("222");
+const p3 = Promise.resolve("333");
+const p4 = Promise.resolve("444");
 
-const timeout2 = new Promise((resolve, reject) => {
-  setTimeout(resolve, 2000);
-});
-Promise.all([timeout1, timeout2])
-  .then(([data1, data2]) => {
-    console.log("都执行完成了");
-  })
-  .catch(() => {
-    console.log("没有catch");
-  });
-// 都执行完成了
+p = Promise.all([p1,p2,p3,p4]);
 ```
+
+{% asset_img 8.png %}
+
+
+
+```javascript
+
+const p1 = Promise.resolve("111");
+const p2 = Promise.resolve("222");
+const p3 = Promise.reject("333");
+const p4 = Promise.resolve("444");
+
+p = Promise.all([p1,p2,p3,p4]);
+
+```
+
+{% asset_img 9.png %}
 
 Promise.all()会对所有的元素进行预处理（Promise.resolve(x)）所以无论x 是一个普通值还是一个“潜在的promise”， 它都将作为一个resolved promise进入后续的处理，即使x是一个rejected promise， 那么它的状态(Promise.resolve(rejected_promise))依然会影响Promise.all()的最终状态的判断。 一旦发现rejected，则返回rejected的结果。
 
 promise.all(element)只有element完全resolved时，会在then()中得到一个与原始element 存在映射关系的数组。
+
+## Promise.any()
+
+**作用：**作用也是将多个promise实例，包装成一个新的Promise实例。 但是是是要参数实例有任何一个状态变成fulfilled。 包装实例对象就会变成fulfilled状态。如果所有的Promise状态都变成rejected, 包装实例对象才会变成rejecte的状态。
+
+```javascript
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("1111")
+  }, 1000)
+})
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject("2222");
+  }, 500)
+})
+
+p = Promise.any([p1,p2]);
+p.then((value) => {
+  console.log("resolve", value)
+}, (reason) =>{
+  console.log("reject", reason)
+})
+// 111
+```
+
+
 
 ## Promise.race()
 
@@ -572,31 +606,56 @@ Promise.race(x); // x 必须是可迭代对象（集合对象，或者是有迭�
 Promise.race()与Promise.all()类似， 都会对所有的元素进行预处理（Promise.resolve(x)）。
 
 ```javascript
-
-const timeout1 = new Promise((resolve, reject) => {
+const p1 = new Promise((resolve, reject) => {
   setTimeout(() => {
-    console.log("timeout 1");
-    resolve();
-  }, 1000);
-});
-
-const timeout2 = new Promise((resolve, reject) => {
+    resolve("1111")
+  }, 1000)
+})
+const p2 = new Promise((resolve, reject) => {
   setTimeout(() => {
-    console.log("timeout2");
-    reject();
-  }, 500); // 异步操作设置rejecte， 失败
-});
-Promise.race([timeout1, timeout2])
-  .then(() => {
-    console.log("第一个time状态发生改变了");
-  })
-  .catch(() => {
-    console.log("catch");
-  });
-// timeout2
-//  catch
-//  timeout 1
+    reject("2222");
+  }, 500)
+})
+
+p = Promise.race([p1,p2]);
+p.then((value) => {
+  console.log("resolve", value)
+}, (reason) =>{
+  console.log("reject", reason)
+})
+// reject 2222
 ```
+
+## Promise.allSettled()
+
+**作用：**作用也是将多个promise实例，包装成一个新的Promise实例.。但是只要这些参数的实例都返回结果，不管是fulfilled还是rejected,包装实例才会结束。
+
+```javascript
+const p1 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve("1111")
+  }, 1000)
+})
+const p2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject("2222");
+  }, 500)
+})
+
+p = Promise.allSettled([p1,p2]);
+p.then((value) => {
+  console.log("resolve", value)
+}, (reason) =>{
+  console.log("reject", reason)
+})
+
+// resolve [
+//   { status: 'fulfilled', value: '1111' },
+//   { status: 'rejected', reason: '2222' }
+// ]
+```
+
+
 
 # Promise对象的原型方法
 
@@ -704,7 +763,9 @@ p2.catch((reason) => {
 // 我的值是： 我在onFinally函数中显式的返回了rejected promise了
 ```
 
+## Promise.Prototype.then()
 
+其实`then`方法是最重要的， 在前面我们都是讲过知识点。
 
 
 
