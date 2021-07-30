@@ -1741,7 +1741,7 @@ MyPromise.resolve = function(arg) {
 
 
 
-## Promise.resolve()
+## Promise.reject()
 
 该方法返回一个新的 Promise 实例，该实例的状态为`rejected`。
 
