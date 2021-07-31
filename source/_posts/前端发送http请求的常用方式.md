@@ -1,5 +1,5 @@
 ---
-title: 前端发送http请求的常用方式
+title: 前端发送http请求的原生方式
 date: 2021-07-30 16:10:55
 tags: 计算机网络
 ---
@@ -17,6 +17,8 @@ tags: 计算机网络
 
 
 # from表单
+
+
 
 这属于最原始的`http`请求方式
 
@@ -61,15 +63,23 @@ tags: 计算机网络
 
 > 这是最原始的一直请求方式， 现在几乎都不会采用这种方式了， 所以这里就不细讲了
 
+{% asset_img 4.png %}
 
+这种交互方式的缺陷是显而易见的，任何和服务器的交互都是需要刷新页面的，造成的问题就是用户体验很差
 
-# XMLHttpRequest对象
+# Ajax
 
+由于之前的`web`交互方式是需要刷新页面的， 所以导致用户的体验很差；`Ajax`的出现解决了这个问题。`Ajax`全称 `Asynchronous JavaScript + XML`（异步`JavaScript`和`XML`）；
 
+`Ajax`本身不是一种新技术，而是用来描述一种使用现有技术集合实现的一个技术方案，使用`Ajax`，网页应用能够快速地将增量更新呈现在用户界面上，而不需要重载（刷新）整个页面。
+
+那`Ajax`这个方案是如何实现的呢？其实`Ajax`的实现主要是浏览器的`XMLHttpRequest`（在`IE6`以下使用`ActiveXObject`）。 那我们来看看这个原生的`XMLHttpRequest`的`api`。
+
+## XMLHttpRequest对象
 
 `XMLHttpRequest`一开始只是微软浏览器提供的一个接口，但是后来各大浏览器也效仿提供了这个接口， 再后来`W3C`对它进行了标准化，按照标准的前后可以分为两个版本；
 
-## XMLHttpRequest 老版本
+### XMLHttpRequest 老版本
 
 ```javascript
   // 新建一个 XMLHttpRequest 对象
@@ -149,7 +159,9 @@ tags: 计算机网络
 
 {% asset_img 2.png %}
 
-## XMLHttpRequest 新版本
+由以上方式， 我们`web`是这样工作的：
+
+### XMLHttpRequest 新版本
 
 为了更好的使用`XMLHttpRequest`，`w3school`发布了标准版本，该版本弥补了老版本的一些缺陷，也是被各大浏览器厂商接受和实现，具体的功能如下：
 
@@ -265,9 +277,13 @@ tags: 计算机网络
 
 结果：
 
-{% asset_img 2.png %}
+{% asset_img 3.png %}
 
+最后总结的来说`XMLHttpRequest`的功能如下：
 
+{% asset_img 5.png %}
+
+# fetch
 
 
 
