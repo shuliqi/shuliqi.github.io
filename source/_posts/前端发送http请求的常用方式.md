@@ -1,20 +1,14 @@
 ---
-title: 前端发送http请求的方式
+title: 前端如何发起http请求及各方法的优缺点
 date: 2021-07-30 16:10:55
 tags: 计算机网络
 ---
 
 
 
-对于前端开发来说， 请求是日常工作必备的；前端主要通过请求与后端进行交互，特别在前后端分离的模式开发下，请求就更重要了。那么掌握前端发送请求的方式很重要的。那么前端请求常用的方式有哪些呢？
+对于前端开发来说， 请求是日常工作必备的；前端主要通过请求与后端进行交互，特别在前后端分离的模式开发下，请求就更重要了。那么掌握前端发送请求的方式很重要的。那么前端请求常用的方式有哪些呢？具体做业务的时候我们选择什么样的请求方式呢？
 
  <!--more-->
-
-
-
-
-
-
 
 # from表单
 
@@ -59,13 +53,11 @@ tags: 计算机网络
 
 这种方式的请求的整个过程是什么呢？
 
-
-
-> 这是最原始的一直请求方式， 现在几乎都不会采用这种方式了， 所以这里就不细讲了
-
 {% asset_img 4.png %}
 
 这种交互方式的缺陷是显而易见的，任何和服务器的交互都是需要刷新页面的，造成的问题就是用户体验很差
+
+> 这是最原始的一直请求方式， 现在几乎都不会采用这种方式了， 所以这里就不细讲了
 
 # Ajax
 
@@ -333,7 +325,7 @@ tags: 计算机网络
 
 {% asset_img 6.png %}
 
-> [jquery官方](https://jquery.com/)
+> 这里也不细讲， 有兴趣或者需要的话可以点击学习[jquery官方](https://jquery.com/)
 
 ## 优点：
 
@@ -543,25 +535,446 @@ getData();
 
 ###  Response.headers 属性
 
+`Response`对象还有一个`Response.headers`属性， 指向一个`Headers`对象，对应`HTTP`响应的所有标头。
+
+`Headers`对象可以使用`for...of`来进行循环遍历：
+
+```js
+async function getData () {
+  try {
+    const response = await fetch("https://www.fastmock.site/mock/d867c364f89208a7672e9e9d0a822417/qixiao/getFileDetail");
+    const headers = response.headers; 
+    for (let [key, value] of response.headers) { 
+        console.log(`${key} : ${value}`);  
+    }
+  } catch (error) {
+    console.log("获取数据失败：", err)
+  }
+}
+getData();
+```
+
+结果：
+
+```json
+content-type : application/json; charset=utf-8
+```
+
+`Headers`对象还提供了以下方法，用来操作标头
+
+| 方法                | 作用                                                       |
+| ------------------- | ---------------------------------------------------------- |
+| `Headers.get()`     | 根据指定的键名，返回键值                                   |
+| `Headers.has()`     | 返回一个布尔值，表示是否包含某个标头                       |
+| `Headers.set()`     | 如果该键名不存在则会添加。                                 |
+| `Headers.append()`  | 添加标头                                                   |
+| `Headers.delete()`  | 删除标头                                                   |
+| `Headers.keys()`    | 返回一个遍历器，可以依次遍历所有键名                       |
+| `Headers.values()`  | 返回一个遍历器，可以依次遍历所有键值                       |
+| `Headers.entries()` | 返回一个遍历器，可以依次遍历所有键值对（`[key, value]`）。 |
+| `Headers.forEach()` | 依次遍历标头，每个标头都会执行一次参数函数                 |
+
+上面的这些方法有些是可以修改标头，那是因为继承自`Headers`接口，对于`HTTP`响应来说， 修改标头没有很大的意义，而且很多标头都是只读的，浏览器不允许修改。
+
+这些方法中， 最常用的就是`response.headers.get()`，用于获取某个标头的值。
+
+```js
+  async function getData () {
+    try {
+      const response = await fetch("https://www.fastmock.site/mock/d867c364f89208a7672e9e9d0a822417/qixiao/getFileDetail");
+      const headers = response.headers; 
+      console.log(headers.get("Content-Type")) // application/json; charset=utf-8
+    } catch (error) {
+      console.log("获取数据失败：", err)
+    }
+  }
+  getData();
+```
+
+### 读取内容的方法
+
+`Response`对象根据服务器返回的不同类型的数据，提供了不同的读取方法。
+
+| 方法                       | 作用                          |
+| -------------------------- | ----------------------------- |
+| `response.text()`          | 得到文本字符串                |
+| `response.json()`          | 得到 JSON 对象。              |
+| `response.blob()`          | 得到二进制 Blob 对象          |
+| `response.formData()`      | 得到 FormData 表单对象        |
+| ``response.arrayBuffer()`` | 得到二进制 ArrayBuffer 对象。 |
+
+`response.json()`上面讲过了，我们再举个`response.text()`例子：
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>response.text()读取内容</title>
+</head>
+<body>
+   <script>
+    async function getData () {
+      try {
+        const response = await fetch("https://www.fastmock.site/mock/d867c364f89208a7672e9e9d0a822417/qixiao/getFileDetail");
+        const result = await response.text();
+        console.log(result); 
+      } catch (error) {
+        console.log("获取数据失败：", err)
+      }
+    }
+    getData();
+   </script>
+</body>
+</html>
+```
+
+结果：
+
+{% asset_img 8.png %}
+
+### Response.clone()
+
+`Stream` 对象只能读取一次，读取完就没了。这意味着，前一节的五个读取方法，只能使用一个，否则会报错。
+
+```js
+let text =  await response.text();
+let json =  await response.json();  // 报错
+```
+
+`Response` 对象提供`Response.clone()`方法，创建`Response`对象的副本，实现多次读取。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Response.clone()</title>
+</head>
+<body>
+   <script>
+    async function getData () {
+      try {
+        const response1 = await fetch("https://www.fastmock.site/mock/d867c364f89208a7672e9e9d0a822417/qixiao/getFileDetail");
+        const response2 = response1.clone();
+        const result1 = await response1.json();
+        const result2 = await response2.text();
+        console.log("result1--------:", result1); 
+        console.log("result2--------:", result2); 
+      } catch (error) {
+        console.log("获取数据失败：", err)
+      }
+    }
+    getData();
+   </script>
+</body>
+</html>
+```
+
+结果：
+
+{% asset_img 9.png %}
+
+### Response.body 属性
+
+`Response.body`属性是 Response 对象暴露出的底层接口，返回一个 ReadableStream 对象，供用户操作。
+
+它可以用来分块读取内容，应用之一就是显示下载的进度。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Response.body()</title>
+</head>
+<body>
+   <script>
+    async function getData () {
+      try {
+        const response = await fetch("https://shuliqi.github.io/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/1.gif");
+        const reader = response.body.getReader();
+        while(true) {
+          const {done, value} = await reader.read();
+          if (done) {
+            break;
+          }
+          console.log(`Received ${value.length} bytes`)
+        }
+      } catch (error) {
+        console.log("获取数据失败：", err)
+      }
+    }
+    getData();
+   </script>
+</body>
+</html>
+```
+
+结果：
+
+{% asset_img 10.png %}
+
+## fetch()配置对象
+
+`fetch()`的第一个参数是 `URL`，还可以接受第二个参数，作为配置对象，定制发出的 `HTTP` 请求。
+
+`fetch()`第二个参数的完整 API 如下。
+
+```js
+const response = fetch(url, {
+  method: "GET",
+  headers: {
+    "Content-Type": "text/plain;charset=UTF-8"
+  },
+  body: undefined,
+  referrer: "about:client",
+  referrerPolicy: "no-referrer-when-downgrade",
+  mode: "cors", 
+  credentials: "same-origin",
+  cache: "default",
+  redirect: "follow",
+  integrity: "",
+  keepalive: false,
+  signal: undefined
+});
+```
+
+`fetch()`请求的底层用的是 [Request() 对象](https://developer.mozilla.org/en-US/docs/Web/API/Request/Request)的接口，参数完全一样，因此上面的 API 也是`Request()`的 API。
+
+- `method`：HTTP 请求的方法，`POST`、`DELETE`、`PUT`都在这个属性设置。
+- `headers`：一个对象，用来定制 HTTP 请求的标头。
+- `body`：POST 请求的数据体。
+
+```js
+
+const response = await fetch(url, {
+  method: 'POST', // GET, POST,PUT,DELETE等
+  headers: {
+    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+  },
+  body: 'foo=bar&lorem=ipsum',
+  // body: blob, //直接上传二进制数据
+  // body: new FormData(form) // 提交表单
+});
+
+const json = await response.json();
+```
+
+注意，有些标头不能通过`headers`属性设置，比如`Content-Length`、`Cookie`、`Host`等等。它们是由浏览器自动生成，无法修改。
+
+**cache**
+
+`cache`属性指定如何处理缓存。可能的取值如下：
+
+> - `default`：默认值，先在缓存里面寻找匹配的请求。
+> - `no-store`：直接请求远程服务器，并且不更新缓存。
+> - `reload`：直接请求远程服务器，并且更新缓存。
+> - `no-cache`：将服务器资源跟本地缓存进行比较，有新的版本才使用服务器资源，否则使用缓存。
+> - `force-cache`：缓存优先，只有不存在缓存的情况下，才请求远程服务器。
+> - `only-if-cached`：只检查缓存，如果缓存里面不存在，将返回504错误。
+
+**mode**
+
+`mode`属性指定请求的模式。可能的取值如下：
+
+> - `cors`：默认值，允许跨域请求。
+> - `same-origin`：只允许同源请求。
+> - `no-cors`：请求方法只限于 GET、POST 和 HEAD，并且只能使用有限的几个简单标头，不能添加跨域的复杂标头，相当于提交表单所能发出的请求。
+
+**credentials**
+
+`credentials`属性指定是否发送 Cookie。可能的取值如下：
+
+> - `same-origin`：默认值，同源请求时发送 Cookie，跨域请求时不发送。
+> - `include`：不管同源请求，还是跨域请求，一律发送 Cookie。
+> - `omit`：一律不发送。
+
+跨域请求发送 Cookie，需要将`credentials`属性设为`include`。
+
+> ```javascript
+> fetch('http://another.com', {
+>   credentials: "include"
+> });
+> ```
+
+**signal**
+
+`signal`属性指定一个 AbortSignal 实例，用于取消`fetch()`请求，详见下一节。
+
+**keepalive**
+
+`keepalive`属性用于页面卸载时，告诉浏览器在后台保持连接，继续发送数据。
+
+一个典型的场景就是，用户离开网页时，脚本向服务器提交一些用户行为的统计信息。这时，如果不用`keepalive`属性，数据可能无法发送，因为浏览器已经把页面卸载了。
+
+> ```javascript
+> window.onunload = function() {
+>   fetch('/analytics', {
+>     method: 'POST',
+>     body: "statistics",
+>     keepalive: true
+>   });
+> };
+> ```
+
+**redirect**
+
+`redirect`属性指定 HTTP 跳转的处理方法。可能的取值如下：
+
+> - `follow`：默认值，`fetch()`跟随 HTTP 跳转。
+> - `error`：如果发生跳转，`fetch()`就报错。
+> - `manual`：`fetch()`不跟随 HTTP 跳转，但是`response.url`属性会指向新的 URL，`response.redirected`属性会变为`true`，由开发者自己决定后续如何处理跳转。
+
+**integrity**
+
+`integrity`属性指定一个哈希值，用于检查 HTTP 回应传回的数据是否等于这个预先设定的哈希值。
+
+比如，下载文件时，检查文件的 SHA-256 哈希值是否相符，确保没有被篡改。
+
+> ```javascript
+> fetch('http://site.com/file', {
+>   integrity: 'sha256-abcdef'
+> });
+> ```
+
+**referrer**
+
+`referrer`属性用于设定`fetch()`请求的`referer`标头。
+
+这个属性可以为任意字符串，也可以设为空字符串（即不发送`referer`标头）。
+
+> ```javascript
+> fetch('/page', {
+>   referrer: ''
+> });
+> ```
+
+**referrerPolicy**
+
+`referrerPolicy`属性用于设定`Referer`标头的规则。可能的取值如下：
+
+> - `no-referrer-when-downgrade`：默认值，总是发送`Referer`标头，除非从 HTTPS 页面请求 HTTP 资源时不发送。
+> - `no-referrer`：不发送`Referer`标头。
+> - `origin`：`Referer`标头只包含域名，不包含完整的路径。
+> - `origin-when-cross-origin`：同源请求`Referer`标头包含完整的路径，跨域请求只包含域名。
+> - `same-origin`：跨域请求不发送`Referer`，同源请求发送。
+> - `strict-origin`：`Referer`标头只包含域名，HTTPS 页面请求 HTTP 资源时不发送`Referer`标头。
+> - `strict-origin-when-cross-origin`：同源请求时`Referer`标头包含完整路径，跨域请求时只包含域名，HTTPS 页面请求 HTTP 资源时不发送该标头。
+> - `unsafe-url`：不管什么情况，总是发送`Referer`标头。
 
 
 
+## 取消`fetch()`请求
+
+`fetch()`请求发送以后，如果中途想要取消，需要使用`AbortController`对象。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>取消fetch()请求</title>
+</head>
+<body>
+   <script>
+    async function getData () {
+      const abortController = new AbortController();
+      const signal = abortController.signal; // 获取取消的标识
+      try {
+        const response = await fetch("https://www.fastmock.site/mock/d867c364f89208a7672e9e9d0a822417/qixiao/getFileDetail", {
+          signal, // 将该请求变成是可以取消的请求
+        });
+        abortController.abort();  // 可通过注释老看是否取消了
+        const result = await response.json();
+        console.log(result);
+       
+      } catch (error) {
+        console.log("获取数据失败：", error)
+      }
+    }
+    getData();
+   </script>
+</body>
+</html>
+```
+
+结果：
+
+{% asset_img 11.png %}
+
+如果我们注释掉 `abortController.abort();`就可以得到结果的。
+
+## 优点
+
+对于跨域实现起来就很方便，在配置中，添加mode： 'no-cors'就可以跨域了
+
+```js
+fetch(URL, {
+    method: 'post', 
+    mode: 'no-cors',
+    data: {}
+}).then(function() {
+  /* handle response */
+});
+```
+
+## 缺点
+
+- `fetch`只对网络请求/无法链接报错，对`400`，`500`都当做成功的请求，需要封装去处理
+- `fetch`默认不会带`cookie`，需要添加配置项。
 
 # axios
 
-随着近年来`MVVM`,`MVM`的发展越来越好，现在就很少使用`jQuery`了， 我们不能为了单独使用`jQuery`封装的`ajax`而单独引入。那么基于这样的情况就出现了很多优秀的请求库， 如：`axios`。
+`axios`是基于`Promise`对原生的`XMLHttpRequest`进行了全面的封装，使用的方式也很优雅。并且也提供了在`node`环境下的支持。它本质也是对原生`XMLHttpRequest`的封装，只不过它是`Promise`的实现版本，符合最新的ES规范。
 
-`axios`是基于`Promise`对原生的`XMLHttpRequest`进行了全面的封装，使用的方式也很优雅。并且也提供了在`node`环境下的支持，可以说是网络请求的首选方案了。
+举个简单的`GET`请求的官方例子：
 
+```js
+// 为给定 ID 的 user 创建请求
+axios.get('/user?ID=12345')
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
 
+// 上面的请求也可以这样做
+axios.get('/user', {
+    params: {
+      ID: 12345
+    }
+  })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  })
+```
 
+> 具体的学习可到  [axios](https://axios-http.com/) ，[axios中文文档|axios中文网](http://axios-js.com/zh-cn/docs/index.html)进行学习
 
+## 优点
 
+- 从浏览器中创建`XMLHttpRequests`
+- 可在 `node.js` 中使用
+- 支持 `Promise API`
+- 提供了并发请求的接口
+- 拦截请求和响应
+- 转换请求数据和响应数据
+- 取消请求
+- 自动转换 `JSON` 数据
+- 客户端支持防御 `XSRF`
 
+## 缺点
 
+- 只支持现代浏览器.
 
+# 最后
 
-
+所有的例子代码有需要的可到 [howToSendHttpRequest](https://github.com/shuliqi/howToSendHttpRequest/tree/master)获取
 
 参考文档:
 
