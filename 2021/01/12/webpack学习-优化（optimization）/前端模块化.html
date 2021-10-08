@@ -1,0 +1,621 @@
+<hr>
+<p>title: Javascript模块化编程总结<br>date: 2021-03-06 10:36:32<br>tags: JavaScript<br>categories: JavaScript</p>
+<hr>
+<p>在上一篇文章 <a href="https://shuliqi.github.io/shuliqi.github.io/2021/02/03/webpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%9Alibrary%EF%BC%8ClibraryTarget%EF%BC%8CauxiliaryComment/">模块化与Webpack属性 library,libraryTarget的关联</a>中提到很多关于模块化的规范。 如什么有些模块需要暴露在<code>module.export</code>上，而有些需要要暴露为<code>define(&#39;XXX&#39;, [], function() =&gt;{})</code>等等。这些都是因为使用不同的规范导致的。可能会有点混乱，这里就好好来总结模块化的到底有哪些规范。</p>
+<p>目前的模块化的规范：**<code>CommonJs</code><strong>，</strong><code>AMD</code><strong>，</strong><code>CMD</code>** 和 **<code>ES6模块</code>**。</p>
+<!--more -->
+
+<p>首先先来看一张图片，说明这种模式的整体区别：</p>
+<p>{% asset_img 2.png %}</p>
+<p>那么接下来具体讲讲！</p>
+<h1 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h1><p><code>CommonJS</code>是以在浏览器之外构建 <code>Javascript </code>生态系统为目标而产生的项目，比如在服务器里面。<code>CommonJS</code>的代表：Node应用中的模块，通俗的来说就是<code> npm</code> 安装的模块。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><code>Node</code> 应用是由模块组成，<code>Node</code>的模块采用<code>CommonJS</code>模块规范；那么它的规范有哪些呢？</p>
+<p><code>CommonJS</code>模块规范：</p>
+<ul>
+<li><p>每一个文件就是一个模块，都有自己的作用域。在一个文件定义的变量，函数，类都是私有的，对其他的文件不可见。</p>
+<pre><code class="javascript">// test.js
+var name = &quot;shuliqi&quot;;
+var getName =  function() {
+  return name;
+}
+</code></pre>
+<p>上面这个代码表示：变量 <code>x</code> 和函数 <code>getName</code> 是当前 <code>test.js</code>私有的，其他文件是不可见的。如果想在多个文件中分享一个变量的话， 必须定义为 <code>global</code>对象的属性；当然，这种写法是不推荐的。</p>
+</li>
+<li><p>每个模块内部，<code>module</code> 变量代表当前的模块。这个变量是一个对象，它的 <code>exports </code>属性(<code>module.exports</code>)是对对外的接口</p>
+<pre><code class="javascript">// test.js
+var name = &quot;shuliqi&quot;;
+var getName =  function() {
+  return name;
+}
+module.exports.name = name;
+module.exports.getName = getName;
+</code></pre>
+<p>上面的代码通过<code>module.exports</code>将变量<code>name</code>,<code>getName</code>暴露出来。</p>
+</li>
+<li><p><code>Node</code>的每个模块提供一个 <code>exports</code> 变量， 指向 <code>module.exports</code>；这等同于在每个模块头部， 都有这样的代码。</p>
+<pre><code class="javascript">var exports= module.exports;
+</code></pre>
+<p>这个造成的结果是：在对外输出模块接口时，可以向 <code>exports</code>对象添加方法</p>
+<blockquote>
+<p>注意，不能直接将exports变量指向一个值，因为这样等于切断了<code>exports</code>与<code>module.exports</code>的联系。</p>
+</blockquote>
+<blockquote>
+<p>注意：不能直接将<code>exports</code>变量指向一个值, 因为这样就等用于切断了 <code>exports</code> 和<code>module.exports</code>之间的联系；如果 一个模块的对外接口是一个一个单一的值，那么也是不能用 <code>exports</code> 的、建议还是直接使用 <code>module.exports</code>。不用区分那么多</p>
+</blockquote>
+</li>
+<li><p><strong>在服务端，模块的加载是运行时同步加载的；在浏览器端，模块需要提前编译打包处理（这个我们下面的例子会具体来讲）</strong></p>
+</li>
+</ul>
+<p>CommonJS模范定义分为三个部分：</p>
+<ul>
+<li><p>模块定义</p>
+<p>模块定义其实就是暴露模块，可以把模块暴露在<code>module.exports</code>或者<code>exports</code>上</p>
+<pre><code class="javascript">module.exports.name = &quot;shuliqi&quot;;
+exports.getName = function() {
+    return ...
+}
+</code></pre>
+<p>把对外开放的接口都暴露在 <code>module.exports</code>对象上。</p>
+</li>
+<li><p>模块标识</p>
+<p>模块标识就是<code>require()</code>函数的参数，规范是这样的</p>
+<ul>
+<li><p>必须是字符串</p>
+</li>
+<li><p>可以是以./, ../开头的相对路径</p>
+</li>
+<li><p>可以是绝对路径</p>
+</li>
+<li><p>可以省略后缀名</p>
+</li>
+</ul>
+<p><code>require</code>命令用于加载模块文件，读入并且执行一个<code>Javascript</code> 文件，然后返回该模块的的 <code>exports</code> 的对象。如果没有指定模块， 会报错。</p>
+</li>
+<li><p>引用模块</p>
+<p>使用 <code>require</code> 加载模块</p>
+<pre><code class="javascript">// 绝对路径
+const name =  require(&#39;shuliqi/study/name.js&#39;);
+
+// 省略了后缀名， 相对路径
+const getName = require(&#39;./getName&#39;);
+
+// 模块式第三方模块，直接引用模块名
+const http = require(&#39;http&#39;);
+</code></pre>
+</li>
+</ul>
+<h2 id="服务端使用"><a href="#服务端使用" class="headerlink" title="服务端使用"></a>服务端使用</h2><p> 首先肯定得下载<a href="https://nodejs.org/en/">NodeJS</a>。到这个页面进行下载哦。</p>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p>然后初始化我们的项目结构:</p>
+<pre><code>$ mkdir module-example
+$ cd module-example
+$ npm init
+</code></pre>
+<p>添加一些文件夹以及文件；最后的基本结构为：</p>
+<pre><code>|--src
+  |--CommonJS
+    |--module1.js
+    |--module2.js
+    |--index.js
+|--package.json
+</code></pre>
+<h3 id="定义模块"><a href="#定义模块" class="headerlink" title="定义模块"></a>定义模块</h3><p>module1.js</p>
+<pre><code class="javascript">// 暴露（定义）模块：可以直接在写 module.exports 对象上
+module.exports = {
+  name: &quot;模块1&quot;,
+  getName: function() {
+    console.log(this.name)
+  }
+}
+</code></pre>
+<p>module2.js</p>
+<pre><code class="javascript">//  暴露（定义）模块：也可以直接在写 exports 对象上
+exports.getName = () =&gt; {
+  console.log(&quot;shuliqi&quot;)
+}
+</code></pre>
+<h3 id="加载模块"><a href="#加载模块" class="headerlink" title="加载模块"></a>加载模块</h3><p>index.js</p>
+<pre><code class="javascript"> // 引用模块： 通过模块表示 require 来引用；
+ // 模块标识 可以省略后缀名， 可以使相对地址
+const module1 = require(&#39;./module1&#39;);
+console.log(module1.name);
+module1.getName(); 
+
+const module2 = require(&#39;./module2.js&#39;)
+module2.getName();
+</code></pre>
+<h3 id="执行模块"><a href="#执行模块" class="headerlink" title="执行模块"></a>执行模块</h3><p>最后我们执行 <code>index.js</code> 文件</p>
+<pre><code class="javascript">// 根目录执行
+$ node src/commonJS/index.js 
+</code></pre>
+<h3 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h3><pre><code> 模块1
+ 模块1
+ shuliqi
+</code></pre>
+<h2 id="浏览器端使用"><a href="#浏览器端使用" class="headerlink" title="浏览器端使用"></a>浏览器端使用</h2><p> 添加 index.html 文件</p>
+<p>src/commonJS/index.html</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;CommonJS&lt;/title&gt;
+    &lt;script src=&#39;./index.js&#39;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    CommonJS 浏览器端使用
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>我们浏览器打开 HTML 文件， 发现报错：<code> Uncaught ReferenceError: require is not defined</code>。 </p>
+<p>为什么呢？ 这是因为浏览器缺少Node.Js环境的变量：<code>module</code>,<code>exports</code>,<code>require</code>,<code>global</code>。所以浏览器是无法加载CommonJs模块(npm模块)；</p>
+<p>所以： <code>npm</code> 模块的都是 <code>JavaScript</code> 语言写的，但是浏览器用不了， 当然是因为不支持 <code>CommonJS</code>格式；所以想要浏览器能使用上这些模块， 就要得必须转换格式。</p>
+<p>目前最常用的 <code>CommonJS</code>格式转换的工具是：<a href="http://browserify.org/">Browserify</a>； 那我们接下来的例子(基于上面的例子)就使用<a href="http://browserify.org/">Browserify</a> 来转换的 <code>CommonJS</code>。</p>
+<p>Browserify的作用： 将在HTML 引用的js文件打包编译，是的其能够在浏览器上运行</p>
+<h3 id="安装-Browserify"><a href="#安装-Browserify" class="headerlink" title="安装 Browserify"></a>安装 Browserify</h3><pre><code class="javascript">// 全局安装（本例子采用）
+npm install browserify -g
+
+// 局部安装
+npm install browserify --save-dev
+</code></pre>
+<h3 id="打包编辑"><a href="#打包编辑" class="headerlink" title="打包编辑"></a>打包编辑</h3><p>在跟目录执行：</p>
+<pre><code class="javascript">browserify src/commonJS/index.js  -o src/commonJS/bundle.js
+</code></pre>
+<h3 id="引用编译文件"><a href="#引用编译文件" class="headerlink" title="引用编译文件"></a>引用编译文件</h3><p>src/commonJS/index2.html</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;CommonJS&lt;/title&gt;
+    &lt;script src=&#39;./bundle.js&#39;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    CommonJS 浏览器端使用
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>打开 HTML。控制台能成功能成功打印：</p>
+<pre><code class="javascript">模块1
+模块1
+shuliqi
+</code></pre>
+<p>现在最终的文件结构为：</p>
+<pre><code>|--src
+  |--commonJS
+    |--module1.js
+    |--module2.js
+    |--index.js
+    |--index.html
+    |--index2.html
+    |--bundle.js
+    |--require.js
+|--package.json
+|--package-lock.json
+</code></pre>
+<h1 id="AMD"><a href="#AMD" class="headerlink" title="AMD"></a>AMD</h1><p>在 上一节<code>CommonJS</code> 中，我们可以看出 <code>CommonJS</code>的加载是同步的，如：</p>
+<pre><code class="javascript">const module1 = require(&#39;./module1&#39;);
+console.log(&#39;1111&#39;)
+</code></pre>
+<p>上面的第二行代码必须在 <code> require(&#39;./module1&#39;)</code>之后运行，因此是必须要等 <code>module1.js</code>加载完，也就是说，如果加载的时间很长的， 整个应用是会卡在那里的。</p>
+<p>但是在服务器端，所有的模块都是放在本地磁盘，可以同步加载完成，等待的时间就是硬盘的读取时间。但是对于浏览器来说，等待的时间取决于网速的快慢，可能要等待很长的时间，浏览器处于”假死”状态。</p>
+<p>所以浏览器端的模块不能采用“同步加载”， 只能采用“异步加载”。这就是<code>AMD</code>规范产生的背景</p>
+<h2 id="基本概念-1"><a href="#基本概念-1" class="headerlink" title="基本概念"></a>基本概念</h2><p><code>AMD</code>-异步模块加载定义，采用异步方式加载模块， 模块的加载不影响后面语句的运行，所有依赖这个模块的语句都定义在一个回调函数中，等到模块完成之后， 这个回调函数才会运行。</p>
+<h3 id="定义暴露模块"><a href="#定义暴露模块" class="headerlink" title="定义暴露模块"></a>定义暴露模块</h3><pre><code class="javascript">// 定义一个没有依赖的模块
+define(function() {
+  // xxx: 模块
+    return xxx
+})    
+</code></pre>
+<pre><code class="javascript">// 定义一个没有依赖的模块
+define([&#39;module1&#39;, &#39;module2&#39;], function() {
+  // xxx: 模块
+    return xxx
+})    
+</code></pre>
+<h3 id="引用模块"><a href="#引用模块" class="headerlink" title="引用模块"></a>引用模块</h3><p>如何引用<code>AMD</code>模块呢？这里先讲讲 <code>RequireJS</code> 和 <code>AMD</code>规范的关系!</p>
+<p>我们知道的大名鼎鼎的 <code>ReuireJS</code>，实际<code>上AMD </code>就是<code>ReuireJS</code> 在推广的过程中对模块定义的规范化产出；</p>
+<p>RequireJS 是一个工具库，主要是用于客户端的模块管理，它可以让客户端的代码分成一个个模块，实现异步加载和动态加载。从而提高代码的性能和可维护性。重要的是它的模块管理遵守 <code>AMD规范</code>。 如果我们是可以使用RequireJS来加载 <code>AMD模块</code></p>
+<p> 先引入<code>require.js</code></p>
+<pre><code class="javascript">&lt;script src=&quot;js/require.js&quot; defer async=&quot;true&quot; &gt;&lt;/script&gt;
+</code></pre>
+<p>引入<code>require.js</code> 之后加载我们自己的代码：</p>
+<pre><code class="javascript">&lt;script src=&quot;js/require.js&quot; data-main=&quot;js/main&quot;&gt;&lt;/script&gt;
+</code></pre>
+<blockquote>
+<p>data-main属性的作用是：指定网页的主模块。</p>
+</blockquote>
+<p>AMD模块的加载(主模块)</p>
+<pre><code class="javascript">require([&#39;module1&#39;, &#39;module2&#39;], function(module1, module2){
+    // 在回调函数中使用module1/module2
+})
+</code></pre>
+<p>更详细的引用方式， 我们看下面的例子</p>
+<h2 id="例子🌰"><a href="#例子🌰" class="headerlink" title="例子🌰"></a>例子🌰</h2><p>在基于上一节<code>CommonJS</code>的结构目录， 我们添加新的目录和文件 </p>
+<pre><code>|--src
+  |--commonJS
+    |--module1.js
+    |--module2.js
+    |--index.js
+    |--index.html
+    |--index2.html
+    |--bundle.js
+    |--require.js
+  |--AMD
+    |--index.html
+    |--main.js
+    |--module1.js
+    |--module2.js
+|--package.json
+|--package-lock.json
+</code></pre>
+<h3 id="定义（暴露）模块"><a href="#定义（暴露）模块" class="headerlink" title="定义（暴露）模块"></a>定义（暴露）模块</h3><p>src/AMD/module1.js</p>
+<pre><code class="javascript">// 定义一个没有依赖的模块
+define(function() {
+  let name = &quot;shuliqi&quot;;
+  function getName() {
+    return name;
+  }
+  // 暴露模块
+  return {  getName, name };
+});
+</code></pre>
+<p>src/AMD/module2.js</p>
+<pre><code class="javascript">// 加载有依赖的模块
+// 依赖module1.js
+define([&#39;./module1.js&#39;], function(module1) {
+  let age = 12;
+  function getMsg() {
+    console.log(&#39;name:&#39;,module1.getName(), &#39;age:&#39;,  age);
+  }
+  // 暴露模块
+  return { getMsg };
+});
+</code></pre>
+<h3 id="引用模块-1"><a href="#引用模块-1" class="headerlink" title="引用模块"></a>引用模块</h3><p>可以下载 <a href="http://browserify.org/">require.js</a>,到本地直接引用， 也可以网上的 [require.js链接]<a href="https://requirejs.org/docs/release/2.3.6/minified/require.js">https://requirejs.org/docs/release/2.3.6/minified/require.js</a>)</p>
+<pre><code class="html">  &lt;script  src=&quot;https://requirejs.org/docs/release/2.3.6/minified/require.js&quot;  data-main=&quot;./main.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<p>src/AMD/index.html</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;AMD&lt;/title&gt;
+    &lt;script  src=&quot;https://requirejs.org/docs/release/2.3.6/minified/require.js&quot;  data-main=&quot;./main.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    AMD 浏览器端使用
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>主模块main.js 引入我们的<code>module1</code> 和<code> module2</code></p>
+<p>src/AMD/main.js</p>
+<pre><code class="javascript">require([&#39;./module1&#39;, &#39;./mosule2&#39;], function(module1, mosule2) {
+  console.log(module1.name);
+  mosule2.getMsg();
+})
+</code></pre>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>打来我们的index,html文件，结果如下：</p>
+<p>{% asset_img 1.png %}</p>
+<p> 结果说明：浏览器能使用我们的AMD模块了</p>
+<h1 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h1><p><code>ReuireJS</code>在声明依赖的模块时会在第一时间加载并且执行模块内部的代码：</p>
+<pre><code class="javascript">require([&#39;./module1&#39;, &#39;./mosule2&#39;], function(module1, mosule2) {
+     // 等于在最前面声明并初始化了要用到的所有模块
+  
+  // 如：即使没有用到模块 module1，但是 module1 还是提前执行了
+  mosule2.getMsg();
+})
+</code></pre>
+<p>而<code>CMD</code>则是另外一种<code> js</code> 优化方案， 它与<code> AMD</code> 很类似，规范也是专门用于浏览器，模块的加载也是异步的， 但是模块使用的时候才会加载执行。<code>AMD</code> 是推崇依赖前置，提前执行，<code>CMD</code> 推崇依赖就近延迟执行。</p>
+<p><code>CMD</code>是 <code>Sea.js</code>推广过程中的产生的；</p>
+<h2 id="基本概念-2"><a href="#基本概念-2" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="定义暴露模块-1"><a href="#定义暴露模块-1" class="headerlink" title="定义暴露模块"></a>定义暴露模块</h3><p>在<code>CMD</code>中规范中， 一个模块就是一个文件， 定义暴露模块的格式如下：</p>
+<pre><code class="javascript">define(factory)
+</code></pre>
+<p>当<code>factory</code>为函数时，表示是模块的构造方法，执行这个构造方法就可以得到模块向外提供的接口。</p>
+<p><code>factory</code>方法在执行的时候，默认会传入三个参数：<code>require</code>，<code>exports</code>和<code>module</code>。</p>
+<ul>
+<li><p>require 是一个方法，用来获取其他模块提供的接口</p>
+<p><code>require.async</code> 方法用来在模块内部异步加载模块，并在加载完成后执行指定回调。<code>callback</code> 参数可选</p>
+<blockquote>
+<p><strong>注意</strong>：<code>require</code> 是同步往下执行，<code>require.async</code> 则是异步回调执行。<code>require.async</code> 一般用来加载可延迟异步加载的模块。</p>
+</blockquote>
+</li>
+<li><p>exports 是一个对象， 用来向外部提供模块接口</p>
+</li>
+<li><p>module 是一个对象，存储了与当前模块相关联的一些属性和方法</p>
+</li>
+</ul>
+<pre><code class="javascript">// 定义没有依赖的模块
+define(function(require, exports, module) {
+  // 暴露模块
+  exports.xxx = value
+  module.exports = value
+})
+</code></pre>
+<pre><code class="javascript">// 定义有依赖的模块
+define(function(require, exports, module) {
+  // 引入依赖模块（同步）
+    const module1 = require(&#39;./module1&#39;)
+  
+  // 引入依赖模块（异步）
+  require.async(&#39;./module2&#39;, function(module2) {
+    
+  })
+  
+  // 暴露模块
+  exports.xxx = value
+})
+</code></pre>
+<h3 id="引用使用模块"><a href="#引用使用模块" class="headerlink" title="引用使用模块"></a>引用使用模块</h3><p>使用 <code>require</code> 来引用模块。上面代码也写过。</p>
+<pre><code class="javascript">define(function (require) {
+  // 引入 CMD模块 module1
+  var module1 = require(&#39;./module1&#39;)
+  // 引入 CMD模块 module2
+  var module2 = require(&#39;./module2&#39;)
+})
+</code></pre>
+<h2 id="举例子🌰"><a href="#举例子🌰" class="headerlink" title="举例子🌰"></a>举例子🌰</h2><p><code>CMD</code>是 <code>Sea.js</code>推广过程中的产生的；所有结合 <code>Sea.js</code>来使用。</p>
+<p>在原先的项目结构目录上我们加载<code>CMD</code>目录, 添加文件</p>
+<pre><code>|--CMD
+  |--index.html
+  |--module1.js
+  |--module2.js
+  |--module3.js
+  |--main.js
+</code></pre>
+<h4 id="引入Sea-js"><a href="#引入Sea-js" class="headerlink" title="引入Sea.js"></a>引入<code>Sea.js</code></h4><ul>
+<li>官网: <a href="http://seajs.org/">seajs.org/</a></li>
+<li>github : <a href="https://github.com/seajs/seajs">github.com/seajs/seajs</a></li>
+</ul>
+<p><a href="https://seajs.github.io/seajs/docs/#downloads">在这里下载</a> 然后将<code>dist</code>目录下面的<code>sea.js</code>导入项目</p>
+<pre><code>|--CMD
+  |--index.html
+  |--module1.js
+  |--module2.js
+  |--module3.js
+  |--main.js
+  |--sea.js
+</code></pre>
+<h4 id="定义暴露模块-2"><a href="#定义暴露模块-2" class="headerlink" title="定义暴露模块"></a>定义暴露模块</h4><p>module1.js</p>
+<pre><code class="javascript">// 定义没有依赖的模块
+define(function(require, exports, module) {
+  // 模块内部变量
+  const name = &quot;shuliqi&quot;;
+  // 模块内部函数
+  function getName() {
+    return name;
+  }
+
+  // 向外暴露
+  exports.getName = getName;
+})
+</code></pre>
+<p>module2.js</p>
+<pre><code class="javascript">// 定义有依赖的模块
+define( function(require, exports, module ) {
+  // 模块内部变量
+  const age = 18;
+  // 引入模块（同步）
+  const module1 = require(&#39;./module1&#39;);
+  function getMsg() {
+    console.log(&#39;name:&#39;, module1.getName(), &#39;age: &#39;, age)
+  }
+  // 向外暴露模块
+  module.exports = {  getMsg };
+
+})
+</code></pre>
+<p>module3.js</p>
+<pre><code class="javascript">// 定义没有依赖的模块
+define( function (require, exports, module) {
+  exports.sex = &quot;女&quot;
+})
+</code></pre>
+<p>main.js</p>
+<pre><code class="javascript">// 定义有依赖的模块
+define( function (require, exports, module) {
+  // 引入模块（同步）
+  const module2 = require(&#39;./module2&#39;);
+  module2.getMsg();
+
+  // 引入模块（异步）
+  require.async(&#39;./module3&#39;, function(module3) {
+    console.log(&#39;我是异步加载的：&#39;, module3.sex)
+  })
+})
+</code></pre>
+<h4 id="浏览器使用模块"><a href="#浏览器使用模块" class="headerlink" title="浏览器使用模块"></a>浏览器使用模块</h4><pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;CMD&lt;/title&gt;
+    &lt;script  src=&quot;./sea.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    CMD模块化 浏览器端使用
+    &lt;script type=&quot;text/javascript&quot;&gt;
+        seajs.use(&#39;./main.js&#39;)
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h4 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h4><p>控制台能成功打印：</p>
+<pre><code class="javascript">name: shuliqi age:  18
+我是异步加载的： 女
+</code></pre>
+<h1 id="ES6-模块"><a href="#ES6-模块" class="headerlink" title="ES6 模块"></a>ES6 模块</h1><p>在 <code>ES6</code>之前，最只要是的模块规范是 <code>CommonJS</code> 和<code>AMD</code>,<code>CommonJS</code>主要用于服务端，<code>AMD</code>用于浏览器端；<code>ES6</code>实现了模块功能，完全可以取代 <code>CommonJS</code> 和<code>AMD</code>规范。</p>
+<p> <code>ES6</code> 模块的设计思想是尽量静态化，使得编译时就能确定模块的依赖关系，输入和输出的变量。而<code>CommonJS</code> 和<code>AMD</code>都是只能在运行的时候才能确定这些:</p>
+<pre><code class="javascript">// CommonJS
+let { start, exists, readFile } = require(&#39;fs&#39;);
+
+// 等同于
+let _fs = require(&#39;fs&#39;);
+let stat = _fs.stat;
+let exists = _fs.exists;
+let readfile = _fs.readfile;
+</code></pre>
+<p>这代码实质是加载<code>fs</code>模块（即加载<code>fs</code>的所有模块）生成一个对象<code>_fs</code>, 然后再从这个对象上读取 3 个方法。 这种加载就称为”运行时加载“， 因为只有运行了才能得到这个对象，导致完全没办法在编译时做”静态化“</p>
+<p>而<code>ES6</code>模块不是对象，而是通过<code>export</code>命令显示的指定输出的代码，再通过<code>import</code>命令输入：</p>
+<pre><code class="javascript">import { stat, exists, readFile } from &#39;fs&#39;;
+</code></pre>
+<p>这代码的实质是从<code>fs</code>模块加载3 个方法，其他方法不加载，这种加载称为”编译时加载“或者”静态加载“，即 ES6可以在编译时就完成模块加载， 效率要比 <code>CommonJS</code>模块的加载方式高。</p>
+<h2 id="基本概念-3"><a href="#基本概念-3" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="定义暴露模块-3"><a href="#定义暴露模块-3" class="headerlink" title="定义暴露模块"></a>定义暴露模块</h3><p>使用 <code>export</code>命令， <code>export default </code>命令来暴露对外的接口。其中<code>export default </code>命令是为模块指定默认输出</p>
+<blockquote>
+<p>使用 <code>export</code>暴露对外的接口， <code>import</code>引用的时候需要知道所要加载的变量名/函数名，否则无法加载，为了给用户提供方便，让他们不需要阅读文档就能加载模块，就可以使用<code>export default </code>命令来为模块指定默认输出。</p>
+</blockquote>
+<pre><code class="javascript">// 暴露变量 （export 命令）
+const name = &#39;shuliqi&#39;;
+const age = 18;
+export { name, age }
+</code></pre>
+<pre><code class="javascript">// 为模块指定默认输出
+export default function () {
+  console.log(&#39;shuliqi&#39;)
+}
+</code></pre>
+<pre><code class="javascript">// 暴露函数或者类
+function getName() {
+  return &quot;shuliqi&quot;;
+}
+</code></pre>
+<h3 id="引用模块-2"><a href="#引用模块-2" class="headerlink" title="引用模块"></a>引用模块</h3><p>使用 <code>import</code>命令来加载模块。但是暴露模块的方式，<code>import</code> 的使用会有所不同</p>
+<ul>
+<li><p>如果是使用<code>export</code>命令定义了模块的对外接口</p>
+<pre><code class="javascript">// export.js
+// 暴露变量 （export 命令）
+const name = &#39;shuliqi&#39;;
+const age = 18;
+export { name, age }
+</code></pre>
+<pre><code class="javascript">// 引用
+const { name, age } from &#39;./export.js&#39;;
+</code></pre>
+</li>
+<li><p>如果使用 <code>export default</code>来加载模块</p>
+<pre><code class="javascript">// export-default.js
+// 为模块指定默认输出
+export default function () {
+  console.log(&#39;shuliqi&#39;)
+}
+</code></pre>
+<pre><code class="javascript">import customName from &#39;./export-default.js&#39;;
+customName()
+</code></pre>
+</li>
+</ul>
+<h2 id="例子🌰-1"><a href="#例子🌰-1" class="headerlink" title="例子🌰"></a>例子🌰</h2><p>在原来的项目结构上，加载<code>ES6</code>文件夹及其一些文件</p>
+<pre><code>|--ES6
+  |--module1.js
+  |--module2.js
+  |--main.js
+  |--index.js
+  |--lib
+  |--bundle.js
+  
+</code></pre>
+<h3 id="定义暴露模块-4"><a href="#定义暴露模块-4" class="headerlink" title="定义暴露模块"></a>定义暴露模块</h3><p>module1.js</p>
+<pre><code class="javascript">// 使用 export 暴露模块
+const name = &quot;shuliqi&quot;;
+function getName() {
+  console.log(18);
+}
+export { name, getName };
+</code></pre>
+<p>module2.js</p>
+<pre><code class="javascript">// 使用 export default 为模块指定默认输出
+const sex = &#39;女&#39;;
+
+export default function() {
+  console.log(sex)
+}
+</code></pre>
+<h3 id="引用模块-3"><a href="#引用模块-3" class="headerlink" title="引用模块"></a>引用模块</h3><p>main.js </p>
+<pre><code class="javascript">import { name, getName } from &#39;./module1.js&#39;;
+import getSex from &#39;./module2.js&#39;;
+console.log(name);
+getName();
+getSex();
+</code></pre>
+<h3 id="安装转换器和编译器"><a href="#安装转换器和编译器" class="headerlink" title="安装转换器和编译器"></a>安装转换器和编译器</h3><p>由于目前各大浏览器对<code>ES6</code>的支持大不相同, 所以通常需要把<code>ES6</code>代码转换成<code>ES5</code>的代码，这就需要转换器，如现在广泛使用的 <a href="https://babeljs.io/">Babel</a> 。转换完之后代码需要再编译一下， 就可以在浏览器使用了。</p>
+<pre><code class="javascript">// 安装babel-cli, babel-preset-es2015和browserify
+npm install babel-cli browserify -g
+npm install babel-preset-es2015 --save-dev
+</code></pre>
+<p>在跟目录添加 <code>.babelrc</code>文件</p>
+<pre><code class="json">{
+  &quot;presets&quot;:[
+      &quot;es2015&quot;
+  ],
+  &quot;plugins&quot;:[]
+}
+</code></pre>
+<p>转码我们写的<code>ES6</code>代码和编译我们的转码之后的代码</p>
+<pre><code class="javascript">// 转码
+babel src/ES6 -d src/ES6/lib   
+// 编译
+browserify src/ES6/lib/main.js -o src/ES6/bundle.js
+</code></pre>
+<p>完成之后我们的ES6文件目录为：</p>
+<pre><code>|--ES6
+  |--module1.js
+  |--module2.js
+  |--main.js
+  |--index.js
+  |--lib
+       |--module1.js
+       |--module2.js
+       |--main.js
+  |--bundle.js
+</code></pre>
+<h3 id="html-文件使用"><a href="#html-文件使用" class="headerlink" title="html 文件使用"></a>html 文件使用</h3><p>最后在我们的html文件中加载我们转码和编译之后的代码 <code>bundle.js</code></p>
+<p>index.html</p>
+<pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot; /&gt;
+    &lt;title&gt;ES6&lt;/title&gt;
+    &lt;script src=&quot;./bundle.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    ES6 浏览器端使用
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>打开浏览器，结果： 控制台能正确打印出：</p>
+<pre><code>shuliqi
+18
+女
+</code></pre>
+<p><strong>最后</strong></p>
+<p>最后文章所有的示例可以在<a href="https://github.com/shuliqi/module-example">module-example</a>下载</p>
+<hr>
+<p>参考文章：</p>
+<ul>
+<li><a href="https://www.ruanyifeng.com/blog/2015/05/commonjs-in-browser.html">浏览器加载 CommonJS 模块的原理与实现</a></li>
+<li><a href="https://javascript.ruanyifeng.com/nodejs/module.html">CommonJS规范</a></li>
+<li><a href="https://juejin.cn/post/6844903744518389768#heading-20">前端模块化详解(完整版)</a></li>
+<li><a href="http://browserify.org/">browserify</a></li>
+</ul>
+<ul>
+<li><a href="https://javascript.ruanyifeng.com/tool/requirejs.html">RequireJS和AMD规范</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/75980415">前端模块化（AMD、CommonJS、UMD）总结</a></li>
+<li><a href="https://www.ruanyifeng.com/blog/2012/10/asynchronous_module_definition.html">Javascript模块化编程（二）：AMD规范</a></li>
+<li><a href="https://github.com/requirejs/requirejs">github-requirejs</a></li>
+<li><a href="https://ahuigo.github.io/b/ria/js-module-amd#/">JS AMD 模块规范</a></li>
+<li><a href="https://requirejs.org/">requirejs</a></li>
+</ul>
+<ul>
+<li><p><a href="http://jxjweb.top/2017/08/0809.html">jxj-web</a></p>
+</li>
+<li><p><a href="https://github.com/seajs/seajs">seajs</a></p>
+</li>
+<li><p><a href="https://seajs.github.io/seajs/docs/#downloads">seajs官网</a></p>
+</li>
+<li><p> <a href="https://zhuanlan.zhihu.com/p/41231046">JS模块化加载之CommonJS、AMD、CMD、ES6</a></p>
+</li>
+<li><p><a href="https://cloud.tencent.com/developer/article/1683007">前端模块化：CommonJS,AMD,CMD,ES6</a></p>
+</li>
+<li><p><a href="https://javascript.ruanyifeng.com/tool/browserify.html">Browserify：浏览器加载Node.js模块</a></p>
+</li>
+<li><p><a href="http://browserify.org/">browserify</a></p>
+</li>
+<li><p><a href="https://es6.ruanyifeng.com/">ECMAScript 6 入门</a></p>
+</li>
+</ul>

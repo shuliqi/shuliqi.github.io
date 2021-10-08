@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="关于Delete`CR`eslint(prettier/prettier) 报错的解决方案"><meta name="keywords" content="JavaScript"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>关于Delete`CR`eslint(prettier/prettier) 报错的解决方案 | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E7%9A%84%E6%8F%90%E5%87%BA"><span class="toc-number">1.</span> <span class="toc-text">问题的提出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E7%9A%84%E6%A0%B9%E6%BA%90"><span class="toc-number">2.</span> <span class="toc-text">问题的根源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3"><span class="toc-number">3.</span> <span class="toc-text">问题的解决</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Crtl-S%E4%BF%9D%E5%AD%98%E6%96%87%E4%BB%B6"><span class="toc-number">3.1.</span> <span class="toc-text">Crtl+S保存文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#yarn-run-lint-%E2%80%93fix"><span class="toc-number">3.2.</span> <span class="toc-text">yarn run lint –fix</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE-prettierrc-%E6%96%87%E4%BB%B6"><span class="toc-number">3.3.</span> <span class="toc-text">配置.prettierrc 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#core-autocrlf%E9%85%8D%E7%BD%AE"><span class="toc-number">3.4.</span> <span class="toc-text">core.autocrlf配置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">关于Delete`CR`eslint(prettier/prettier) 报错的解决方案</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-06-06</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/JavaScript/">JavaScript</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="问题的提出"><a href="#问题的提出" class="headerlink" title="问题的提出"></a>问题的提出</h2><p>由于之前是一直使用 <code>mac</code> 笔记本开发，突然使用 <code>windows</code> 开发，发现拉完代码之后， 发现在<code>npm run dev</code> 运行代码之后。发现有如下的问题</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Delete <span class="string">`CR`</span>eslint(prettier/prettier)</span><br></pre></td></tr></table></figure>
+
+ <span id="more"></span>
+
+<img src="/2020/06/06/%E5%85%B3%E4%BA%8EDelete%60CR%60eslint-prettier-prettier-%E6%8A%A5%E9%94%99%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png" class="">
+
+<h2 id="问题的根源"><a href="#问题的根源" class="headerlink" title="问题的根源"></a>问题的根源</h2><p>出现的问题的原因到底是什么呢？</p>
+<p>根据调查发现出问题 : <strong>windows下和linux下的文本文件的换行符不一致。</strong></p>
+<ul>
+<li><code>Windows</code>在换行的时候，同时使用了回车符<code>CR(carriage-return character)和换行符LF(linefeed character)</code></li>
+<li>而<code>Mac</code>和<code>Linux</code>系统，仅仅使用了换行符<code>LF</code></li>
+<li>老版本的<code>Mac</code>系统使用的是回车符<code>CR</code></li>
+</ul>
+<p>表格解释如下：</p>
+<table>
+<thead>
+<tr>
+<th><strong>Windows</strong></th>
+<th><strong>Linux/Mac</strong></th>
+<th><strong>Old Mac(pre-OSX)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CRLF</td>
+<td>LF</td>
+<td>CR</td>
+</tr>
+<tr>
+<td>‘\n\r’</td>
+<td>‘\n’</td>
+<td>‘\r’</td>
+</tr>
+</tbody></table>
+<p>因此，文本文件在不同系统下创建和使用时就会出现不兼容的问题。</p>
+<p>所以出现上面的报错是因为我的同事是在mac环境下提交的代码。文件默认是以LF结尾的。</p>
+<p>当我使用 <code>Windows</code> 电脑<code>git clone</code>代码的时候， 若我的<code>autocrlf</code>(在<code>windows</code>下安装<code>git</code>，该选项默认为<code>true</code>)为true，那么文件每行会被自动转成以CRLF结尾，若对文件不做任何修改，pre-commit执行eslint的时候就会提示你删除CR。</p>
+<h2 id="问题的解决"><a href="#问题的解决" class="headerlink" title="问题的解决"></a>问题的解决</h2><p>下面是上网查到的各种解决办法以及他们的优缺点。</p>
+<h3 id="Crtl-S保存文件"><a href="#Crtl-S保存文件" class="headerlink" title="Crtl+S保存文件"></a>Crtl+S保存文件</h3><p>按Crtl+S保存当前报错文件，eslint错误消失，但是Git暂存区多了个文件改动记录，对比Working tree没发现任何不同。</p>
+<p>缺点：你不可能一一保存所有文件，麻烦，还要commit，多余。</p>
+<h3 id="yarn-run-lint-–fix"><a href="#yarn-run-lint-–fix" class="headerlink" title="yarn run lint –fix"></a>yarn run lint –fix</h3><p>比上面省事，eslint错误消失，但暂存区多了n个文件改动记录，对比Working tree也没发现任何不同。</p>
+<p>缺点：需要commit所有文件，多余。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/prettier/eslint-plugin-prettier/issues/114">参考的资料：”error Delete <code>⏎</code> prettier/prettier” in .vue files</a></p>
+<h3 id="配置-prettierrc-文件"><a href="#配置-prettierrc-文件" class="headerlink" title="配置.prettierrc 文件"></a>配置.prettierrc 文件</h3><p>在项目的根目录的<code>.prettierrc</code>文件中写入即可。其实就是不让prettier检测文件每行结束的格式.</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;endOfLine&quot;</span>: <span class="string">&quot;auto&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>缺点：不能兼容跨平台开发，从前端工程化上讲没有做到尽善尽美。</p>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/53516594/why-do-i-keep-getting-delete-cr-prettier-prettier">参考的资料：Why do I keep getting Delete ‘cr’ [prettier/prettier]?</a></p>
+<h3 id="core-autocrlf配置"><a href="#core-autocrlf配置" class="headerlink" title="core.autocrlf配置"></a>core.autocrlf配置</h3><p>使用git 的一个配置属性： core.autocrlf </p>
+<ul>
+<li><p>Git 可以在你提交的时候自动的把行结束符CRLF转换成LF，而在签出代码时把LF转换成CRLF。用<code>core.autocrlf</code>来打开此项功能。如果是在Windows 系统上，把它设置为true。这样当签出代码时。LF会被转换成CRLF。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --<span class="built_in">global</span> core.autocrlf <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+<li><p>mac 系统使用LF作为行结束符， 因此你不想Git在签出文件时进行自动的转换；当一个CRLF为行结束符的文件不小心被引入时你想修正，把core.autocrlf 设置为input 来告诉Git 在提交的时候把CRLF 转成LF。签出时不转换；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --<span class="built_in">global</span> core.autocrlf input</span><br></pre></td></tr></table></figure>
+
+<p>这样会在Windows系统上的签出文件中保留CRLF，会在Mac和Linux系统上，包括仓库中保留LF。</p>
+</li>
+<li><p>如果你是Windows程序员，且正在开发仅运行在Windows上的项目，可以设置false取消此功能，把回车符记录在库中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global core.autocrlf false</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>遇到问题的时候查找了很多的资料。但是结局的办法都不是很尽美 如方法1，方法 2，方法 3，都存在一定的缺点。 最后一个解决办法才是从灵魂上解决了问题。 所以在解决的问题还是追其根源。从根本上解决问题。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/06/06/关于Delete`CR`eslint-prettier-prettier-报错的解决方案/">https://shuliqi.github.io/2020/06/06/关于Delete`CR`eslint-prettier-prettier-报错的解决方案/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaScript/">JavaScript</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/06/22/%E6%96%87%E6%9C%AC%E8%B6%85%E5%87%BA%E6%98%BE%E7%A4%BA%E7%9C%81%E7%95%A5%E5%8F%B7%E7%9A%84%E4%B8%80%E4%B8%AA%E5%AE%8C%E7%BE%8E%E7%9A%84%E6%96%B9%E6%A1%88/"><i class="fa fa-chevron-left">  </i><span>文本超出显示省略号的一个完美的方案</span></a></div><div class="next-post pull-right"><a href="/2020/05/07/canvas%E7%9A%84%E5%AD%A6%E4%B9%A0%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/"><span>canvas的学习及其使用</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

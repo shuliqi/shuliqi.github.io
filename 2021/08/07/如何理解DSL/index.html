@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="如何理解DSL"><meta name="keywords" content=""><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>如何理解DSL | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFDSL"><span class="toc-number">1.</span> <span class="toc-text">什么是DSL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B8%E5%9E%8B%E7%9A%84DSL-%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="toc-number">2.</span> <span class="toc-text">典型的DSL 有哪些</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8-DSL"><span class="toc-number">3.</span> <span class="toc-text">为什么要用 DSL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A6%81%E4%B8%8D%E8%A6%81%E5%BC%95%E5%85%A5DSL"><span class="toc-number">4.</span> <span class="toc-text">要不要引入DSL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%85%E9%83%A8DSL-%E5%A4%96%E9%83%A8DSL"><span class="toc-number">5.</span> <span class="toc-text">内部DSL? 外部DSL?</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8C%BA%E5%88%86%E5%86%85%E9%83%A8%E6%88%96%E5%A4%96%E9%83%A8DSL"><span class="toc-number">6.</span> <span class="toc-text">如何区分内部或外部DSL</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%9C%8B%E5%BE%85%E5%86%85%E9%83%A8DSL"><span class="toc-number">7.</span> <span class="toc-text">如何看待内部DSL</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">如何理解DSL</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-08-07</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>从一个简单的问题开始：</p>
+<p>如何使用程序来描述下面的问题？</p>
+<p>在一组候选人中，找到满足以下条件的的数据：</p>
+<ul>
+<li>所有的候选人性别为女</li>
+<li>数据按照年龄来排序</li>
+<li>输出姓名以及年龄的信息</li>
+</ul>
+ <span id="more"></span>
+
+<p>问题跑出来，那么让我们使用<code>JavaScript</code>来实现这个需求：</p>
+<blockquote>
+<p>假设数据集合叫<code>data</code></p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> result = data.filter(<span class="function">(<span class="params">people</span>) =&gt;</span> people.sex === <span class="string">&#x27;女&#x27;</span>)</span><br><span class="line">                    .sort(<span class="function">(<span class="params">cur, pre</span>) =&gt;</span> cur.age - pre.age)</span><br><span class="line">                    .map(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">                      <span class="keyword">return</span> &#123; <span class="attr">name</span>: item.name, <span class="attr">age</span>: item.age &#125;</span><br><span class="line">                    &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码看起来，在对于<code>JavaScript</code>语言十分熟悉的人来看， 可以很快的看明白代码的意思，但是如果是外行，那就可能有点难猜了。</p>
+<p>那怎么办呢？有没有什么更好的办法/更简单易懂的方式来描述这个问题呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select &#x27;name&#x27;, &#x27;age&#x27; from &quot;data&quot; where sex = &quot;女&quot; sortBy &quot;age&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>上面这个语句是一个<code>SQL</code>语句, 相信不管是不是程序员，都能快速的理解这段语句的含义。</p>
+<p>显然<code>SQL</code>在查询这个领域比<code>JavaScript</code>更加简洁，表达力更强；我们管这种针对特殊领域的语言就叫<code>DSL</code>(特殊领域语言)。</p>
+<h1 id="什么是DSL"><a href="#什么是DSL" class="headerlink" title="什么是DSL"></a>什么是DSL</h1><p><code>DSL</code>是(Domain Specific Language)特定领域语言， 是为了处理某一特定领域的问题而设计出来的语言，这类语言比较简单，在专属的领域内，有着非常强的表达力。</p>
+<p>与之相对应的是的<code>GPL</code>(General Purpose Language) 通用编程语言。这类语言是能够表达科倍计算的逻辑，必须是图灵完备，他们的侧重点是灵活，全面。 <code>Java</code>,<code>python</code>,<code>JavaScript</code>,<code>go</code>,<code>C 这类都属于</code>GPL`。</p>
+<h1 id="典型的DSL-有哪些"><a href="#典型的DSL-有哪些" class="headerlink" title="典型的DSL 有哪些"></a>典型的DSL 有哪些</h1><ul>
+<li><code>HTML</code></li>
+<li><code>CSS</code></li>
+<li><code>JSX</code></li>
+<li><code>PUG</code></li>
+<li><code>REGEX</code></li>
+<li><code>SQL</code></li>
+<li><code>XML</code></li>
+<li><code>YMAL</code></li>
+</ul>
+<p>上面的这些语言，几乎都不是图灵完备的计算机语言，他们的语法很简单，主要以声明式的表达方式来进行编写的。</p>
+<p>因为是使用声明式的表达方式, 所以在在阅读上会更加流畅。</p>
+<blockquote>
+<p>关于什么是图灵机，什么是图灵完备等，可阅读这篇文章  <a target="_blank" rel="noopener" href="https://www.zhihu.com/question/20115374">什么是图灵完备？</a></p>
+</blockquote>
+<h1 id="为什么要用-DSL"><a href="#为什么要用-DSL" class="headerlink" title="为什么要用 DSL"></a>为什么要用 DSL</h1><p><code>DSL</code>语法往往简单，并且非常易于阅读，在其擅长的领域内编码是非常高效的。</p>
+<p>我们再拿 <code>HTML</code> 和 <code>JavaScript</code>对象来最一个对比：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="attr">name</span>: <span class="string">&quot;div&quot;</span>, <span class="attr">class</span>: <span class="string">&quot;container&quot;</span>, <span class="attr">children</span>: <span class="string">&quot;shuliqi&quot;</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>JavaScript</code>来描述一个<code>HTML</code>节点，只能把所有的的属性平铺到一个对象中，让人在阅读中无法找到重点，无法有效的做区分。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;container&quot;</span> &gt;</span> shuliqi <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>使用了 <code>XML</code>标签，就可以快速的辨别标签的类型，内容，整体语义化很强，缺点就是多余的符号和为了表达嵌套关系的的闭合标签。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">div(class=&#x27;container&#x27;) hello world</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>pug</code>独特的语法，在不损失<code>XML</code>的表达力的前提下，省略了无用的符号，并通过缩进来表达嵌套逻辑，降低了很多的语法噪音。</p>
+<p>可以看出来, <code>DSL</code>的引入确实能够有效的提高特定场景的表达效率, 在熟悉了相关语法后, 能够是代码更易理解, 也更加简洁。</p>
+<h1 id="要不要引入DSL"><a href="#要不要引入DSL" class="headerlink" title="要不要引入DSL"></a>要不要引入DSL</h1><p>在日常的开发中， 为了解决某一场景的需求而引入一个新的<code>DSL</code>, 在我看来是需要慎重考虑的。因为这是引入了一种新的语言，这可能会让整个项目的维护难度提升。</p>
+<p>所以否引入<code>DSL</code>需要考虑几个点：</p>
+<ul>
+<li>产能的提升是否能够抹平新语言引入带来的学习成本</li>
+<li>是否可以使用第三方工具替代<code>DSL</code></li>
+</ul>
+<h1 id="内部DSL-外部DSL"><a href="#内部DSL-外部DSL" class="headerlink" title="内部DSL? 外部DSL?"></a>内部DSL? 外部DSL?</h1><p>既然引入<code>DSL</code>是有成本的，那么有没有什么成本比较低的引入方法呢？</p>
+<p>也许有的，上面我们谈到的<code>DSL</code>在广义上作区分的话可以叫做<strong>外部DSL</strong>，既然有<strong>外部DSL</strong>， 那么肯定有<strong>内部DSL</strong>，我们举个例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select &#x27;name&#x27; from &#x27;applications&#x27; where id = 234</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">select(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">.from(<span class="string">&#x27;applications&#x27;</span>)</span><br><span class="line">.where(id, <span class="string">&#x27;=&#x27;</span>, <span class="number">234</span>)</span><br></pre></td></tr></table></figure>
+
+<p>上面的<code>SQL</code> 和下面的<code>JavaScript</code>代码实际上是等价的， 上面的<code>SQL</code>代码我们叫它<code>外部的DSL</code>， 下面的<code>JavaScript</code>我们叫做<code>内部DSL</code>—-&gt; <a target="_blank" rel="noopener" href="https://knexjs.org/">knexjs</a></p>
+<p>可以再来举个例子:</p>
+<p><strong>外部DSL</strong>:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">  <span class="selector-class">.content</span> &#123;</span><br><span class="line">      <span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">      <span class="attribute">margin</span>: <span class="number">10px</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>内部的DSL</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&#x27;.container .content&#x27;</span>)</span><br><span class="line">.css(<span class="string">&#x27;color&#x27;</span>, <span class="string">&#x27;#fff&#x27;</span>)</span><br><span class="line">.css(<span class="string">&#x27;margin&#x27;</span>, <span class="string">&#x27;10px&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>显然这个内部的<code>DSL</code>看着很眼熟，感觉就是我们普调的<code>js</code>方法调用，就是普调的第三方接口调用。</p>
+<p>类似这样的内部<code>DSL</code>我们见到还很多：</p>
+<p><strong>Jquery：</strong></p>
+<p><code>JQuery</code>可以被称作是对<code>DOM</code>的操作的<strong>内部DSL</strong>:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&#x27;.mydiv&#x27;</span>)</span><br><span class="line">.addClass(<span class="string">&#x27;flash&#x27;</span>)</span><br><span class="line">.draggable()</span><br><span class="line">.css(<span class="string">&#x27;color&#x27;</span>, <span class="string">&#x27;blue&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Moment：</strong></p>
+<p><code>Moment</code>可以被称作是对日期操作的<strong>内部DSL</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">moment()</span><br><span class="line">.subtract(<span class="number">10</span>, <span class="string">&#x27;days&#x27;</span>)</span><br><span class="line">.calendar();</span><br></pre></td></tr></table></figure>
+
+<p><strong>Chai</strong></p>
+<p><code>Chai</code>就可以被称作是对断言的<strong>内部DSL</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tea.should.have.property(<span class="string">&#x27;flavors&#x27;</span>).with.lengthOf(<span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="如何区分内部或外部DSL"><a href="#如何区分内部或外部DSL" class="headerlink" title="如何区分内部或外部DSL"></a>如何区分内部或外部DSL</h1><p>通常来讲, 如果实现的功能,无法被宿主语言直接支持, 需要自己额外实现代码的编译和解析, 都属于外部DSL</p>
+<p>如果实现的功能, 可以呗宿主语言直接支持, 就想上面的例子一样, 都是简单的函数形式, 那么这就属于内部的DSL</p>
+<p>那么现在这里有一个问题, 就是我们写<code>React</code>常用的<code>JSX</code>算是什么? 是内部的<code>DSL</code>么? 下面放一点示例代码</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Container</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Menu</span> <span class="attr">list</span>=<span class="string">&#123;this.state.list&#125;/</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">Footer</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Container</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>会被转成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">React.createElement(</span><br><span class="line">  Container,</span><br><span class="line">  null,</span><br><span class="line">  React.createElement(Menu, &#123;</span><br><span class="line">    list: this.state.list</span><br><span class="line">  &#125;),</span><br><span class="line">  React.createElement(Footer, null)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>虽然转义后的代码是合法的<code>javaScript</code>代码，但是源代码并不是一个合法的<code>javaScript</code>代码，正常的浏览器是无法正常识别这些代码的。</p>
+<p>因为这些代码再被浏览器执行前, 会被<code>Babel</code>进行转移, 转移成可被浏览器识别的<code>javaScript</code>代码，而<code>Babel</code>在转义这些<code>JSX</code>的时候,<br>实际上内部已经实现了对这种特殊语法的编译和解析, 所以, 虽然<code>jsx</code>通常也写在<code>.js</code>文件中, 但它还是一个外部的<code>DSL</code></p>
+<h1 id="如何看待内部DSL"><a href="#如何看待内部DSL" class="headerlink" title="如何看待内部DSL"></a>如何看待内部DSL</h1><p><code>DSL</code>实际上就是为了解决特定问题而出现的.<br>使用内部<code>DSL</code>来对某个领域进行扩展,在我看来是一个很好的解决方案, 因为没有引入新语言带来的新问题,</p>
+<p>社区对,内部<code>DSL</code>的划分界定实际上很模糊, 希望大家不要过于纠结, 无论是<code>API</code> 还是<code> DSL</code>, 能够有效的抽象并解决问题的, 都是好的解决之道。</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2021/08/07/如何理解DSL/">https://shuliqi.github.io/2021/08/07/如何理解DSL/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/09/14/React-hook-%E5%AD%A6%E4%B9%A0/"><i class="fa fa-chevron-left">  </i><span>React hook 学习</span></a></div><div class="next-post pull-right"><a href="/2021/07/30/%E5%89%8D%E7%AB%AF%E5%8F%91%E9%80%81http%E8%AF%B7%E6%B1%82%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E5%BC%8F/"><span>前端如何发起http请求及各方法的优缺点</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

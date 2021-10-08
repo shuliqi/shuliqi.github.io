@@ -1,0 +1,423 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="Docker的必要性及基础使用"><meta name="keywords" content="其他"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>Docker的必要性及基础使用 | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E7%9A%84%E9%9A%BE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">环境配置的难题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="toc-number">2.</span> <span class="toc-text">虚拟机</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Linux%E5%AE%B9%E5%99%A8"><span class="toc-number">3.</span> <span class="toc-text">Linux容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">4.</span> <span class="toc-text">Docker是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E7%9A%84%E7%94%A8%E9%80%94"><span class="toc-number">5.</span> <span class="toc-text">Docker 的用途</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">6.</span> <span class="toc-text">Docker 的基本概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dcoker-%E7%9A%84%E5%AE%89%E8%A3%85"><span class="toc-number">7.</span> <span class="toc-text">Dcoker 的安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hello-world-%E5%AE%9E%E4%BE%8B"><span class="toc-number">8.</span> <span class="toc-text">hello world 实例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%EF%BC%88image%E6%96%87%E4%BB%B6%EF%BC%89"><span class="toc-number">9.</span> <span class="toc-text">镜像（image文件）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F"><span class="toc-number">9.1.</span> <span class="toc-text">获取镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E9%95%9C%E5%83%8F"><span class="toc-number">9.2.</span> <span class="toc-text">列出镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%99%9A%E6%82%AC%E9%95%9C%E5%83%8F"><span class="toc-number">9.2.1.</span> <span class="toc-text">虚悬镜像</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E5%B1%82%E9%95%9C%E5%83%8F"><span class="toc-number">9.2.2.</span> <span class="toc-text">中间层镜像</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E9%95%9C%E5%83%8F"><span class="toc-number">9.3.</span> <span class="toc-text">删除镜像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Dockerfile-%E5%AE%9A%E5%88%B6%E9%95%9C%E5%83%8F"><span class="toc-number">9.4.</span> <span class="toc-text">使用Dockerfile 定制镜像</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%EF%BC%88container-%E6%96%87%E4%BB%B6%EF%BC%89"><span class="toc-number">10.</span> <span class="toc-text">容器（container 文件）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%97%E5%87%BA%E5%AE%B9%E5%99%A8%EF%BC%9A"><span class="toc-number">10.1.</span> <span class="toc-text">列出容器：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E5%90%AF%E5%8A%A8"><span class="toc-number">10.2.</span> <span class="toc-text">容器启动</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B0%E5%BB%BA%E5%B9%B6%E5%90%AF%E5%8A%A8"><span class="toc-number">10.2.1.</span> <span class="toc-text">新建并启动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%B7%B2%E7%BB%88%E6%AD%A2%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="toc-number">10.2.2.</span> <span class="toc-text">启动已终止的容器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%88%E6%AD%A2%E5%AE%B9%E5%99%A8%E8%BF%90%E8%A1%8C"><span class="toc-number">10.3.</span> <span class="toc-text">终止容器运行</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9B%E5%85%A5%E5%AE%B9%E5%99%A8"><span class="toc-number">10.4.</span> <span class="toc-text">进入容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%BC%E5%87%BA%E5%92%8C%E5%AF%BC%E5%85%A5%E5%AE%B9%E5%99%A8"><span class="toc-number">10.5.</span> <span class="toc-text">导出和导入容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E5%AE%B9%E5%99%A8"><span class="toc-number">10.6.</span> <span class="toc-text">删除容器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dockerfile-%E6%96%87%E4%BB%B6"><span class="toc-number">11.</span> <span class="toc-text">Dockerfile 文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%88%B6%E4%BD%9C%E8%87%AA%E5%B7%B1%E7%9A%84-Docker-%E5%AE%B9%E5%99%A8"><span class="toc-number">12.</span> <span class="toc-text">实例：制作自己的 Docker 容器</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E5%86%99-Dockerfile-%E6%96%87%E4%BB%B6"><span class="toc-number">12.1.</span> <span class="toc-text">编写 Dockerfile 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-image-%E6%96%87%E4%BB%B6"><span class="toc-number">12.2.</span> <span class="toc-text">创建 image 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%AE%B9%E5%99%A8"><span class="toc-number">12.3.</span> <span class="toc-text">生成容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CMD-%E5%91%BD%E4%BB%A4"><span class="toc-number">12.4.</span> <span class="toc-text">CMD 命令</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E5%B8%83-image-%E6%96%87%E4%BB%B6"><span class="toc-number">12.5.</span> <span class="toc-text">发布 image 文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">13.</span> <span class="toc-text">参考文章</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">Docker的必要性及基础使用</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-09-30</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%85%B6%E4%BB%96/">其他</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>在阅读我们Docker的 <a target="_blank" rel="noopener" href="https://www.docker.com/">官方文档</a>我们知道：</p>
+<ul>
+<li>Docker  是世界领先的软件容器平台。</li>
+<li>使用Docker 可以使开发人员消除一起协作开发遇到的一些问题；如”在我的电脑上可正常运行”。</li>
+</ul>
+ <span id="more"></span>
+
+<ul>
+<li>使用Docker 可以使运维人员在隔离容器中并行运行和管理应用，获得更好的计算密度。</li>
+<li>使用Docker 企业可以构建敏捷的软件交付管道，以更快的速度，更高的安全性和可靠的信誉为 Linux 和 Wiindows Server 应用发布新功能。</li>
+</ul>
+<p>那么我们为什么需要 Docker 呢？</p>
+<h2 id="环境配置的难题"><a href="#环境配置的难题" class="headerlink" title="环境配置的难题"></a>环境配置的难题</h2><p>我们开发一般在写程序，需要好多个环境，主要的可以分为：</p>
+<ul>
+<li><p><strong>开发环境：</strong>我们自己本地写代码的环境；</p>
+</li>
+<li><p><strong>测试环境：</strong> 提供给测试伙伴测试的环境；</p>
+</li>
+<li><p><strong>生产环境：</strong>测试完成可以上线的环境；</p>
+<p>我们在开发和学习编辑过程中， 好多时间都浪费在环境上：</p>
+</li>
+<li><p>如果重装了系统。我之前的项目，就得弄好多的配置，才能跑起来。比如配置MySQL，配置各种的环境变量等；</p>
+</li>
+<li><p>假如我们在网上学习跟这老师的步骤去写Demo,不知道你们遇到没，反正有些Demo我总有Bug。</p>
+</li>
+<li><p>我们在本地开发环境一切安好， 但是在测试环境上就出错了，或者测试环境是好的，一上线也是各种报错(心累~~);</p>
+</li>
+</ul>
+<p>所以就有“千万不要和程序员说，你的代码有bug”这样的笑话：</p>
+<ul>
+<li>程序员的第一反应是你的环境有问题，第二就是你不会使用吧。</li>
+<li>你要是跟他说“这个程序运行的怎么跟预期的不一样啊，是不是我操作的问题啊？”。</li>
+<li>我们就会第一反应:“这是不是出bug了”</li>
+</ul>
+<h2 id="虚拟机"><a href="#虚拟机" class="headerlink" title="虚拟机"></a>虚拟机</h2><p>虚拟机就是带环境安装的一种解决方案。它可以在一种操作系统里面运行另外一种操作系统，比如我在 Windows 系统里面运行 Linnux 系统。应用程序对此是毫无感知的，，因为虚拟机看上去跟真实系统一摸一样，对于底成系统来说，虚拟机就是一个普通的文件，不需要了就删掉，对其他部分毫无影响。</p>
+<p>虽然我们可以通过虚拟机还原软件的的原始环境，但是这个方案有几点缺点：</p>
+<ul>
+<li><p><strong>资源占用多</strong></p>
+<p>虚拟机会独自占用一部分内存和硬盘空间，它运行的时候其他程序就无法使用这些资源了，哪怕虚拟机里面的应用程序真正使用的内存只有1MB，虚拟机依然会需要几百MB的内存才能运行。</p>
+</li>
+<li><p><strong>繁琐的步骤多</strong></p>
+<p>虚拟机是完整的操作系统，一些系统级别的步骤是无法跳过的，如用户登陆。</p>
+</li>
+<li><p><strong>启动慢</strong></p>
+<p>启动操作系统需要多久的时间，启动虚拟机就需要多久的时间，可能需要等特别长的时间，应用程序才会运行。</p>
+</li>
+</ul>
+<h2 id="Linux容器"><a href="#Linux容器" class="headerlink" title="Linux容器"></a>Linux容器</h2><p>由于虚拟机存在这些缺点，Linux发明出了另外一种虚拟化技术；linux容器(Linux Container)LXC.。</p>
+<p>Linux容器不是模拟一个完整的的操作系统，而是对进程进行隔离。或者说，在正常的进程外面套了一个保护层，对于容器里面的进程来说，它接触到的各种资源都是虚拟的，从而实现与底层系统的隔离。</p>
+<p>由于容器是进程级别的，所以相比虚拟机有很多的优势：</p>
+<ul>
+<li><p><strong>启动快</strong></p>
+<p>容器里面的应用直接就是底层系统的一个进程，，而不是虚拟机内部的进程，所以启动容器就相当于启动本机的一个进程，而不是启动一个操作系统，速度就快很多了。</p>
+</li>
+<li><p><strong>资源占用小</strong></p>
+<p>容器只占用需要的资源，不占用那些不需要额资源；虚拟机由于是完整的操作系统，不可避免的要占用所有的资源，另外，多个容器可以共享资源，虚拟机都是独享资源。</p>
+</li>
+<li><p><strong>体积小</strong></p>
+<p>容器只需要打包用到的组件即可，而虚拟机是整个系统的打包，所以容器文件比虚拟机文件要小很多。</p>
+</li>
+</ul>
+<p>最后说明，容器有点像轻量级的虚拟机，能够提供虚拟化的环境，但是成本开销就小很多。</p>
+<h2 id="Docker是什么？"><a href="#Docker是什么？" class="headerlink" title="Docker是什么？"></a>Docker是什么？</h2><p>Docker 属于 Linux 容器的一种封装，提供简单易用的容器使用接口。</p>
+<p>它是目前最流行额 Linux 容器解决方案。</p>
+<p>Docker 将应用程序与该程序的依赖打包在一个文件里面，运行这个文件，就会生成一个虚容器。程序在这个虚拟容器运行， 就好像在真实的物理机上运行一样。有了 Docker 就不用担心环境问题。</p>
+<p>总体来说，Docker 的接口相当的简单， 用户可以方便的创建和使用容器，把自己的应用放入容器，容器还可以进行版本管理，复制，分享，修改，就像管理普通的代码一样。</p>
+<h2 id="Docker-的用途"><a href="#Docker-的用途" class="headerlink" title="Docker 的用途"></a>Docker 的用途</h2><p>Docker 的主要用途，目前主要有三大类：</p>
+<ul>
+<li><p><strong>提供一次性的环境</strong></p>
+<p>比如：本地测试他人的软件，持续集成的时候提供单元测试和构建环境。</p>
+</li>
+<li><p><strong>提供弹性的云服务</strong></p>
+<p>因为 Docker 容器可以随关随开，，很适合动态扩容和缩容。</p>
+</li>
+<li><p><strong>组建微服务架构</strong></p>
+<p>通过多个容器，一台机器可以跑多个服务，因此在本机就可以模拟出微服务架构</p>
+</li>
+</ul>
+<h2 id="Docker-的基本概念"><a href="#Docker-的基本概念" class="headerlink" title="Docker 的基本概念"></a>Docker 的基本概念</h2><p>Docker 包含三个基本概念</p>
+<ul>
+<li><p><strong>镜像（image）</strong></p>
+<p>操作系统分为内核和用户空间，就Linux而言，内核启动后，，会挂载<code>root</code>文件系统为其提供用户空间支持。而 Docker镜像，就相当于一个 <code>root</code>文件系统。 Docker镜像就是一个特殊的文件系统，除了提供容器运行时所需的程序，库，资源，配置等文件外，还包含了一些为运行时准备的一些配置参数（如：匿名卷，，环境变量，用户等）。镜像不包含任何的动态数据，，其内容在构建完成之后也不会改变。</p>
+</li>
+<li><p><strong>容器（container）</strong></p>
+<p>镜像（image）和 容器（container）的关系，就像面向对象设计中的 <code>类</code> 和 <code>实例</code> 一样。镜像是静态的定义，，容器是镜像运行时的实体。容器可以被创建，启动通知，删除，暂停等。</p>
+<p>容器的实质就是进程，但是与直接宿主执行的进程不同，容器进程运行于属于自己的独立的 <code>命令空间</code>。因此容器有自己<code>root</code>文件系统，自己的网络配置，自己的进程空间，甚至自己的用户ID空间。</p>
+</li>
+<li><p><strong>仓库（repository）</strong></p>
+<p>镜像构建完成之后，可以很容易的在当前宿主机上运行，但是，如果需要在服务器上使用这个镜像，我们就需要一个集中的存储，分发镜像的服务。Docker 官方提供的 Docker <a target="_blank" rel="noopener" href="https://hub.docker.com/">Hub</a>  就是这样的服务，不过这是公共仓库。</p>
+</li>
+</ul>
+<h2 id="Dcoker-的安装"><a href="#Dcoker-的安装" class="headerlink" title="Dcoker 的安装"></a>Dcoker 的安装</h2><p>Docker 有三个更新的频道：<code>stable</code> <code>,</code>test<code>和</code>nightly</p>
+<p>官方网站上有各种环境下的 <a target="_blank" rel="noopener" href="https://docs.docker.com/get-docker/">安装指南</a></p>
+<p>安装完成之后，可以使用一下命令检测 Docker 是否安装成功</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker version</span><br></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker info</span><br></pre></td></tr></table></figure>
+
+<p>  如果安装了就会得到关于 docker 的信息</p>
+<img src="/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/1.png" class="">
+
+<h2 id="hello-world-实例"><a href="#hello-world-实例" class="headerlink" title="hello world 实例"></a>hello world 实例</h2><p>现在我们通过简单的 image 文件 <a target="_blank" rel="noopener" href="https://hub.docker.com/_/hello-world">hello world</a> 来感受一下 Docker</p>
+<p>运行下面的命令，将image 文件从 仓库拉取到本地</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image pull library/hello-world</span><br></pre></td></tr></table></figure>
+
+<p>这个代码中的 <code>docker image pull</code>  是抓取 image 文件的命令。<code>library/hello-world</code>是 image 文件在仓库里面的位置。·<code>library</code>是 image 文件所在的组<code>hello-world</code>是image文件的名称。</p>
+<p>由于是 Docker 官方提供的image 文件，都放在 <code>library</code>组里面，属于默认组， 所以我们在抓取 Docker 官方 image 文件的时候，可以省略 <code>library</code>·。</p>
+<p>所以上面的命令可以写成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image pull hello-world</span><br></pre></td></tr></table></figure>
+
+<p>抓取过程：</p>
+<img src="/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/3.png" class="">
+
+<p>抓取成功之后，我们查看本机是否有该 image 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
+
+<img src="/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/4.png" class="">
+
+<p>我们可以看出本机是有该 image 文件了的、</p>
+<p>接下来，我们运行这个 image 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container run hello-world</span><br></pre></td></tr></table></figure>
+
+<p><code>docker container run</code>命令会从 image 文件 生成一个正在运行的容器。</p>
+<p>注意：<code>docker container run</code>命令具有 自动抓取 image 文件的功能，如果发现本地没有指定的 image 文件，就会从仓库自动抓取。</p>
+<p>如果运行成功，就会在屏幕上得到以下的输出：</p>
+
+
+<p>输出这些提示之后就会自动停止运行，容器就会自动终止。</p>
+<p>下面会通过Docker 的三个基本概念来介绍。</p>
+<h2 id="镜像（image文件）"><a href="#镜像（image文件）" class="headerlink" title="镜像（image文件）"></a>镜像（image文件）</h2><p>Docker 把应用程序及其依赖，打包在 image 文件里面。image 是二进制文件。</p>
+<p>只有通过这个文件，才能生成 Docker 容器（container），image文件可以看成是容器的模版。Docker 根据 image 文件生成容器的实例。同一个image文件可以生成多个同时运行的容器实例。</p>
+<h3 id="获取镜像"><a href="#获取镜像" class="headerlink" title="获取镜像"></a>获取镜像</h3><p>Docker 运行容器前需要在本地存在对应的镜像（image），如果不存在该镜像，Docker就会从镜像仓库下载该镜像。在<a target="_blank" rel="noopener" href="https://hub.docker.com/search?q=&type=image">Docker Hub</a> 上有大量的镜像可以使用。 </p>
+<p>我们可以使用 <code>Docker pull</code>命令获取镜像，命令格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>其中具体的<code>选项</code>可以通过<code>Docker pull --help</code>查看。如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$  Docker pull --help</span><br><span class="line">Options:</span><br><span class="line">  -a, --all-tags                Download all tagged images in the repository</span><br><span class="line">      --disable-content-trust   Skip image verification (default true)</span><br><span class="line">      --platform string         Set platform if server is multi-platform capable</span><br><span class="line">  -q, --quiet                   Suppress verbose output</span><br></pre></td></tr></table></figure></li>
+<li><p>Docker 镜像仓库地址：地址的格式一般是 <code>&lt;域名/IP&gt;[:端口]</code>。默认的地址是 <a target="_blank" rel="noopener" href="https://hub.docker.com/search?q=&type=image">Docker Hub</a> </p>
+</li>
+<li><p>仓库名：仓库名是两段式名称，即：<code>&lt;用户名&gt;/&lt;软件名&gt;</code>。对弈仓库是 <a target="_blank" rel="noopener" href="https://hub.docker.com/search?q=&type=image">Docker Hub</a> 如果不给出用户名，那么默认为<code>library</code>(官方镜像)。</p>
+</li>
+</ul>
+<p>举个🌰：</p>
+<p>我们从 <a target="_blank" rel="noopener" href="https://hub.docker.com/search?q=&type=image">Docker Hub</a> 仓库上拉取一个 <code>hello-world</code>镜像（image）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ Docker pull hello-world</span><br><span class="line">Using default tag: latest</span><br><span class="line">latest: Pulling from library/hello-world</span><br><span class="line">0e03bdcc26d7: Pull complete</span><br><span class="line">Digest: sha256:8c5aeeb6a5f3ba4883347d3747a7249f491766ca1caa47e5da5dfcf6b9b717c0</span><br><span class="line">Status: Downloaded newer image <span class="keyword">for</span> hello-world:latest</span><br><span class="line">docker.io/library/hello-world:latest</span><br></pre></td></tr></table></figure>
+
+<p>这命令明没有给出 Docker 镜像（image）仓库地址，那么将会从<a target="_blank" rel="noopener" href="https://hub.docker.com/search?q=&type=image">Docker Hub</a> 获取镜像（image）。镜像的名字叫做<code>hello-world</code>，因此会获取官方镜像<code>library/hello-world</code>仓库中的最新的版本的镜像(我们没有执行用哪个标签的版本，所以是最新的)。</p>
+<h3 id="列出镜像"><a href="#列出镜像" class="headerlink" title="列出镜像"></a>列出镜像</h3><p>可以使用命令`docker image ls 列出已经下载下来的镜像。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls</span><br><span class="line">REPOSITORY                                 TAG                       IMAGE ID            CREATED             SIZE</span><br><span class="line">express-for-docker                         0.0.1                     75b97434d52d        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    b2d9a05ebb31        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    1083c90adc0f        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    914f52bcbe8b        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    7032438fb234        2 days ago          920MB</span><br><span class="line">shuliqi/express-for-docker                 0.0.1                     e46126aa45a5        6 days ago          920MB</span><br><span class="line">r.addops.soft.360.cn/qixiao/backend-test   20200529163234-5ed720bd   a5e1f04e8d6a        4 months ago        2.71GB</span><br><span class="line">node                                       12.17.0                   a37df1a0b8f0        4 months ago        918MB</span><br><span class="line">hello-world                                latest                    bf756fb1ae65        9 months ago        13.3kB</span><br></pre></td></tr></table></figure>
+
+<p>我们可以看出来，列表包含了 <code>仓库名</code>，<code>标签</code>，<code>镜像ID</code>，<code>创建时间</code>，<code>所占用的空间</code>。其中镜像ID 是镜像的唯一标识、</p>
+<p> image 文件是通用的，一台机器的 image 文件拷贝到另外一台机器，依然是可以使用的。所以一般来说，为了节省时间，我们应该尽量使用别人制作好的 image 文件，而不是自己制作，即使自己制作，也应该基于别人 image 文件进行加工，而不是从零制作。</p>
+<p>为了方便共享，inage 文件制作完成之后可以上传到网上的仓库。Docker 的官方仓库 <a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker hub</a> 应该是最常用的。</p>
+<h4 id="虚悬镜像"><a href="#虚悬镜像" class="headerlink" title="虚悬镜像"></a>虚悬镜像</h4><p>在上面的镜像中， 有一些比较特殊镜像，这些镜像没有仓库名。也没有标签，均为：<code>&lt;none&gt;</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;none&gt;                                     &lt;none&gt;                    b2d9a05ebb31        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    1083c90adc0f        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    914f52bcbe8b        2 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    7032438fb234        2 days ago          920MB</span><br></pre></td></tr></table></figure>
+
+<p>原因是这样的，这些镜像原先是有镜像和标签的，但是随着这些镜像的官网维护，发布了新版本之后， 重新 <code>Docker     pull</code> 的时候。旧的镜像名被转移到新下载的镜像身上了。而这个旧的镜像上的名称则被取消，从而成为了 <code>&lt;none&gt;</code>。除了docker pull<code>可能导致这种情况。</code>docker build`也同样可以导致这种现象。</p>
+<p>由于新旧镜像同名，旧镜像名称被取消。从而出现仓库名，标签均为<code>&lt;none&gt;</code>的镜像。这类镜像就被称为<strong>虚悬镜像（dangling image）</strong></p>
+<p>一般使用<code>docker image ls-f dangling=true</code>来显示这类镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls -f dangling=<span class="literal">true</span></span><br><span class="line">REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">&lt;none&gt;              &lt;none&gt;              b2d9a05ebb31        2 days ago          920MB</span><br><span class="line">&lt;none&gt;              &lt;none&gt;              1083c90adc0f        2 days ago          920MB</span><br><span class="line">&lt;none&gt;              &lt;none&gt;              914f52bcbe8b        2 days ago          920MB</span><br><span class="line">&lt;none&gt;              &lt;none&gt;              7032438fb234        3 days ago          920MB</span><br></pre></td></tr></table></figure>
+
+<p>一般来说，虚悬惊险已经失去了存在的价值，是可以随意删除，可以使用下面的命令删除</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">docker image prune</span><br><span class="line">WARNING! This will remove all dangling images.</span><br><span class="line">Are you sure you want to <span class="built_in">continue</span>? [y/N] y</span><br><span class="line">Deleted Images:</span><br><span class="line">deleted: sha256:914f52bcbe8b3931a0f28de7f0fdac94718eb679af0eee6056a4339896a2986b</span><br><span class="line">deleted: sha256:8b34628d630ae6f1313ed41ce1539acaa66a2adcc20c5f888475008da5f8f8af</span><br><span class="line">deleted: sha256:107e046f0614e4beb0296e38933989724b232bef66013a83beb5e4a507b15875</span><br><span class="line">deleted: sha256:7adb718c36f311154759d7659bb3a56edc0eef972fe808960a1890a260a344d5</span><br><span class="line">deleted: sha256:49e7e6fadd8e6517ee862d5281a849faa45adf6e097ce280927e5861936731ba</span><br><span class="line">deleted: sha256:b8cfe3d0a0f3c1b19554f9e4cb39978810793399d4c20eb819b7b67205ad58f0</span><br><span class="line">Total reclaimed space: 5.13MB</span><br></pre></td></tr></table></figure>
+
+<h4 id="中间层镜像"><a href="#中间层镜像" class="headerlink" title="中间层镜像"></a>中间层镜像</h4><p>为了加快镜像的构建，重复利用资源，Docker 会利用<strong>中间镜像</strong>。所以在使用一段时间后，可能会看到一些依赖的中间层镜像。默认的命令<code>docker image ls</code>只会列出顶层镜像。如果希望现实包含中间层镜像在内的所有镜像的话，需要加<code>-a</code>参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls -a</span><br></pre></td></tr></table></figure>
+
+<p>这样就会看到很多无标签的镜像，与之前的虚悬镜像 不同，这些无标签的镜像很多都是中间层镜像，是其他镜像所依赖的镜像，这些无标签的镜像就不应该删除。否则会导致上层镜像会因为失去依赖而出错。</p>
+<h3 id="删除镜像"><a href="#删除镜像" class="headerlink" title="删除镜像"></a>删除镜像</h3><p>如果想要删除本地的镜像，可以使用<code>Docker image rm</code>命令，其格式为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker image rm [选项] &lt;镜像1&gt; [&lt;镜像2&gt;...]</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>镜像</code> 可以是 <code>镜像短ID</code>，<code>镜像长ID</code>,<code>镜像名</code> 或者 <code>镜像摘要</code>.</p>
+<p>举个🌰：</p>
+<p>我们先列出本地的镜像（image）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls</span><br><span class="line">REPOSITORY                                 TAG                       IMAGE ID            CREATED             SIZE</span><br><span class="line">express-for-docker                         0.0.1                     75b97434d52d        3 days ago          920MB</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    b2d9a05ebb31        3 days ago          920MB</span><br><span class="line">r.addops.soft.360.cn/qixiao/backend-test   20200529163234-5ed720bd   a5e1f04e8d6a        4 months ago        2.71GB</span><br></pre></td></tr></table></figure>
+
+<p>我们可以使用<code>镜像长ID</code>来删除镜像。使用脚本的时候可能会用长ID。但是人工输入的话就会太累了。所以更多的时候是使用<code>短ID</code>来删除镜像、·docker image ls·列出的就是镜像的短ID。</p>
+<p>假如我们要删<code>express-for-docker </code>·镜像，就可以使用短ID执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ docker image rm 75b97434d52d</span><br><span class="line">Untagged: express-for-docker:0.0.1</span><br><span class="line">Deleted: sha256:75b97434d52d019ad7ee9c1e1d2c903bc6d5e7261a429cb0f97c0302a0323279</span><br><span class="line">Deleted: sha256:4605991534be3e41e1dd0dc142be83617424b94f68feab431ee4cdf88be944f2</span><br><span class="line">Deleted: sha256:b77592ec1b655839244fdaa2bf94f7ebe606e20ae617154aedaed5e6bd04b9dd</span><br><span class="line">Deleted: sha256:15c1b2c7cd44394daa5b22ddae5e66a5a8804bef4a70ef172738f3b8cbf4a8dd</span><br><span class="line">Deleted: sha256:ffa48c079ea207b279b6fffaa41b893e5c66c9c5908fe616e07978e32ed4b341</span><br><span class="line">Deleted: sha256:ffcf86b030c4b1ecba89778455e52e9ce61ecf22fb2ee7fe8e642d52b0f7f82d</span><br><span class="line">Deleted: sha256:e24e7952278d2bde9a56a78ef1887ca732e786a3735f8e3c1cbc315b88edb0b6</span><br><span class="line">Deleted: sha256:60d46f3b1697a276dff10b74fb8199f523c171ece03bd1e372a0b6ce3c6ada23</span><br><span class="line">Deleted: sha256:4e891fdf8b241174de56b22682015358baf52302f4a7a2ddbd0ff417a71d0e2d</span><br></pre></td></tr></table></figure>
+
+<p>也可以使用镜像名字，即：<code>&lt;仓库名&gt;：&lt;标签&gt;</code>，来删除镜像.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls</span><br><span class="line">REPOSITORY                                 TAG                       IMAGE ID            CREATED             SIZE</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    b2d9a05ebb31        3 days ago          920MB</span><br><span class="line">r.addops.soft.360.cn/qixiao/backend-test   20200529163234-5ed720bd   a5e1f04e8d6a        4 months ago        2.71GB</span><br><span class="line">hello-world                                latest                    bf756fb1ae65        9 months ago        13.3kB</span><br><span class="line">$ docker image rm  hello-world:latest</span><br><span class="line">Untagged: hello-world:latest</span><br><span class="line">Untagged: hello-world@sha256:8c5aeeb6a5f3ba4883347d3747a7249f491766ca1caa47e5da5dfcf6b9b717c0</span><br><span class="line">Deleted: sha256:bf756fb1ae65adf866bd8c456593cd24beb6a0a061dedf42b26a993176745f6b</span><br><span class="line">Deleted: sha256:9c27e219663c25e0f28493790cc0b88bc973ba3b1686355f221c38a36978ac63</span><br><span class="line"> shuliqi@shuliqideMacBook-Pro  ~ </span><br></pre></td></tr></table></figure>
+
+<p>当然也可以使用 <code>镜像摘要</code>来删除镜像。</p>
+<p>首先我们使用命令<code>docker image ls --digests</code>先列出镜像的摘要</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ docker image ls --digests</span><br><span class="line">REPOSITORY                                 TAG                       DIGEST                                                                    IMAGE ID            CREATED             SIZE</span><br><span class="line">&lt;none&gt;                                     &lt;none&gt;                    &lt;none&gt;                                                                    b2d9a05ebb31        3 days ago          920MB</span><br><span class="line">r.addops.soft.360.cn/qixiao/backend-test   20200529163234-5ed720bd   sha256:d88b37ff35301dc149c346345cb0609600201b720b14d29f52f7ef232a098e39   a5e1f04e8d6a        4 months ago        2.71GB</span><br><span class="line">hello-world                                latest                    sha256:8c5aeeb6a5f3ba4883347d3747a7249f491766ca1caa47e5da5dfcf6b9b717c0   bf756fb1ae65        9 months ago        13.3kB</span><br></pre></td></tr></table></figure>
+
+<p>然后使用<code>镜像摘要</code>删除:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker image rm sha256:8c5aeeb6a5f3ba4883347d3747a7249f491766ca1caa47e5da5dfcf6b9b717c0</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用Dockerfile-定制镜像"><a href="#使用Dockerfile-定制镜像" class="headerlink" title="使用Dockerfile 定制镜像"></a>使用Dockerfile 定制镜像</h3><p>这一部分也是很重要的一个知识点， 我们放在下面的内容 <strong>实例：制作自己的 Docker 容器</strong>来一起讲。</p>
+<h2 id="容器（container-文件）"><a href="#容器（container-文件）" class="headerlink" title="容器（container 文件）"></a>容器（container 文件）</h2><p>image 文件生成的容器实例，本身也是一个文件，称为容器文件。</p>
+<p>一般来说，一旦容器生成，就会同时存在两个文件： image 文件 和 容器文件，而且关闭容器不会删除容器文件。只是容器停止运行而已。</p>
+<h3 id="列出容器："><a href="#列出容器：" class="headerlink" title="列出容器："></a>列出容器：</h3><p>列出本机容器 可以使用命令 <code>docker container ls</code>。其命令格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker container ls [OPTIONS]</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS 的选项很多。具体可以看看 <a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/container_ls/">docker container ls</a>的文档。</p>
+<p>列出本机正在运行的容器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker container ls </span><br></pre></td></tr></table></figure>
+
+<p>列出本机所有的容器，包括终止运行的容器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ docker container ls -a</span><br><span class="line">CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS                        PORTS               NAMES</span><br><span class="line">d211b923866c        ubuntu                             &quot;/bin/bash&quot;              40 minutes ago      Exited (0) 40 minutes ago                         goofy_feistel</span><br><span class="line">a80be7a20f56        ubuntu                             &quot;/bin/bash&quot;              40 minutes ago      Exited (0) 40 minutes ago                         inspiring_clarke</span><br><span class="line">8d91eaa8f2e1        ubuntu                             &quot;/bin/bash&quot;              3 hours ago         Exited (0) 3 hours ago                            bold_mendel</span><br><span class="line">995f498d0371        ubuntu                             &quot;/bin/bash&quot;              3 hours ago         Exited (0) 3 hours ago                            thirsty_mestorf</span><br><span class="line">33b16714d2b8        shuliqi/express-for-docker:0.0.1   &quot;docker-entrypoint.s…&quot;   3 hours ago         Up 3 hours                    3000/tcp            great_lewin</span><br><span class="line">251d68312383        ubuntu                             &quot;/bin/bash&quot;              3 hours ago         Exited (130) 3 hours ago                          vibrant_banach</span><br><span class="line">1f50021cd2b8        ubuntu                             &quot;/bin/bash&quot;              3 hours ago         Exited (0) 3 hours ago                            gifted_keldysh</span><br></pre></td></tr></table></figure>
+
+<p>得到的结果之中有容器的ID。这个ID的使用场景就很多，比如终止容器的时候需要提供。</p>
+<h3 id="容器启动"><a href="#容器启动" class="headerlink" title="容器启动"></a>容器启动</h3><p>启动容器有两个方式：</p>
+<ul>
+<li>一种是基于镜像新建一个容器并启动；</li>
+<li>一种是将终止状态的容器重新启动；</li>
+</ul>
+<h4 id="新建并启动"><a href="#新建并启动" class="headerlink" title="新建并启动"></a>新建并启动</h4><p>即第一种启动容器的得方式。启动所需的命令：<code>docker run</code>。其格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run [OPTIONS] IMAGE[:TAG|@DIGEST] [COMMAND] [ARG...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTION 选项 具体可以看官方 <a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/run/">docker run</a></p>
+<p>下面的内容会是我们比较常用的参数的例子。</p>
+<p>我们继续以官方的事镜像<code>Hello world</code>来演示。如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker run hello-world</span><br><span class="line"></span><br><span class="line">Hello from Docker!</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>我们拉取我自己上传的一个镜像（image）<code>express-for-docker</code>，再举个特别的🌰：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull shuliqi/express-for-docker:0.0.1</span><br></pre></td></tr></table></figure>
+
+<p>如果提示没有权限获取，可能没有登录  <a target="_blank" rel="noopener" href="https://hub.docker.com/">Docker hub</a> 。需要注册登录一下，下面的内容有讲，可以移步往下面内容看看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -t -i shuliqi/express-for-docker:0.0.1 /bin/bash</span><br><span class="line">root@f6cf67490ae4:/shuliqi<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>上面这个命令启动了一个bash 终端，允许用户进行交互。</p>
+<ul>
+<li><strong>-t：</strong>表示容器的 Shell 映射到当前的 Shell，然后你在本机窗口输入的命令，就会传入容器</li>
+<li><strong>-i:</strong>   表示让容器的标准输入保持开启</li>
+<li><strong>/bin/bash:</strong>  容器启动后，内部第一个执行的命令。这里是起订 Bash.保证用户使用 Shell</li>
+</ul>
+<p>我们再试一个命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ docker run  -t -i -p 8000:3000 shuliqi/express-for-docker:0.0.1 /bin/bash</span><br><span class="line">root@e400118aabd7:/shuliqi<span class="comment"># node app.js</span></span><br><span class="line">111</span><br><span class="line">Example app listening at http://localhost:3000</span><br></pre></td></tr></table></figure>
+
+<p>然后打开我们浏览器，访问<a target="_blank" rel="noopener" href="http://localhost:8000/">http://localhost:8000/</a> 就会看到如下界面：</p>
+
+
+<p>其中:</p>
+<ul>
+<li><strong>-p:</strong> 是指将容器的某个端口映射到本机的某个端口。这个例子就是讲 容器的 3000 端口 映射到本机的 8000 端口</li>
+</ul>
+<h4 id="启动已终止的容器"><a href="#启动已终止的容器" class="headerlink" title="启动已终止的容器"></a>启动已终止的容器</h4><p>可以使用<code>docker container start</code>命令来启动一个已终止的容器。其格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker container start [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
+
+<p>OPTION 的选项具体可以看官方文档：<a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/container_start/">docker container start</a></p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker container start e400118aabd7</span><br></pre></td></tr></table></figure>
+
+<p>更多的时候我们是需要Docker 在后台进行而不是直接把执行命令输出的结果输出到当前目录下。那么久可以是用<code>-d</code>来参数来实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d -t -i -p 8000:300</span><br><span class="line">597e02ae84f497a8ff6ce03b87ecc40cd2c2a44b3eba41ed927e7aa7beded980</span><br></pre></td></tr></table></figure>
+
+<p>使用·-d· 参数启动后会返回一个唯一的id。</p>
+<p>这时候继续访问 ：<a target="_blank" rel="noopener" href="http://localhost:8000/">http://localhost:8000</a> 还是会看到和之前一样的界面。</p>
+<p>如果我们想看容器的输出结果。可以使用<code>docker container logs [containerID or NAMES]:</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker container logs 597e02ae84f497a8ff6ce03b87ecc40cd2c2a44b3eba41ed927e7aa7beded980</span><br><span class="line">111</span><br><span class="line">Example app listening at http://localhost:3000</span><br></pre></td></tr></table></figure>
+
+<h3 id="终止容器运行"><a href="#终止容器运行" class="headerlink" title="终止容器运行"></a>终止容器运行</h3><p>终止容器可以使用：<code>docker container stop [containerID]</code>命令来终止。其格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker container stop [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ docker container stop 597e02ae84f4</span><br><span class="line">597e02ae84f4</span><br></pre></td></tr></table></figure>
+
+<p>上面的命令会导致 containerID 为 597e02ae84f4 的容器停止运行。</p>
+<p>可以通过 <code>docker container ls -a</code>来查看终止状态的容器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker container ls -a</span><br><span class="line">CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS                        PORTS                                      NAMES</span><br><span class="line">597e02ae84f4        shuliqi/express-for-docker:0.0.1   &quot;docker-entrypoint.s…&quot;   8 minutes ago       Exited (137) 7 seconds ago                                               optimistic_antonelli</span><br></pre></td></tr></table></figure>
+
+<h3 id="进入容器"><a href="#进入容器" class="headerlink" title="进入容器"></a>进入容器</h3><p>在前面我们说过 使用 <code>-d</code>参数时，容器启动后悔进入后台。</p>
+<p>但是有些时候需要进入容器进行一些操作。那么可以使用<code>docker attach</code>或 <code>docker exec</code>来进入容器。但是推荐使用<code>docker exec </code>进入容器。因为使用<code>docker attach</code>进入容器。如果在stdin中exit(退出),是会导致容器停止的。而<code>docker exex</code>则不会。其格式分别为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker attach [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec [OPTIONS] CONTAINER COMMAND [ARG...]</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>docker exec</code>的话， 后面可以跟多个参数，可以使用<code>docker exec --help</code>来查看参数。这里主要说名<code>-t</code>，·-i·</p>
+<p>参数。</p>
+<p>如果只使用<code>-i</code>参数的话，由于没有分配伪终端。界面没有我们熟悉的Linux命令符提示器。但是命令执行结果依然可以返回。</p>
+<p>当<code>-i</code>,<code>-t</code>参数一起使用时，则可以看到我们熟悉的Linux命令提示符。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -i 33b16714d2b8 bash</span><br><span class="line">ls</span><br><span class="line">Dockerfile</span><br><span class="line">README.md</span><br><span class="line">app.js</span><br><span class="line">node_modules</span><br><span class="line">package-lock.json</span><br><span class="line">package.json</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker exec -i -t 33b16714d2b8 bash</span><br><span class="line">root@33b16714d2b8:/shuliqi# ls</span><br><span class="line">Dockerfile  README.md  app.js  node_modules  package-lock.json	package.json</span><br></pre></td></tr></table></figure>
+
+<h3 id="导出和导入容器"><a href="#导出和导入容器" class="headerlink" title="导出和导入容器"></a>导出和导入容器</h3><p>使用<code>docker export</code>来导出本地的某个容器。其格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker export [OPTIONS] CONTAINER</span><br></pre></td></tr></table></figure>
+
+<p>OPTIONS 只有一个选项:</p>
+<ul>
+<li>**–output , -o:**将输入内容写到文件</li>
+</ul>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ docker container ls</span><br><span class="line">CONTAINER ID        IMAGE                              COMMAND                  CREATED             STATUS              PORTS               NAMES</span><br><span class="line">33b16714d2b8        shuliqi/express-for-docker:0.0.1   &quot;docker-entrypoint.s…&quot;   3 hours ago         Up 3 hours          3000/tcp            great_lewin</span><br><span class="line">$ docker export 33b16714d2b8 &gt; express-docker.tar</span><br><span class="line">$ ls</span><br><span class="line">express-docker.tar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ docker export -o=&quot;shuliqi.tar&quot; 33b16714d2b8</span><br><span class="line">$ ls</span><br><span class="line">express-docker.tar shuliqi.tar</span><br></pre></td></tr></table></figure>
+
+<p>可以使用<code>docker import</code>从容器快照文件中再导入为镜像。其格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker import [OPTIONS] file|URL|- [REPOSITORY[:TAG]]</span><br></pre></td></tr></table></figure>
+
+<p>OPTION选项可以查看官方文档  <a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/import/">docker import</a></p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cat express-docker.tar  | docker import - express-docker.tar</span><br><span class="line"></span><br><span class="line">sha256:d16ef3cbe87943de5c4a7c91f11de88b6b1854f7b8898f64060c7580c2840dda</span><br><span class="line">$ docker image ls</span><br><span class="line">REPOSITORY                                 TAG                       IMAGE ID            REPOSITORY                                 TAG                       IMAGE ID            CREATED             SIZE</span><br><span class="line">express-docker.tar                         latest                    d16ef3cbe879        45 seconds ago      913MB</span><br></pre></td></tr></table></figure>
+
+<h3 id="删除容器"><a href="#删除容器" class="headerlink" title="删除容器"></a>删除容器</h3><p>终止运行的容器文件，依然会占据硬盘空间，可以使用<code>docker container rm</code>命令来删除。其格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker container rm [OPTIONS] CONTAINER [CONTAINER...]</span><br></pre></td></tr></table></figure>
+
+<p>如果删除一个 运行中的容器，可以添加 <code>-f</code> 参数。</p>
+<p>使用<code>docker container ls --a</code>命令，可以查看所有已创建的包括终止状态的容器。如果数量太多的话一个一个删除会很麻烦。<strong>清理所有处于终止状态的容器</strong>可以使用命令 <code>docker container prune</code></p>
+<h2 id="Dockerfile-文件"><a href="#Dockerfile-文件" class="headerlink" title="Dockerfile 文件"></a>Dockerfile 文件</h2><p>以上的内容我们学会了如何使用 image 和容器文件，但是如何生成 image 文件呢？</p>
+<p>这就需要 DockerFile 文件，它是一个文本文件，用来配置 image，Docker 根据该文件生成二进制的 image 文件。</p>
+<p>那么我们就通过一个实例，来演示如何编写 DcokerFile 文件吧。</p>
+<h2 id="实例：制作自己的-Docker-容器"><a href="#实例：制作自己的-Docker-容器" class="headerlink" title="实例：制作自己的 Docker 容器"></a>实例：制作自己的 Docker 容器</h2><p>我们先创建一个 express 搭建的项目传到自己的 github。我已经创建完了 <a target="_blank" rel="noopener" href="https://github.com/shuliqi/express-for-docker">express-for-docker</a>。怎么创建 express 实例，可以看<a target="_blank" rel="noopener" href="https://expressjs.com/zh-cn/starter/hello-world.html">express的官网</a>。</p>
+<p>当然我们上面使用的好多例子也用到了我们上传的 image 文件 <a target="_blank" rel="noopener" href="https://hub.docker.com/r/shuliqi/express-for-docker">express-for-docker</a></p>
+<p>接下来我们开始制作自己的 Docker 容器</p>
+<h3 id="编写-Dockerfile-文件"><a href="#编写-Dockerfile-文件" class="headerlink" title="编写 Dockerfile 文件"></a>编写 Dockerfile 文件</h3><p>首先， 我们在项目的根目录下新建一个文本文件 <code>.dockerignore</code>,并写下下面的内容：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.git</span><br><span class="line">node-modules</span><br><span class="line">npm-debug.log</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码表示，这三个路径需要排除，不要打包进 image 文件。如果没有路径需要排除，则这个文件不需要新建。</p>
+<p>然后我们在项目的根目录下新建一个文本文件 <code>Dockerfile</code>,写入下面的内容：</p>
+<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">8.4</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> . /shuliqi</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /shuliqi</span></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> [<span class="string">&quot;npm&quot;</span>, <span class="string">&quot;install&quot;</span>]</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">3000</span>/tcp</span><br></pre></td></tr></table></figure>
+
+<p>上面的五行代码分别代表什么意思呢？</p>
+<ul>
+<li><p><strong>FROM node:8.4</strong></p>
+<p>这个 image 文件继承官方的得 node image，冒号表示标签，这里的标签是12.17.0。即12.17.0 版本的node</p>
+</li>
+<li><p><strong>COPY . /app</strong></p>
+<p>将当前目录下的所有文件（除了.dockerignore排除的路径）都拷贝到 image 文件的/app目录下面。</p>
+</li>
+<li><p><strong>WORKDIR /app</strong></p>
+<p>指定接下来的工作路径为/app</p>
+</li>
+<li><p><strong>RUN [“npm”, “install”]</strong></p>
+<p>在/app目录下面，运行 npm install 安装依赖。注意：安装后的所有依赖，都将打包进入  image 文件</p>
+</li>
+<li><p><strong>EXPOSE 3000</strong></p>
+<p>将容器的 3000 端口暴露出来，允许外部连接这个端口。</p>
+</li>
+</ul>
+<p>关于完整的一个 Dockerfile各种命令的使用，我们在下一节讲， 请继续关注哦(* ￣3)(ε￣ *)！！</p>
+<h3 id="创建-image-文件"><a href="#创建-image-文件" class="headerlink" title="创建 image 文件"></a>创建 image 文件</h3><p>有了 .Dockerfile 文件之后， 就可以使用 <code>docker  build</code>命令创建 image 文件。<code>docker build</code> 的具体格式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker build [OPTIONS] PATH | URL | -</span><br></pre></td></tr></table></figure>
+
+<p>当然 OPTION 选项也是很多的。具体也可以翻阅官方文档 <a target="_blank" rel="noopener" href="https://docs.docker.com/engine/reference/commandline/build/">docker build </a>。</p>
+<p>这里我们讲一个常用到的OPTION 选项：</p>
+<ul>
+<li>**–tag, -t:**镜像的名字以及标签通常 name:tag 格式 或是是 name 格式。</li>
+</ul>
+<p>name继续我们的是咧。我们来构建 image 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker  build -t express=for-docker .</span><br><span class="line">//或者</span><br><span class="line">docker  build -t express=for-docker:0.0.1 .</span><br></pre></td></tr></table></figure>
+
+<p>这个命令中的 <code>-t</code>参数用来指定 image 文件的名字。后面还可以使用冒号来指定标签。如果不指定的话，默认的标签就是 latest。最后那个表示表示 Dockerfile文件所在的路径。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">$ docker build -t express-for-docker .</span><br><span class="line">Sending build context to Docker daemon  2.011MB</span><br><span class="line">Step 1/6 : FROM node:8.4</span><br><span class="line"> ---&gt; 386940f92d24</span><br><span class="line">Step 2/6 : COPY . /shuliqi</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 04a303d12b5f</span><br><span class="line">Step 3/6 : WORKDIR /shuliqi</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; fe2455b89e40</span><br><span class="line">Step 4/6 : RUN [&quot;npm&quot;, &quot;install&quot;]</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 4b9c8652ccc9</span><br><span class="line">Step 5/6 : EXPOSE 3000/tcp</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 11fbd94359f4</span><br><span class="line">Step 6/6 : CMD node app.js</span><br><span class="line"> ---&gt; Using cache</span><br><span class="line"> ---&gt; 1c4d4712b8c0</span><br><span class="line">Successfully built 1c4d4712b8c0</span><br><span class="line">Successfully tagged express-for-docker:latest</span><br><span class="line">$ docker image ls</span><br><span class="line">REPOSITORY                                 TAG                       IMAGE ID            CREATED              SIZE</span><br><span class="line">express-for-docker                         latest                    1c4d4712b8c0        About a minute ago   674MB</span><br></pre></td></tr></table></figure>
+
+<p>打包完成后，我们在使用 <code>docker image ls</code>查看所有的image文件，是可以看到我们刚刚打包的image文件（express-for-docker）</p>
+<h3 id="生成容器"><a href="#生成容器" class="headerlink" title="生成容器"></a>生成容器</h3><p>使用<code>docker run</code>命令就会从image 文件生成容器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -t -p 8000:3000  express-for-docker:0.0.1 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>上面命令的参数含义如下：</p>
+<ul>
+<li><strong>-p参数：</strong> 容器的 3000 端口 映射到 本机的 8000 端口</li>
+<li><strong>-t 参数：</strong> 容器额 Shell  映射到当前的 Shell，然后在本机窗口输入命令，就会传入容易</li>
+<li><strong>express-for-docker:0.0.1</strong>： image文件的文件名和tag</li>
+<li><strong>/bin/bash：</strong>容器启动后，内部第一个执行的命令。这里是启动 Bash，保证用户可以使用 Shell。</li>
+</ul>
+<p>执行上面的命令，如果一切正常，那么就会返回命令行提示符号</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@622773f4bec9:/app#</span><br></pre></td></tr></table></figure>
+
+<p>这个提示就说明你已经在容器里面了，返回的提示符就是容器里面的 Shell 提示符。</p>
+<p>接下来我们执行以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@622773f4bec9:/app# node app.js</span><br></pre></td></tr></table></figure>
+
+<p>这命令就是启动我们这个项目的， 这时打开 <a target="_blank" rel="noopener" href="http://127.0.0.1:8000/">http://127.0.0.1:8000</a> 网页显示 “Hello World!”</p>
+<h3 id="CMD-命令"><a href="#CMD-命令" class="headerlink" title="CMD 命令"></a>CMD 命令</h3><p>上面的例子， 容器启动后，我们需要手动的 输入 <code> node app.js</code>来启动项目。其实我们可以吧这个命令写在 Dockerfile 文件里面，这样容器启动后，这个命令就会执行了，不需要我们手动输入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FROM node:12.17.0</span><br><span class="line">COPY . /shuliqi</span><br><span class="line">WORKDIR /shuliqi</span><br><span class="line">RUN [&quot;npm&quot;, &quot;install&quot;]</span><br><span class="line">EXPOSE 3000/tcp</span><br><span class="line">CMD node app.js</span><br></pre></td></tr></table></figure>
+
+<p>多出来的这与 一个命令<code>CMD node app.js</code> 它表示容器启动后自动执行  <code>node app.js</code>.。</p>
+<p><strong>CMD 和 RUN 命令的区别：</strong></p>
+<p><code>RUN</code>命令在 image 文件构建阶段执行，执行结果都会打包进入 image 文件</p>
+<p><code>CMD</code>命令则是在容器启动后执行</p>
+<p>一个Dockerfile文件可以包含多个 <code>RUN</code>命令，但是只能有一个<code>CMD</code> 命令</p>
+<h3 id="发布-image-文件"><a href="#发布-image-文件" class="headerlink" title="发布 image 文件"></a>发布 image 文件</h3><p>容器运行成功了之后，就说明 image 文件是有效的。那么我们可以考虑把 image 文件分享到网上， 让其他人也可以使用。</p>
+<p>首先，我们需要去 <a target="_blank" rel="noopener" href="https://hub.docker.com/">hub.docker.com</a>注册账号，然后使用如下的命令登录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker login</span><br></pre></td></tr></table></figure>
+
+<p>然后输入注册的用户名和密码。如果成功登录的话，会显示</p>
+<img src="/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/8.png" class="">
+
+<p>那么接下来继续我们的发布，我们给本地的 image 标注用户名和版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker tag [imageName] [userNane]/[repository]:[tag]</span><br></pre></td></tr></table></figure>
+
+<p>我们给自己的 <code>express-for-docker</code>标注用户名和版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker tag express-for-docker:0.0.1 shuliqi/express-for-docker:0.0.1</span><br></pre></td></tr></table></figure>
+
+<p>标注完之后，我们就可以往 <a target="_blank" rel="noopener" href="https://hub.docker.com/">hub.docker.com</a>发布我们的image包了。使用如下的命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker push express-for-docker:0.0.1</span><br></pre></td></tr></table></figure>
+
+<p>如发布成功，则会显示：</p>
+<img src="/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/9.png" class="">
+
+<p>我们到 <a target="_blank" rel="noopener" href="https://hub.docker.com/">hub.docker.com</a> 上就会看到已经上传的 image 文件</p>
+<img src="/2020/09/30/Docker%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%8F%8A%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8/10.png" class="">
+
+<p>这样我们就成功发布了一个 image 文件</p>
+<p>文章使用的例子 <a target="_blank" rel="noopener" href="https://github.com/shuliqi/express-for-docker">express-for-docker</a></p>
+<p>下一节详细讲 <a href="https://shuliqi.github.io/2020/10/20/Dockerfile%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/">Dockerfile 文件</a></p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://yeasy.gitbook.io/docker_practice/image/list">Docker —— 从入门到实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ruanyifeng.com/blog/2018/02/docker-tutorial.html">Docker 入门教程</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/reference/">docker docs</a></li>
+</ul>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/">https://shuliqi.github.io/2020/09/30/Docker的必要性及基础使用/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%85%B6%E4%BB%96/">其他</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/10/20/Dockerfile%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8/"><i class="fa fa-chevron-left">  </i><span>Dockerfile文件的使用</span></a></div><div class="next-post pull-right"><a href="/2020/08/31/%E5%B0%81%E8%A3%85axios%E5%8F%96%E6%B6%88%E9%87%8D%E5%A4%8D%E8%AF%B7%E6%B1%82/"><span>手把手封装axios取消重复请求</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

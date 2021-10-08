@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="canvas的学习及其使用"><meta name="keywords" content="HTML"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>canvas的学习及其使用 | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#canvas%E7%9A%84%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">canvas的简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#canvas-%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">canvas 的基本用法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#canvas-%E5%85%83%E7%B4%A0"><span class="toc-number">2.1.</span> <span class="toc-text">canvas 元素</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%BF%E6%8D%A2%E7%9A%84%E5%86%85%E5%AE%B9"><span class="toc-number">2.2.</span> <span class="toc-text">替换的内容</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">2.3.</span> <span class="toc-text">渲染上下文</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#canvas%E7%BB%98%E5%88%B6%E5%9B%BE%E5%BD%A2"><span class="toc-number">3.</span> <span class="toc-text">canvas绘制图形</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%85%E6%A0%BC"><span class="toc-number">3.1.</span> <span class="toc-text">栅格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%98%E5%88%B6%E7%9F%A9%E5%BD%A2"><span class="toc-number">3.2.</span> <span class="toc-text">绘制矩形</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%98%E5%88%B6%E8%B7%AF%E5%BE%84"><span class="toc-number">3.3.</span> <span class="toc-text">绘制路径</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%98%E5%88%B6%E8%B7%AF%E5%BE%84%E6%89%80%E7%94%A8%E5%88%B0%E7%9A%84%E5%87%BD%E6%95%B0"><span class="toc-number">3.3.1.</span> <span class="toc-text">绘制路径所用到的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E7%AC%94%E8%A7%A6"><span class="toc-number">3.3.2.</span> <span class="toc-text">移动笔触</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF"><span class="toc-number">3.3.3.</span> <span class="toc-text">线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%86%E5%BC%A7"><span class="toc-number">3.3.4.</span> <span class="toc-text">圆弧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%9D%E8%B5%9B%E5%B0%94%E6%9B%B2%E7%BA%BF"><span class="toc-number">3.3.5.</span> <span class="toc-text">贝赛尔曲线</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%89%B2%E5%BD%A9"><span class="toc-number">3.4.</span> <span class="toc-text">色彩</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%8F%E6%98%8E%E5%BA%A6"><span class="toc-number">3.5.</span> <span class="toc-text">透明度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#lineWidth"><span class="toc-number">3.5.1.</span> <span class="toc-text">lineWidth</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#lineCap"><span class="toc-number">3.5.2.</span> <span class="toc-text">lineCap</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%98%E5%88%B6%E6%96%87%E6%9C%AC"><span class="toc-number">4.</span> <span class="toc-text">绘制文本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%9C%AC%E7%9A%84%E6%A0%B7%E5%BC%8F"><span class="toc-number">4.0.1.</span> <span class="toc-text">文本的样式</span></a></li></ol></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">canvas的学习及其使用</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-05-07</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/HTML/">HTML</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h1 id="canvas的简介"><a href="#canvas的简介" class="headerlink" title="canvas的简介"></a>canvas的简介</h1><p><code>canvas</code>是<code>HTML5</code>新增加的标签，它是一个可以使用脚本（<code>JavaScript</code>）来绘制图形的<code>HTML</code>元素。它可以用来制作图片，动画，甚至可以进行实时视频处理和渲染。</p>
+<p><code>canvas</code>是由<code>HTML</code>代码高度，宽度属性而定义出来的可绘制的区域，<code>JavaScript</code>代码可以可以访问该区域，通过一套完整的绘制函数来动态生成图形。</p>
+<h1 id="canvas-的基本用法"><a href="#canvas-的基本用法" class="headerlink" title="canvas 的基本用法"></a>canvas 的基本用法</h1><h2 id="canvas-元素"><a href="#canvas-元素" class="headerlink" title="canvas 元素"></a>canvas 元素</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span> <span class="attr">id</span>=<span class="string">&quot;canvas&quot;</span> <span class="attr">height</span>=<span class="string">&quot;300&quot;</span> <span class="attr">width</span>=<span class="string">&quot;300&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>canvas</code> 标签有两个可选的属性<code>height</code>，<code>width</code>。如果没有给<code>canvas</code>设置<code>width</code>，<code>height</code>属性，则<code>height</code>默认150，<code>width</code>默认为 300。单位都是<code>px</code>。当然也可以使用<code>CSS</code>设置宽高，但是如果宽高和初始化的比例不一致，是会出现扭曲的。所以是不建议使用<code>css</code>来设置<code>canvas</code>的宽高的。</p>
+<h2 id="替换的内容"><a href="#替换的内容" class="headerlink" title="替换的内容"></a>替换的内容</h2><p>由于某些比较老的浏览器或者浏览器不支持<code>HTML</code>元素<code>canvas</code>，在这些浏览器上应该要显示替代的内容。</p>
+<p>支持<code>canvas</code>标签的浏览器会只渲染<code>canvas</code>标签，而忽略其中的替代内容。不支持<code>canvas</code>标签的浏览器则会直接渲染替代的内容。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">canvas</span>  <span class="attr">id</span>=<span class="string">&quot;canvas&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">P</span>&gt;</span>你的浏览器不支持canvas标签<span class="tag">&lt;/<span class="name">P</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">canvas</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>注意：</strong><code>canvas</code>标签的结束标签是不可省略的。如果省略的话，文档的其余部分会被认为是替代的内容，不会显示出来。</p>
+<h2 id="渲染上下文"><a href="#渲染上下文" class="headerlink" title="渲染上下文"></a>渲染上下文</h2><p><code>canvas</code>元素创造了一个固定大小的画布，它公开了一个或多个<strong>渲染上下文（The rendering context）</strong>，它可以用来绘制和处理要展示的内容。</p>
+<p><code>canvas</code>起初是空白的，为了展示，首先脚本需要找到渲染上下文，然后在它的上面绘制。<code>canvas</code>元素有一个叫做<code>getContext()</code>的方法，这个方法用来获得渲染上下文和它的绘画功能。<code>getContext()</code>只有一个参数：上下文的格式。</p>
+<p><strong>绘制2D</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">&quot;canvas&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> context = canvas.getContext(<span class="string">&quot;2d&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><strong>绘制3D</strong></p>
+<p><code>HTML5</code>有一个<code>WebGL</code>规范，允许在<code>canvas</code>绘制<code>3D</code>图形。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> canvas = <span class="built_in">document</span>.getElementById(<span class="string">&quot;canvas&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> context = canvas.getContext(<span class="string">&quot;webgl&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h1 id="canvas绘制图形"><a href="#canvas绘制图形" class="headerlink" title="canvas绘制图形"></a>canvas绘制图形</h1><h2 id="栅格"><a href="#栅格" class="headerlink" title="栅格"></a>栅格</h2><p>在开始绘图之前， 我们先了解一下画布栅格（<code>canvas grid</code>）以及坐标空间。默认的<code>canvas</code>元素会被网格所盖。如下图：</p>
+<img src="/2020/05/07/canvas%E7%9A%84%E5%AD%A6%E4%B9%A0%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/1.png" class="">
+
+<p>网格中的一个单元相当于<code>canvas</code>元素中的一个像素。网格的左上角坐标为：（0,0）也称原点。 所有元素的位置都相对于原点定位。所以图中蓝色的方形左上角的坐标为距离左边（X轴） x 像素，距离上边（Y轴）y 像素；坐标为（x, y）。</p>
+<h2 id="绘制矩形"><a href="#绘制矩形" class="headerlink" title="绘制矩形"></a>绘制矩形</h2><p><code>canvas</code>只支持两种形式的图形绘制；<strong>矩形</strong>和<strong>路径（由一系列点连成的线段）</strong>。所有其他类型的图形都是通过一条或者多条路径组合而成。不过我们有很多路径生成的<code>API</code>。</p>
+<ul>
+<li><code>fillRect(x, y, width, height)</code>: 用于绘制一个填充的矩形。</li>
+<li><code>strokeRect(x, y, width,height)</code>: 用于绘制一个矩形的边框。</li>
+<li><code>clearRect(x, y width, height)</code>: 用于清除指定矩形区域，让清除的部分完全透明。</li>
+</ul>
+<p>这三个方法的 <code>x</code>, <code>y</code> 是指在<code>canvas</code>画布上所绘制的矩形的左上角（相对于原点）的坐标，<code>width </code>和 <code>height </code>是设置矩形的尺寸.</p>
+<ul>
+<li><p><code>rect(x, y, width, height)</code>: 绘制一个左上角坐标为（x,y）,宽高为 <code>width</code>和<code>height</code>的矩形。</p>
+<p>这个方法执行的时候， <code>moveTo()</code>方法自动设置坐标参数（0,0）。也就是说当前笔触自动重置回默认坐标。</p>
+</li>
+</ul>
+<p>举个例子:</p>
+<iframe height="577" style="width: 100%;" scrolling="no" title="canvas 绘制矩形" src="https://codepen.io/shuliqi/embed/MWpYMaJ?height=577&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/MWpYMaJ'>canvas 绘制矩形</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+<p>上面例子中<code>fillRect)</code>绘制了一个宽为60px高为70ox的矩形，<code>clearRect()</code> 从距离 x 轴<code>15px</code>， y 轴 <code>50px</code> 的地方开始擦除。</p>
+<p><code>strokeRect</code>绘制了一个距离 x 轴<code>20px</code>， y 轴 <code>30px</code> 的宽为<code>90px</code>，高为<code>90px</code>高为<code>80px</code>的矩形。</p>
+<h2 id="绘制路径"><a href="#绘制路径" class="headerlink" title="绘制路径"></a>绘制路径</h2><p>图形的基本元素是路径。 路径是通过不同的颜色和宽度的线段或曲线相连形成的不同形状的点的集合。一个路径都是闭合的。使用路径绘制图形需要一些如下的步骤：</p>
+<ul>
+<li>首先，需要创建路径的起始点。</li>
+<li>然后使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D#paths">画图命令</a>去画出路径。</li>
+<li>之后把路径封闭。</li>
+<li>路径生成之后。就能通过描边或者填充路径来渲染图形。</li>
+</ul>
+<h3 id="绘制路径所用到的函数"><a href="#绘制路径所用到的函数" class="headerlink" title="绘制路径所用到的函数"></a>绘制路径所用到的函数</h3><ul>
+<li><code>beginPath()</code>：新建一条路径，生成之后，图形绘制命令被指令到路径上生成路径。</li>
+<li><code>closePath()</code>：闭合路径。闭合路径之后图形绘制命令又重新回到上下文中。</li>
+<li><code>stroke()</code>：通过线条来绘制图形轮廓。</li>
+<li><code>fill()</code>：通过填充路径的内容区域生成实心的图形。</li>
+</ul>
+<p>生成路径的第一步叫做<code>beginPath()</code>。本质上路径是有很多的子路径构成，这些子路径都是在一个列表中，所有的子路径(线，弧形等等)构成图形。而每次调用这个方法之后，路径列表就会清空，我们就可以绘制新的图形。</p>
+<blockquote>
+<p><strong>注意：</strong>当当前的路径为空(也就是调用<code>beginPath</code>之后或者<code>canvas</code>刚建的时候)。第一条路径构造命令通常是<code>moveTo(x,y)</code>、<code>moveTo(x,y)</code>设置路径的起始位置。无论出自于什么原因，总是要在设置路径之后专门指定路径的起始位置。</p>
+</blockquote>
+<blockquote>
+<p><code>moveTo(x,y)</code>函数下面会讲到。</p>
+</blockquote>
+<p>第二步就是调用函数指定绘制路径。文章之后会讲到。</p>
+<p>第三步就是闭合路径<code>closePath()</code>。但是<code>closePath()</code>不是必须的。这个方法会通过绘制一条从当前点到开始点的直线来闭合图形。如果图形是是已经闭合了的(也就是说当前点为开始点)， 那么该函数什么也不做。</p>
+<blockquote>
+<p>注意：当调用<code>fill()</code>函数时，所有没有闭的形状都会自动闭合。所以是不需要使用<code>closePath()</code>函数来闭合形状的。但是<code>stroke()</code>函数是不会自动闭合的。</p>
+</blockquote>
+<p>举个例子：</p>
+<iframe height="378" style="width: 100%;" scrolling="no" title="绘制路径" src="https://codepen.io/shuliqi/embed/jOBPKYo?height=378&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/jOBPKYo'>绘制路径</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+
+<h3 id="移动笔触"><a href="#移动笔触" class="headerlink" title="移动笔触"></a>移动笔触</h3><p><strong><code>moveTo(x,y):</code></strong> 将笔触移动到指定的坐标（<code>x</code>，<code>y</code>） 上。</p>
+<p><code>canvas</code>初始化或者<code>beginPath(x,y)</code>调用之后，通常使用<code>mnoveTo(x，y)</code>来设置起点。也可以使用<code>mnoveTo(x，y)</code>来设置一些不连续的路径。</p>
+<h3 id="线"><a href="#线" class="headerlink" title="线"></a>线</h3><p><strong><code>lineTo(x,y):</code></strong> 绘制直线。绘制一条从当前位置到指定 <code>x</code>，<code>y</code>位置的直线</p>
+<p>这个方法有两个参数： <code>x</code>,<code> y</code>；代表坐标系中直线结束的点。开始点和之前的绘制路径有关。开始点也可以通过<code>moveTo()</code>函数改变。</p>
+<p>举个例子：</p>
+<iframe height="426" style="width: 100%;" scrolling="no" title="moveTo" src="https://codepen.io/shuliqi/embed/ExWjpjv?height=426&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/ExWjpjv'>moveTo</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+
+<h3 id="圆弧"><a href="#圆弧" class="headerlink" title="圆弧"></a>圆弧</h3><p>绘制圆弧或者圆，我们使用<code>arc()</code>方法。当然也是可以使用<code>arcTo()</code>， 不过该方法并没有那么可靠。所以这里不做介绍。</p>
+<p><strong><code>arc(x,y,radius, startAngle, endAngle, anticlockwise)</code>：</strong></p>
+<ul>
+<li><code>(x,y)</code>： 圆/圆弧的圆心</li>
+<li><code>radius</code>： 圆的半径</li>
+<li><code>startAngle</code>： 开始的弧度</li>
+<li><code>endAngle</code>： 结束的弧度</li>
+<li><code>anticlockwise</code>： 画圆的防线：<code>true</code>为逆时针，<code>false</code>为顺时针</li>
+</ul>
+<p>画一个以<code>(x,y)</code>为圆心的以<code>radius</code>为半径的圆弧(圆)。从<code>startAngle</code>开始到<code>endAngle</code>结束。按照<code>anticlockwise</code>给定的方向(默认为顺时针)来生成。</p>
+<blockquote>
+<p>注意：<code>arc()</code>函数中表示角的单位是弧度，而不是角度。角度与弧度的换算<code>js</code>表达式：弧度 =角度 * Math.PI / 180； 1弧度等于半径的长度</p>
+</blockquote>
+<p>举个例子：</p>
+<iframe height="563" style="width: 100%;" scrolling="no" title="圆弧" src="https://codepen.io/shuliqi/embed/RwpPOMR?height=563&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/RwpPOMR'>圆弧</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+<h3 id="贝赛尔曲线"><a href="#贝赛尔曲线" class="headerlink" title="贝赛尔曲线"></a>贝赛尔曲线</h3><p><code>quadraticCurveTo(cplx, cply, x, y):</code>绘制二次贝塞尔曲线，<code>cplx</code>,<code> cply</code>是控制点，<code>x</code>， <code>y</code>为结束点。</p>
+<p><code>bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y):</code>绘制三次贝塞尔曲线。<code>cp1x,cp1y</code>为控制点一，<code>cp2x,cp2y</code>为控制点二，<code>x,y</code>为结束点。</p>
+
+
+<p>二次贝塞尔曲线有一个开始点（蓝色）， 一个结束点（蓝色）， 一个控制点（红色）；</p>
+<p>三次贝塞尔曲线有一个开始点（蓝色）， 一个结束点（蓝色），有两个控制点（红色）；</p>
+<p>两个方法中的<code>x,y</code>都是结束坐标。<code>cp1x,cp1y</code>为坐标中的第一个控制点，<code>cp2x,cp2y</code>为坐标中的第二个控制点。</p>
+<p>举个例子：</p>
+<iframe height="393" style="width: 100%;" scrolling="no" title="贝塞尔曲线" src="https://codepen.io/shuliqi/embed/jOBPjoB?height=393&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/jOBPjoB'>贝塞尔曲线</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+# 使用样式和颜色
+
+<h2 id="色彩"><a href="#色彩" class="headerlink" title="色彩"></a>色彩</h2><p>到目前为止， 我们只看到过绘制内容的方法，如果想要给图形上色，需要两个重要的属性：</p>
+<ul>
+<li><code>fillStyle = color</code>：设置图形的填充颜色。</li>
+<li><code>strokeStyle = color</code>：设置图形的轮廓颜色。</li>
+</ul>
+<p><code>color</code>值可以是表示<code>CSS</code>颜色字符串，渐变对象，图案对象;默认情况下，线条个填充颜色都是黑色(#0000).</p>
+<blockquote>
+<p><strong>注意：</strong>一旦设置了<code>fillStyle</code>和<code>strokeStyle</code>的值，那么这个新值就会成为新绘制图形的默认值，如果需要给每个不同的图形上不同的颜色值，那么需要重新设置<code>fillStyle</code>，<code>strokeStyle</code>的值。</p>
+</blockquote>
+<p>举个例子：</p>
+<iframe height="714" style="width: 100%;" scrolling="no" title="fillStyle/strokeStyle" src="https://codepen.io/shuliqi/embed/KKWdqeg?height=714&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/KKWdqeg'>fillStyle/strokeStyle</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+<h2 id="透明度"><a href="#透明度" class="headerlink" title="透明度"></a>透明度</h2><p>通过设置<code>globalAlpha</code>属性或者使用一个半透明颜色作为轮廓或填充的样式来绘制半透明的图形。</p>
+<p><code>globalAlpha = transparencyValue </code>：<code>transparencyValue</code>的优先范围为 0.0（完全透明） 到 1.0（完全不透明）</p>
+<blockquote>
+<p><strong>注意：</strong>这个属性会影响到<code>canvas</code>里面所有图形的透明度。所以在绘制大量拥有相同透明度的图形的时候相当有用。不过使用设置<code> strokeStyle</code> 和<code> fillStyle</code>的值为有透明度的更有用。 如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定透明颜色，用于描边和填充样式</span></span><br><span class="line">ctx.strokeStyle = <span class="string">&quot;rgba(255,0,0,0.5)&quot;</span>;</span><br><span class="line">ctx.fillStyle = <span class="string">&quot;rgba(255,0,0,0.5)&quot;</span>;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p> 举个例子：</p>
+<iframe height="318" style="width: 100%;" scrolling="no" title="透明度" src="https://codepen.io/shuliqi/embed/OJpyQxv?height=318&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/OJpyQxv'>透明度</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+## 线形
+
+
+
+<p>可以通过一系列属性来设置线的样式。</p>
+<h3 id="lineWidth"><a href="#lineWidth" class="headerlink" title="lineWidth"></a>lineWidth</h3><p><code>lineWidth = value</code>: 设置线条的宽度。</p>
+<p>举个例子：</p>
+<iframe height="235" style="width: 100%;" scrolling="no" title="lineWidth" src="https://codepen.io/shuliqi/embed/zYZvWOK?height=235&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/zYZvWOK'>lineWidth</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+<h3 id="lineCap"><a href="#lineCap" class="headerlink" title="lineCap"></a>lineCap</h3><p><code>lineCap = type</code>: 设置末端的样式。</p>
+<p><code>type</code>的类型有：</p>
+<ul>
+<li><code>butt</code>：末端以方形结束</li>
+<li><code>round</code>： 末端以圆形结束</li>
+<li><code>square</code>: 末端以方形结束，但是增加了一个宽度和线段相同，高度是线段厚度一半的矩形区域</li>
+</ul>
+<p>举个例子：</p>
+<iframe height="564" style="width: 100%;" scrolling="no" title="lineCap" src="https://codepen.io/shuliqi/embed/BaWorob?height=564&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/BaWorob'>lineCap</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+
+
+
+<h1 id="绘制文本"><a href="#绘制文本" class="headerlink" title="绘制文本"></a>绘制文本</h1><p> <code>canvas</code> 有两种方式可以绘制文本：</p>
+<ul>
+<li><p><code>fillText(text, x, y [, maxWidth])</code></p>
+<p>在指定的坐标（x，y）填充指定的文本，可以指定最大的宽度。</p>
+</li>
+<li><p><code>strokeText(text,x,y,[,maxWidth])</code></p>
+<p>在指定的坐标上（x,y）绘制指定的文本边框，可以指定最大的宽度。</p>
+</li>
+</ul>
+<p>举个例子：</p>
+<iframe height="296" style="width: 100%;" scrolling="no" title="text" src="https://codepen.io/shuliqi/embed/xxqZgGg?height=296&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/xxqZgGg'>text</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+<h3 id="文本的样式"><a href="#文本的样式" class="headerlink" title="文本的样式"></a>文本的样式</h3><p>有很多的属性可以改变<code>canvas</code>的显示的文本的样式。</p>
+<ul>
+<li><p><code>font = value</code>:</p>
+<p>当前用来绘制文本的样式，<code>font</code>的使用和<code>CSS</code> 的 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Drawing_text">font</a> 语法是一样的。默认值：”10px sans-serif”</p>
+</li>
+<li><p><code>textAlign = value</code>:</p>
+<p>当前绘制文本的对齐方式，默认值：<code>start</code>；值有：</p>
+<ul>
+<li><code>start</code>：文本对齐界面开始的地方</li>
+<li><code>end</code>：文本对齐界线结束的地方</li>
+<li><code>left：文本左对齐</code></li>
+<li>,<code>right</code>： 文本右对齐</li>
+<li> <code>center</code>: 文本居中</li>
+</ul>
+</li>
+<li><p><code>textBaseline = value</code>:</p>
+<p>当前绘制文本的基线对齐方式，值有：<code>top</code>, <code>hanging</code>, <code>middle</code>, <code>alphabetic</code>, <code>ideographic</code>, <code>bottom</code>。默认值是 <code>alphabetic</code></p>
+</li>
+<li><p><code>direction = value</code>:</p>
+<p>文本方向。默认值是 <code>inherit。值有：</code></p>
+<ul>
+<li><code>ltr</code>： 文本从左到右</li>
+<li><code>rtl</code>：文本从右到左</li>
+<li><code>inherit</code>  根据情况继承</li>
+</ul>
+</li>
+</ul>
+<p>举个例子：</p>
+<iframe height="305" style="width: 100%;" scrolling="no" title="绘制文字的样式" src="https://codepen.io/shuliqi/embed/xxqZgYX?height=265&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/xxqZgYX'>绘制文字的样式</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+
+<p>未完待续….学不动了</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/05/07/canvas的学习及其使用/">https://shuliqi.github.io/2020/05/07/canvas的学习及其使用/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HTML/">HTML</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/06/06/%E5%85%B3%E4%BA%8EDelete%60CR%60eslint-prettier-prettier-%E6%8A%A5%E9%94%99%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/"><i class="fa fa-chevron-left">  </i><span>关于Delete`CR`eslint(prettier/prettier) 报错的解决方案</span></a></div><div class="next-post pull-right"><a href="/2020/04/21/MutationObserver-%E7%9B%91%E5%90%ACDOM%E6%A0%91%E5%8F%98%E5%8C%96/"><span>MutationObserver 追踪DOM的变化</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="vue项目配置eslint+husky+lint-staged"><meta name="keywords" content="工程配置"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>vue项目配置eslint+husky+lint-staged | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="toc-number">1.</span> <span class="toc-text">创建项目</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%85%A8%E5%B1%80%E7%9A%84vue-cli"><span class="toc-number">1.1.</span> <span class="toc-text">安装全局的vue-cli</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE-1"><span class="toc-number">1.2.</span> <span class="toc-text">创建项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.</span> <span class="toc-text">选择配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEESlint"><span class="toc-number">2.</span> <span class="toc-text">配置ESlint</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA-eslintrc%E6%96%87%E4%BB%B6"><span class="toc-number">2.1.</span> <span class="toc-text">创建.eslintrc文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85eslint-config-standard"><span class="toc-number">2.2.</span> <span class="toc-text">安装eslint-config-standard</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85eslint-plugin-html"><span class="toc-number">2.3.</span> <span class="toc-text">安装eslint-plugin-html</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#package-json-%E6%B7%BB%E5%8A%A0%E5%91%BD%E4%BB%A4"><span class="toc-number">2.4.</span> <span class="toc-text">package.json 添加命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-eslint-plugin-vue"><span class="toc-number">2.5.</span> <span class="toc-text">安装 eslint-plugin-vue</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">2.5.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0plugin%E8%AF%B4%E6%98%8E"><span class="toc-number">2.5.2.</span> <span class="toc-text">添加plugin说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0extend%E8%AF%B4%E6%98%8E"><span class="toc-number">2.5.3.</span> <span class="toc-text">添加extend说明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E6%9E%90%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="toc-number">2.5.4.</span> <span class="toc-text">解析器配置</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#husy"><span class="toc-number">3.</span> <span class="toc-text">husy</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-1"><span class="toc-number">3.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E9%92%A9%E5%AD%90"><span class="toc-number">3.2.</span> <span class="toc-text">配置钩子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#lint-staged"><span class="toc-number">4.</span> <span class="toc-text">lint-staged</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85-2"><span class="toc-number">4.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">4.2.</span> <span class="toc-text">配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">5.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">vue项目配置eslint+husky+lint-staged</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-04-03</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/%E5%B7%A5%E7%A8%8B%E9%85%8D%E7%BD%AE/">工程配置</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>最近使用了<code>vue-cli3</code>构建开发一个新的项目， 发现在开发的过程中有很多人会不经意把<code>console.log</code>等提交上去了。于是觉得有必要把<code>eslint</code>加上，因为在多人开发中，每个人的代码风格可能是不一样的。大团队协作时，良好的代码规范显得格外重要，因为这是保障一个团队代码风格相同、避免低级bug的途径之一。为了解决这样的问题！ 我们在每次提交的时候都可以进行一次<code>eslint</code>检查。不符合<code>eslint</code>规范的不给提交。这样就能解决问题了。</p>
+ <span id="more"></span>
+
+<h1 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h1><p>下面讲解的项目范例会使用<code>vue-cli</code>来创建。</p>
+<blockquote>
+<p>具体如何创建一个项目可以看 <a target="_blank" rel="noopener" href="https://cli.vuejs.org/zh/guide/">官方的文档</a></p>
+</blockquote>
+<h2 id="安装全局的vue-cli"><a href="#安装全局的vue-cli" class="headerlink" title="安装全局的vue-cli"></a><strong>安装全局的<code>vue-cli</code></strong></h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g @vue/cli</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建项目-1"><a href="#创建项目-1" class="headerlink" title="创建项目"></a><strong>创建项目</strong></h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vue create eslint-example</span><br></pre></td></tr></table></figure>
+
+<h2 id="选择配置"><a href="#选择配置" class="headerlink" title="选择配置"></a>选择配置</h2><p>弹出的配置中， 我们选择如下的配置：</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/1.png" class="">
+
+<blockquote>
+<p>当然配置可以根据自己的需要要选择， 我这里只是举个例子</p>
+</blockquote>
+<h1 id="配置ESlint"><a href="#配置ESlint" class="headerlink" title="配置ESlint"></a>配置ESlint</h1><p><code>ESlint</code> 是什么？<code>ESlint</code> 是一个语法规则和代码风格的检查工具。关于一些配置项这里不做过多的讲解。</p>
+<blockquote>
+<p>学习的话可以直接去官网学习：<a target="_blank" rel="noopener" href="https://eslint.org/">ESlint英文官网</a>，<a target="_blank" rel="noopener" href="https://cn.eslint.org/">ESlint 中文官网</a></p>
+</blockquote>
+<p><code>Eslint</code>如何去使用呢？ 前提肯定是先安装（至于是本地安装还是全局安装，看自己项目的需要）：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install eslint --save</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>本文在创建的时候选择的配置已经把<code>eslint</code>安装上，所以在该项目中就不需要再安装一次了。</p>
+<p>小tips：但是这里创建项目时候选择的<code>eslint</code>版本是有问题， 这个问题下面会暴露， 这里可以先跳过</p>
+</blockquote>
+<h2 id="创建-eslintrc文件"><a href="#创建-eslintrc文件" class="headerlink" title="创建.eslintrc文件"></a>创建.eslintrc文件</h2><p>手动在项目的根目录添加<code>.eslintrc</code>文件。</p>
+<p>安装完之后，不要着急，我们不使用官方提供的<code>eslint --init</code>来生成配置文件而是手动添加。为什么呢？ 因为这样我们需要手动配置很多个的规则。</p>
+<p>那如果不这样？那有没有更好的简便的方法呢？那肯定是有的。网上有一个叫 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/eslint-config-standard">eslint-config-standard</a>的插件，它是标准的<code>ESlint</code>规则， 我们在项目中继承这个标准就可以了。</p>
+<h2 id="安装eslint-config-standard"><a href="#安装eslint-config-standard" class="headerlink" title="安装eslint-config-standard"></a>安装eslint-config-standard</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install eslint-config-standard --save</span><br></pre></td></tr></table></figure>
+
+<p>如<code>eslint-config-standard</code>官网所说：如果我们是需要手动加一些配置的,需要手动安装如下的<code>npm</code>包</p>
+<p>所以我们需要安装如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev eslint-config-standard eslint-plugin-promise eslint-plugin-<span class="keyword">import</span> eslint-plugin-node --save</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>eslint-config-standard</code>校验规则的时候需要依赖这些<code>plugins</code>去验证。</p>
+<p>然后我们在<code>.eslintrc</code>文件添加</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;extends&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;standard&quot;</span></span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时候校验肯定是校验不了， 因为少安装了一些插件。因为<code>eslint-config-standard</code>校验规则的时候需要依赖这些<code>plugins</code>去验证。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev eslint-config-standard eslint-plugin-promise eslint-plugin-<span class="keyword">import</span> eslint-plugin-node --save</span><br></pre></td></tr></table></figure>
+
+<p>这时候是不是就可以验证了了么？我们执行运行项目看看：<code>npn run serve</code>: 发现抛出错误了。</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/2.png" class="">
+
+<p>这是因为<code>eslint</code>版本过低。<code>eslint-config-standard</code>插件必须使用<code>7.11.0</code>版本以上的<code>eslint</code>。具体原因可看：<a target="_blank" rel="noopener" href="https://github.com/standard/eslint-config-standard/issues/176">https://github.com/standard/eslint-config-standard/issues/176</a></p>
+<blockquote>
+<p>注意：这也就是我们上面说的问题；使用<code>eslint-config-standard</code> 只要需要<code>ESlint：7.11.0</code>版本以上，不然报错，无法校验。</p>
+</blockquote>
+<p>重新安装<code>eslint</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i eslint@<span class="number">7.11</span><span class="number">.0</span> --save</span><br></pre></td></tr></table></figure>
+
+<p>这时候运行我们的项目就不会报上面的错了。可以进行代码风格校验了。</p>
+<h2 id="安装eslint-plugin-html"><a href="#安装eslint-plugin-html" class="headerlink" title="安装eslint-plugin-html"></a>安装eslint-plugin-html</h2><p>因为<code>vue</code>的项目，<code>.vue</code>文件写的是类似像<code>html</code>这样的格式，它不是标准的<code>Javascript</code>文件。<code>ESlint</code>是无法识别<code>.vue</code>文件的<code>js</code>代码的。所以需要安装另外一个插件 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/eslint-plugin-html">eslint-plugin-html</a>。这个插件的作用是识别一个文件里面的<code>script</code>标签的<code>js</code>代码。</p>
+<blockquote>
+<p><code>.vue</code>文件的<code>js</code>代码就是写在<code>script</code>标签中的。</p>
+</blockquote>
+<p><strong>安装</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i eslint-plugin-html --save</span><br></pre></td></tr></table></figure>
+
+<p><strong>配置</strong></p>
+<p>在<code>.eslintrc</code>添加：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;extends&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;standard&quot;</span></span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: [<span class="string">&quot;html&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="package-json-添加命令"><a href="#package-json-添加命令" class="headerlink" title="package.json 添加命令"></a>package.json 添加命令</h2><p>首先先去除<code>package.json</code>里面<code>eslint</code>的配置字段：<code>eslintConfig</code></p>
+<p>上面的步骤完成之后，在项目的<code>packge.json</code>的<code>script</code>字段修改<code>lint</code>命令</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;lint&quot;</span>: <span class="string">&quot;eslint --ext .js --ext .jsx --ext .vue src/&quot;</span>,</span><br><span class="line"><span class="string">&quot;lint-fix&quot;</span>: <span class="string">&quot;eslint --fix --ext .js --ext .jsx --ext .vue src/&quot;</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>–ext后面加上我们需要检测文件的后缀，如<code>.js</code>、.<code>jsx</code>、 <code>.vue</code>等，紧接加上检测哪个目录下面的文件的目录，如： 我们要检查<code>src</code>目录下面的文件，就直接写<code>src</code>。</p>
+</blockquote>
+<p>到目前为止，我们可以使用<code>npm run lint</code>来校验了。当然我们可以使用<code>npm run lint-fix</code>来自动修复。</p>
+<h2 id="安装-eslint-plugin-vue"><a href="#安装-eslint-plugin-vue" class="headerlink" title="安装 eslint-plugin-vue"></a>安装 eslint-plugin-vue</h2><p>上面的步骤配置完成之后， 我们试着<code>npm run lint</code>。控制台是能够显示出来那些是有规则问题的，如：</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/3.png" class="">
+
+<p>我们可以看到，那些代码是有规则问题都被标出来了。</p>
+<p>但是我们进到相应的文件去看，相应有问题的地方却没有被标红（vscode编辑器）这是为什么呢？(之前的项目是可以被标识出来的)</p>
+<p>这是因为：我们使用的是<code>vue-cli3</code>构建的项目，我们使用之前的方案去实现标识是无法识别的。</p>
+<p>想要<code>vscode</code>编辑器对<code>.vue</code>文件的<code>eslint</code>检测时有错误标红出来， 则需要<code>eslint-plugin-vue </code>插件。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev eslint-plugin-vue</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加plugin说明"><a href="#添加plugin说明" class="headerlink" title="添加plugin说明"></a>添加<code>plugin</code>说明</h3><p><code>.eslintrc</code>文添加<code>plugin</code>说明</p>
+<p><code>.eslintrc</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="comment">// ...其他配置项</span></span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: [</span><br><span class="line">  	<span class="comment">// ...其他plugins</span></span><br><span class="line">  	<span class="string">&quot;vue&quot;</span></span><br><span class="line">  ]</span><br><span class="line">  <span class="comment">// ...其他配置项</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加extend说明"><a href="#添加extend说明" class="headerlink" title="添加extend说明"></a>添加<code>extend</code>说明</h3><p><code>.eslintrc</code>文添加<code>extend</code>说明</p>
+<p><code>.eslintrc</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;  </span><br><span class="line">	<span class="comment">// ...其他配置项</span></span><br><span class="line">	<span class="attr">extends</span>: [</span><br><span class="line">	  <span class="comment">// ... 其他的规则</span></span><br><span class="line">    <span class="string">&#x27;plugin:vue/base&#x27;</span></span><br><span class="line">  ]</span><br><span class="line">  <span class="comment">// ...其他配置项</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这里使用的是<code>base</code>里面的规则。更多的配置可看 <a target="_blank" rel="noopener" href="https://eslint.vuejs.org/rules/">官方文档</a></p>
+</blockquote>
+<h3 id="解析器配置"><a href="#解析器配置" class="headerlink" title="解析器配置"></a>解析器配置</h3><p><code>.eslintrc</code>配置解析器</p>
+<p><code>.eslintrc</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="comment">// ...其他配置项</span></span><br><span class="line">	<span class="attr">parserOptions</span>: &#123;</span><br><span class="line">    <span class="attr">parser</span>: <span class="string">&#x27;babel-eslint&#x27;</span>,</span><br><span class="line">    <span class="attr">sourceType</span>: <span class="string">&#x27;module&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line"> <span class="comment">// ...其他配置项</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完整的<code>.eslintrc</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;parserOptions&quot;</span>: &#123;</span><br><span class="line">    <span class="string">&quot;parser&quot;</span>: <span class="string">&quot;babel-eslint&quot;</span>,</span><br><span class="line">    <span class="string">&quot;sourceType&quot;</span>: <span class="string">&quot;module&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="string">&quot;extends&quot;</span>: [</span><br><span class="line">    <span class="string">&quot;standard&quot;</span>,</span><br><span class="line">    <span class="string">&quot;plugin:vue/base&quot;</span></span><br><span class="line">    </span><br><span class="line">  ],</span><br><span class="line">  <span class="string">&quot;plugins&quot;</span>: [<span class="string">&quot;html&quot;</span>, <span class="string">&quot;vue&quot;</span>]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那么现在有问题的代码就会标红出来了，如：</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/4.png" class="">
+
+<p>到目前为止， <code>eslint</code>相关的配置就完成了。</p>
+<h1 id="husy"><a href="#husy" class="headerlink" title="husy"></a>husy</h1><p>有这样的情况：我们试着提交一次有<code>eslint</code>错误的代码:</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/5.png" class="">
+
+<p>我们发现是可以提交的。并且尝试<code>push</code>到远端的时候，也是可以的。但其实我们是希望在有<code>eslint</code>错误的时候，不能做提交和<code>push</code>这类操作的， 防止有问题的代码托送到远端。那么<code>husky</code>就可以帮助我们。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://typicode.github.io/husky/#/?id=automatic-recommended">husky官方文档</a></p>
+</blockquote>
+<p><code>husky</code> 是一个<code>npm</code>安装包，安装了之后可以很方便的配置<code>git hook</code>脚本， 以防止不规范代码被<code>commit</code>、<code>push</code>、<code>merge</code>等。</p>
+<h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><p>由于目前<code>husky</code>已经升级到了 6 版本， 变化还是很大的，网上的很多文章讲解的都是4版本的，  不是很对了。所以我们直接看<a target="_blank" rel="noopener" href="https://typicode.github.io/husky/#/?id=automatic-recommended">husky官方文档</a>的安装方式及其使用方式</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx husky-init &amp;&amp; npm install </span><br></pre></td></tr></table></figure>
+
+<p>我们会发现<code>init</code>生成了一个默认的<code>pre-commit</code>钩子：</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/6.png" class="">
+
+<p>我们把该配置的<code>npm test</code>去掉。</p>
+<h2 id="配置钩子"><a href="#配置钩子" class="headerlink" title="配置钩子"></a>配置钩子</h2><p>修改<code>pre-commit</code>钩子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx husky add .husky/pre-commit <span class="string">&#x27;npm run lint&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置<code>pre-push</code>钩子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx husky add .husky/pre-push <span class="string">&#x27;npm run lint&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置<code>pre-merge</code>钩子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npx husky add .husky/pre-merge <span class="string">&#x27;npm run lint&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>现在我们试着测试，看是否生效:</p>
+<img src="/2021/04/03/vue%E9%A1%B9%E7%9B%AE%E4%B8%ADeslint-husky-lint-staged%E9%85%8D%E5%90%88%E8%A7%84%E8%8C%83%E5%BC%80%E5%8F%91%E6%8F%90%E4%BA%A4/6.png" class="">
+
+<p>我们尝试提交了代码不符合规范的代码，确实被阻止了， 生效。</p>
+<h1 id="lint-staged"><a href="#lint-staged" class="headerlink" title="lint-staged"></a>lint-staged</h1><p>我们希望每次<code>commit</code> ,<code>push</code>和<code>merge</code>等这样的操作的时候，只希望校验自己修改的文件代码规范，而不是全局的检验。 这就需要 <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/lint-staged"><code>lint-staged</code></a>了。</p>
+<p> <a target="_blank" rel="noopener" href="https://www.npmjs.com/package/lint-staged"><code>lint-staged</code></a>的作用是只对<code>git add</code>缓存区的代码进行<code>eslint</code>代码规范检验。这样就能避免全局校验的问题。 符合了我们修改了什么文件，就校验什么文件。其他的的代码不做<code>eslint</code>校验。</p>
+<h2 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev lint-staged</span><br></pre></td></tr></table></figure>
+
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>在 <code>package.json</code>中添加：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;lint-staged&quot;</span>: &#123;</span><br><span class="line">   <span class="string">&quot;src/**/*.&#123;js,vue&#125;&quot;</span>: [</span><br><span class="line">     <span class="string">&quot;npm run lint&quot;</span></span><br><span class="line">   ]</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<p><code>src/**/*.&#123;js,vue&#125;</code> 是需要校验的目录， 可以根据目录去修改。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>到目前为止，配置就做完了。最后觉得在做一个多人开发的项目的时候， 前期一些代码规范的配置觉得是很有必要的。</p>
+<p>本文中的例子github链接：<a target="_blank" rel="noopener" href="https://github.com/shuliqi">shuliqi</a>/<strong><a target="_blank" rel="noopener" href="https://github.com/shuliqi/eslint-husky-lint-staged-example">eslint-husky-lint-staged-example</a></strong></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2021/04/03/vue项目中eslint-husky-lint-staged配合规范开发提交/">https://shuliqi.github.io/2021/04/03/vue项目中eslint-husky-lint-staged配合规范开发提交/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B7%A5%E7%A8%8B%E9%85%8D%E7%BD%AE/">工程配置</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/04/15/vue%E9%A1%B9%E7%9B%AE%E4%B8%AD%E9%81%87%E5%88%B0%E7%9A%84%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98/"><i class="fa fa-chevron-left">  </i><span>vue项目中遇到的跨域问题</span></a></div><div class="next-post pull-right"><a href="/2021/03/20/webpack%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%EF%BC%88optimization%EF%BC%89/HTML%E7%9A%84ContentEditable-%E5%B1%9E%E6%80%A7/"><span>有趣的HTML属性：contenteditable</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

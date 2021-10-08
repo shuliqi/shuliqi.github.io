@@ -1,0 +1,197 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="使用IntersectionObserver提升性能"><meta name="keywords" content="JavaScript"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>使用IntersectionObserver提升性能 | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%97%AE%E9%A2%98%E5%BC%95%E5%87%BA%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">问题引出？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EIntersectionObserver"><span class="toc-number">2.</span> <span class="toc-text">关于IntersectionObserver</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IntersectionObserver-%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%EF%BC%9F"><span class="toc-number">3.</span> <span class="toc-text">IntersectionObserver 如何解决？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IntersectionObserver-API"><span class="toc-number">4.</span> <span class="toc-text">IntersectionObserver API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#callback-%E5%8F%82%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">callback 参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IntersectionObserverEntry%E5%AF%B9%E8%B1%A1"><span class="toc-number">6.</span> <span class="toc-text">IntersectionObserverEntry对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#options%E5%8F%82%E6%95%B0"><span class="toc-number">7.</span> <span class="toc-text">options参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%94%E7%94%A8"><span class="toc-number">8.</span> <span class="toc-text">应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%96%91%E9%97%AE%E7%9A%84%E7%82%B9"><span class="toc-number">9.</span> <span class="toc-text">疑问的点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">10.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">11.</span> <span class="toc-text">最后</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">使用IntersectionObserver提升性能</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2020-03-26</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/JavaScript/">JavaScript</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><h2 id="问题引出？"><a href="#问题引出？" class="headerlink" title="问题引出？"></a>问题引出？</h2><p>之前， 我们要做<strong>懒加载</strong>  或者 <strong>无限加载</strong>的时候。通常是这么做的：</p>
+<ol>
+<li><p><strong>懒加载</strong></p>
+ <span id="more"></span>
+
+<p>图示：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/lazyLoad.jpg" class="">
+
+<p>主要代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> imgs = <span class="built_in">document</span>.querySelectorAll(<span class="string">&#x27;img&#x27;</span>);</span><br><span class="line"><span class="built_in">window</span>.onscroll = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">// 浏览器滚动过的高度</span></span><br><span class="line">  <span class="keyword">var</span> scrollTop = <span class="built_in">document</span>.body.scrollTop || <span class="built_in">document</span>.documentElement.scrollTop;</span><br><span class="line">  <span class="comment">// 可视区域的高度</span></span><br><span class="line">  <span class="keyword">var</span> winTop = <span class="built_in">window</span>.innerHeight; </span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">0</span>;i &lt; imgs.length;i++)&#123;</span><br><span class="line">    <span class="comment">// 当图片距离页面顶部的距离 &lt; 浏览器滚动过的高度 +  可视区域的高度</span></span><br><span class="line">    <span class="keyword">if</span>(imgs[i].offsetTop &lt; scrollTop + winTop )&#123;</span><br><span class="line">      imgs[i].src = imgs[i].getAttribute(<span class="string">&#x27;data-src&#x27;</span>);</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p><strong>无限滚动</strong></p>
+<p>图例：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/wuxian.jpg" class="">
+
+<p>主要代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> page=<span class="number">1</span>; <span class="comment">//当前页的页码</span></span><br><span class="line"><span class="keyword">var</span> flagNoData = <span class="literal">false</span>; <span class="comment">//false</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">showAjax</span>(<span class="params">page</span>)</span>&#123;</span><br><span class="line">  <span class="comment">// ...请求数据啥啥的</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">scrollFn</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="comment">//真实内容的高度</span></span><br><span class="line">  <span class="keyword">var</span> pageHeight = <span class="built_in">Math</span>.max(<span class="built_in">document</span>.body.scrollHeight,<span class="built_in">document</span>.body.offsetHeight);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//视窗的高度</span></span><br><span class="line">  <span class="keyword">var</span> viewportHeight = <span class="built_in">window</span>.innerHeight </span><br><span class="line">  	                 || <span class="built_in">document</span>.documentElement.clientHeight</span><br><span class="line">  	                 || <span class="built_in">document</span>.body.clientHeight</span><br><span class="line">  	                 || <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">//隐藏的高度</span></span><br><span class="line">  <span class="keyword">var</span> scrollHeight = <span class="built_in">window</span>.pageYOffset </span><br><span class="line">                    || <span class="built_in">document</span>.documentElement.scrollTop </span><br><span class="line">                    || <span class="built_in">document</span>.body.scrollTop </span><br><span class="line">                    || <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">if</span>(falgNoData)&#123; <span class="comment">//数据全部加载完了</span></span><br><span class="line">       <span class="keyword">return</span>;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(pageHeight - viewportHeight - scrollHeight &lt; <span class="number">10</span>)&#123; <span class="comment">//如果满足触发条件，执行    </span></span><br><span class="line">      showAjax(page);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">$(<span class="built_in">window</span>).bind(<span class="string">&quot;scroll&quot;</span>,scrollFn);    <span class="comment">//绑定滚动事件</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>传统的实现方法是，监听到<code>scroll</code>事件后，获取相关元素的坐标来进行判断。这种方法是有缺点的。由于<code>scroll</code>事件密集发生，计算量很大，容易造成性能。</p>
+<p>那么在这样的背景下， 我们有没有更好的办法呢？</p>
+<h2 id="关于IntersectionObserver"><a href="#关于IntersectionObserver" class="headerlink" title="关于IntersectionObserver"></a>关于IntersectionObserver</h2><p><code>IntersectionObserver</code>的出现解决了这个问题。</p>
+<p>MDN上给的官方概念：</p>
+<blockquote>
+<p><code>IntersectionObserver</code>接口 (Intersection Observer API)为开发者提供了一种可以异步监听目标元素与其祖先或者视窗（viewport）交叉状态的手段。祖先元素与视窗(viewport)被称为根(root)。</p>
+</blockquote>
+<p>这概念的重点就是：<strong>监听目标元素与其祖先或视窗交叉状态发生改变的手段</strong> </p>
+<p>图解如下图：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/2.jpg" class="">
+
+<p><strong>目标元素与root元素刚开始交叉</strong>和<strong>目标元素与root元素刚开始不交叉</strong>都能检测到。</p>
+<p><strong>看看小🌰：</strong> </p>
+<iframe height="598" style="width: 100%;" scrolling="no" title="wvKBBWb" src="https://codepen.io/shuliqi/embed/wvKBBWb?height=598&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/wvKBBWb'>wvKBBWb</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe>
+
+
+
+<h2 id="IntersectionObserver-如何解决？"><a href="#IntersectionObserver-如何解决？" class="headerlink" title="IntersectionObserver 如何解决？"></a>IntersectionObserver 如何解决？</h2><p>IntersectionObserver API 是异步的， 不随着目标元素的滚动同步触发。即只有在线程空闲下来才会执行观察器。这意味着这个观察器的优先级非常的低，只有在其他的任务执行完，浏览器空闲了才会执行。</p>
+<h2 id="IntersectionObserver-API"><a href="#IntersectionObserver-API" class="headerlink" title="IntersectionObserver API"></a>IntersectionObserver API</h2><p>这个API的调用非常的简单：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> io = <span class="keyword">new</span> IntersectionObserver(callback, options)</span><br></pre></td></tr></table></figure>
+
+<p><code>IntersectionObserver</code>支持两个参数：</p>
+<ol>
+<li><code>callback</code> 是当被监听元素的可见性变化时，触发的回调函数</li>
+<li><code>options</code>是一个配置参数对象，可选的， 有默认的属性值</li>
+</ol>
+<p>构造函数的返回值是一个观察实例， 实例的<code>observe</code>方法可以指定观察哪个DOM节点。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  对元素target添加监听，当target元素变化时，就会触发回调</span></span><br><span class="line">io.observe(<span class="built_in">document</span>.getElementById(<span class="string">&#x27;shuliqi&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 移除一个监听，移除之后，target元素的交叉状态变化，将不再触发回调函数</span></span><br><span class="line">io.unobserve(element)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止所有的监听</span></span><br><span class="line">io.disconnect();</span><br></pre></td></tr></table></figure>
+
+<p>上面的<code>observe()</code>的参数是一个DOM节点对象，如果要观察多个节点，就要多次调用这个方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">io.observe(eleA);</span><br><span class="line">io.observe(eleB);</span><br></pre></td></tr></table></figure>
+
+<h2 id="callback-参数"><a href="#callback-参数" class="headerlink" title="callback 参数"></a>callback 参数</h2><p>目标元素的交叉状态发生改变时，就会调用观察器的回调函数<code>callback</code>。</p>
+<p><code>callback</code>一般会调用两次。一次是目标元素刚刚进入root元素（开始交叉）, 另一次是完全离开root（开始不相交）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> io = <span class="keyword">new</span> IntersectionObserver(<span class="function">(<span class="params">entries</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="built_in">console</span>.log(entries);</span><br><span class="line">&#125;)</span><br><span class="line">io.observe($<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>以上的代码， 在chrome控制台进行调试，这里的$0代表我审查元素选中的节点。</p>
+<p>运行的结果如下：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/3.jpg" class="">
+
+<p>由图我们可知callback函数有个参数，它是<code>IntersectionObserverEntry</code>对象数组，举例来说，如果同时有两个被观察的对象的可见性发生变化， 那么entries数组就会有两个成员。</p>
+<p>接下来我们重点讲<code>IntersectionObserverEntry</code></p>
+<h2 id="IntersectionObserverEntry对象"><a href="#IntersectionObserverEntry对象" class="headerlink" title="IntersectionObserverEntry对象"></a>IntersectionObserverEntry对象</h2><p><code>IntersectionObserverEntry</code>对象提供目标元素的信息，</p>
+<p>还是以上的例子：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/4.jpg" class="">
+
+<p>一共有8 个属性：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  time: <span class="number">78463997.025</span>,</span><br><span class="line">  rootBounds: <span class="literal">null</span>,</span><br><span class="line">  boundingClientRect: DOMRectReadOnly &#123;</span><br><span class="line">   <span class="comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  intersectionRect: DOMRectReadOnly&#123;</span><br><span class="line">   <span class="comment">// ...</span></span><br><span class="line">  &#125;,</span><br><span class="line">  isIntersecting: <span class="literal">true</span>,</span><br><span class="line">  intersectionRatio: <span class="number">1</span>,</span><br><span class="line">  target: html,</span><br><span class="line">  isVisible: <span class="literal">false</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>每个属性的含义如下：</p>
+<ol>
+<li><p><strong>time：</strong> </p>
+<p>返回一个记录从<code>IntersectionObserver</code>开始实例化的时间到交叉状态发生改变的时间的时间戳对比时间：实例化的时间。例子：值为1000时，表示在IntersectionObserver实例化的1秒钟之后，目标元素的交叉状态发生改变了</p>
+</li>
+<li><p><strong>rootBounds：</strong> 根元素的矩形区域的信息，<code>getBoundingClientRect()</code>方法的返回值，如果没有根元素（即直接相对于视口滚动），则返回<code>null</code></p>
+</li>
+<li><p><strong>boundingClientRect：</strong>  目标元素的矩形信息</p>
+</li>
+<li><p><strong>isIntersecting：</strong>目标元素当前是否可见 Boolean值 可见为true</p>
+</li>
+<li><p><strong>intersectionRect：</strong> 目标元素与视口（或root根元素）的交叉区域的信息</p>
+</li>
+<li><p><strong>intersectionRatio：</strong> 目标元素的可见比例，即<code>intersectionRect</code>占<code>boundingClientRect</code>的比例，完全交叉时为<code>1</code>，完全不交叉时小于等于<code>0</code></p>
+</li>
+<li><p><strong>target：</strong> 被观察的目标元素，是一个 DOM 节点对象</p>
+</li>
+</ol>
+<p><strong>注意：</strong>在Chrome 78版本中会返回<code>isVisible</code>属性，但是不知道是不是Bug，无论元素是否可见，都为<code>false</code>，但是<code>isTntersecting</code>的表现是正常的，所以判断是否可见，可以根据<code>intersectionRatio</code>或者<code>isTntersecting</code>来进行判断。</p>
+<p>上面的矩形信息的关系如下：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/5.jpg" class="">
+
+
+
+<h2 id="options参数"><a href="#options参数" class="headerlink" title="options参数"></a>options参数</h2><p><code>IntersectionObserver</code>构造函数的第二参数是一个配置对象， 他可以设置以下属性：</p>
+<ol>
+<li><p><strong>threshold属性</strong></p>
+<p><code>threshold</code>属性 决定了什么时候触发回调函数，它是一个数组， 每一个成员也是一个门槛值，当目标元素和根元素相交的面积占目标元素面积的百分比到达或跨过某些指定的临界值时就会触发回调函数</p>
+<p><code>threshold</code>的默认值是<code>:[0]</code>，即只有在开始进入，或者是完全离开视图区域时，才会触发。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> io = <span class="keyword">new</span> IntersectionObserver(callback, &#123;</span><br><span class="line">	<span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>],</span><br><span class="line">&#125;)</span><br><span class="line">io.observe($<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>用户可以自定义这个属性， [0, 0.5, 1]就表示 0%， 50%，75%， 100%交叉状态发生改变时， 就会触发回调函数。</p>
+<p>   **看看小🌰：  **</p>
+<iframe height="423" style="width: 100%;" scrolling="no" title="dyYoJJJ" src="https://codepen.io/shuliqi/embed/dyYoJJJ?height=423&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/dyYoJJJ'>dyYoJJJ</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe></li>
+<li><p><strong>rootMargin</strong>属性</p>
+<p>用来扩大或者缩小视窗的大小， 使用css的定义方式，    <code>10px 10px 10px 20px</code> 表示top，right,bottom, left的值。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> options = &#123;</span><br><span class="line">    <span class="attr">threshold</span>: [<span class="number">0</span>, <span class="number">0.5</span>, <span class="number">1</span>],</span><br><span class="line">    <span class="attr">rootMargin</span>: <span class="string">&#x27;30px 20px 30px 20px&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如图：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/6.jpg" class="">
+
+<p>图上的绿色部分是定义好的root元素， 我们添加了<code>rootMargin</code>属性， 将视窗增大了。</p>
+<p>由此可见，root元素只有在<code>rootMargin</code>为空的时候才是绝对的视窗。</p>
+<p> <strong>看看小🌰：</strong></p>
+<iframe height="628" style="width: 100%;" scrolling="no" title="PoGWJVv" src="https://codepen.io/shuliqi/embed/PoGWJVv?height=628&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/PoGWJVv'>PoGWJVv</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe></li>
+<li><p>**root **属性</p>
+<p><code>root</code>属性指定目标元素所在的容器节点（即根元素）。注意，容器元素必须是目标元素的祖先节点。</p>
+</li>
+</ol>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><ol>
+<li><p><strong>懒加载（lazy load）</strong></p>
+<p>我们希望某些静态资源（比如图片），只有用户向下滚动，它们进入视口时才加载，这样可以节省带宽，提高网页性能。这就叫做”惰性加载”。</p>
+<p>有了 IntersectionObserver API，实现起来就很容易了。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> io = <span class="keyword">new</span> IntersectionObserver(callback);</span><br><span class="line">    <span class="keyword">let</span> imgs = <span class="built_in">document</span>.querySelectorAll(<span class="string">&quot;[data-src]&quot;</span>); <span class="comment">// 将图片的真实url设置为data-src src属性为占位图 元素可见时候替换src</span></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">callback</span>(<span class="params">entries</span>) </span>&#123;</span><br><span class="line">      entries.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 遍历entries数组</span></span><br><span class="line">        <span class="keyword">if</span> (item.isIntersecting) &#123;</span><br><span class="line">          <span class="comment">// // 当前元素可见</span></span><br><span class="line">          item.target.src = item.target.dataset.src; <span class="comment">// 替换src</span></span><br><span class="line">          io.unobserve(item.target); <span class="comment">// 停止观察当前元素 避免不可见时候再次调用callback函数</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// io.observe接受一个DOM元素，添加多个监听 使用forEach</span></span><br><span class="line">    imgs.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">      io.observe(item);</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，只有目标区域可见时，才会将模板内容插入真实 DOM，从而引发静态资源的加载。</p>
+<p><strong>看看小🌰： <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/gOababR">小小例子</a></strong></p>
+<iframe height="570" style="width: 100%;" scrolling="no" title="gOababR" src="https://codepen.io/shuliqi/embed/gOababR?height=570&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/gOababR'>gOababR</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe></li>
+<li><p><strong>无限加载</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">&quot;DOMContentLoaded&quot;</span>, <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> sum = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">var</span> loadData = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> fragment = <span class="built_in">document</span>.createDocumentFragment();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">      <span class="keyword">var</span> div = <span class="built_in">document</span>.createElement(<span class="string">&quot;div&quot;</span>);</span><br><span class="line">      div.className = <span class="string">&quot;unit&quot;</span>;</span><br><span class="line">      div.innerText = <span class="string">`第 <span class="subst">$&#123;sum&#125;</span> 个数据`</span>;</span><br><span class="line">      fragment.appendChild(div);</span><br><span class="line">      sum++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">document</span></span><br><span class="line">      .getElementById(<span class="string">&quot;app&quot;</span>)</span><br><span class="line">   .insertBefore(fragment, <span class="built_in">document</span>.getElementById(<span class="string">&quot;loading&quot;</span>));</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">var</span> io = <span class="keyword">new</span> IntersectionObserver(<span class="function"><span class="keyword">function</span> (<span class="params">entries</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (entries[<span class="number">0</span>].isIntersecting) &#123;</span><br><span class="line">      <span class="comment">// 如果loading元素不可见，就加载数据</span></span><br><span class="line">      loadData();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line">  io.observe(<span class="built_in">document</span>.getElementById(<span class="string">&quot;loading&quot;</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>无限滚动时，最好在页面底部有一个页尾栏（又称<a target="_blank" rel="noopener" href="http://www.ruanyifeng.com/blog/2016/11/sentinels">sentinels</a>）。一旦页尾栏可见，就表示用户到达了页面底部，从而加载新的条目放在页尾栏前面。这样做的好处是，不需要再一次调用<code>observe()</code>方法，现有的<code>IntersectionObserver</code>可以保持使用。</p>
+<p>  <strong>看看小🌰： <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/KKdwdNb">小小例子</a></strong></p>
+<iframe height="608" style="width: 100%;" scrolling="no" title="KKdwdNb" src="https://codepen.io/shuliqi/embed/KKdwdNb?height=608&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/KKdwdNb'>KKdwdNb</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe></li>
+</ol>
+<h2 id="疑问的点"><a href="#疑问的点" class="headerlink" title="疑问的点"></a>疑问的点</h2><ol>
+<li><p><strong>一次性到达或跨过的多个临界值中选一个最近的</strong></p>
+<p><strong>问题：</strong>如果一个观察者实例设置了 11 个临界值：[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]，那么当目标元素和根元素从完全不相交状态滚动到相交率为 1 这一段时间里，回调函数会触发几次？</p>
+<p><strong>答案：</strong> 不确定的。</p>
+<p>如果滚动速度足够慢，每次相交率到达下一个临界值的时间点都发生在了不同的帧里（浏览器至少绘制了 11 次），那么就会有 11 次相交被检测到，回调函数就会被执行 11 次</p>
+<p>如果滚动速度足够快，从不相交到完全相交是发生在同一个帧里的，浏览器只绘制了一次，浏览器虽然知道这一次滚动操作就满足了 11 个指定的临界值（从不相交到 0，从 0 到 0.1，从 0.1 到 0.2 ··· ），但它只会考虑最近的那个临界值，那就是 1，回调函数只触发一次.</p>
+<p> <strong>看看小🌰： <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/zYvGaLL">例子</a></strong></p>
+<p class="codepen" data-height="568" data-theme-id="dark" data-default-tab="js,result" data-user="shuliqi" data-slug-hash="zYvGaLL" style="height: 568px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;" data-pen-title="zYvGaLL">
+  <span>See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/zYvGaLL">
+  zYvGaLL</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.</span>
+</p>
+<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script></li>
+<li><p><strong>如何判断当前是否相交？</strong></p>
+<p><strong>问题：</strong> 前面的几个例子， 都使用了isIntersecting 来判断目标元素是否在窗口里面，为什么？难道用entry.intersectionRatio &gt; 0 判断不可以吗？</p>
+<p>如果你滚动页面速度很慢，当目标元素的顶部和视口底部刚好挨上时，浏览器检测到相交了，回调函数触发了，但这时 entry.intersectionRatio 等于 0，会进入 else 分支，继续向下滚，回调函数再不会触发了，提示文字一直停留在不可见状态；但如果你滚动速度很快，当浏览器检测到相交时，已经越过了 0 那个临界值，存在了实际的相交面积，entry.intersectionRatio &gt; 0 也就为 true 了。所以这样写会导致代码执行不稳定，不可行。</p>
+<p><strong>看看小🌰： <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/gOapKZP">例子</a></strong></p>
+<iframe height="444" style="width: 100%;" scrolling="no" title="gOapKZP" src="https://codepen.io/shuliqi/embed/gOapKZP?height=444&theme-id=dark&default-tab=js,result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href='https://codepen.io/shuliqi/pen/gOapKZP'>gOapKZP</a> by shuliqi
+  (<a target="_blank" rel="noopener" href='https://codepen.io/shuliqi'>@shuliqi</a>) on <a target="_blank" rel="noopener" href='https://codepen.io'>CodePen</a>.
+</iframe></li>
+<li><p><strong>贴边的情况是特例</strong></p>
+<p>当目标元素从距离根元素很远到和根元素贴边，这时也会触发回调（假如 thresholds 里有 0），但这和工作原理相矛盾啊，离的很远相交率是 0，就算贴边，相交率还是 0，值并没有变，不应该触发回调啊。的确，这和基本工作原理矛盾，但这种情况是特例，目标元素从根元素外部很远的地方移动到和根元素贴边，也会当做是满足了临界值 0，即便 0 等于 0。</p>
+<p>还有一个反过来的特例，就是目标元素从根元素内部的某个地方（相交率已经是 1）移动到和根元素贴边（还是 1），也会触发回调（假如 thresholds 里有 1）</p>
+</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在当前判断可视性的方法，基本就是监听<code>scroll</code>事件，但是由于其高频的计算频率，会导致浏览器性能的损失，尤其是，如果一个同一个页面中，有多个地方，需要这样的判断，那么就需要绑定多个<code>scroll</code>事件，或者有多个计时器在轮询的话，那么对性能的损失就更为客观了。</p>
+<p>虽然现在的浏览器性能一直在增强，但是也有更多的消耗性能的比较炫的技术在产生，它们依然在占据着浏览器的大量的计算内存，所以，尽量在可以节省性能的时候，就节省一下性能吧。</p>
+<p>而该方法给我们提供了一个更简单直接，性能更好的解决方案，希望以后的浏览器，可以越来越广泛的支持吧。</p>
+<p>最后， 毕竟是一个新兴的<code>API</code>，所以浏览器的支持性并不好，这里可以看看当前浏览器对于<code>IntersectionObserver</code>的支持性：</p>
+<img src="/2020/03/26/%E4%BD%BF%E7%94%A8IntersectionObserver%E6%8F%90%E9%AB%98%E6%80%A7%E8%83%BD/caniuse.png" class="">
+
+
+
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这篇文章的ppt也有哦， <a href="https://shuliqi.github.io/ppt/IntersectionObserver/%E5%85%B3%E4%BA%8EIntersectionObserver.html">请点击这里</a></p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2020/03/26/使用IntersectionObserver提高性能/">https://shuliqi.github.io/2020/03/26/使用IntersectionObserver提高性能/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JavaScript/">JavaScript</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2020/04/21/MutationObserver-%E7%9B%91%E5%90%ACDOM%E6%A0%91%E5%8F%98%E5%8C%96/"><i class="fa fa-chevron-left">  </i><span>MutationObserver 追踪DOM的变化</span></a></div><div class="next-post pull-right"><a href="/2020/02/23/ES6%E4%B8%ADSymbol%E7%9A%84%E4%BD%BF%E7%94%A8/"><span>ES6学习笔记-Symbol的使用</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

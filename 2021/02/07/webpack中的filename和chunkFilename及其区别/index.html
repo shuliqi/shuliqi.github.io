@@ -1,0 +1,342 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="webpack中的filename和chunkFilename及其区别"><meta name="keywords" content="webpack学习笔记"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>webpack中的filename和chunkFilename及其区别 | 舒丽琦的Blog</title><meta name="robots" content="noindex"><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="toc-number">1.</span> <span class="toc-text">前置知识</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#filename"><span class="toc-number">2.</span> <span class="toc-text">filename</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%90%8D%E7%A7%B0"><span class="toc-number">2.1.</span> <span class="toc-text">静态名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%85%A5%E5%8F%A3%E5%90%8D%E7%A7%B0"><span class="toc-number">2.2.</span> <span class="toc-text">使用入口名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%86%85%E9%83%A8%E7%9A%84-chunk-id"><span class="toc-number">2.3.</span> <span class="toc-text">使用内部的 chunk id</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-hash-%E7%94%9F%E6%88%90"><span class="toc-number">2.4.</span> <span class="toc-text">使用 hash 生成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-chunk-%E5%86%85%E5%AE%B9-hash"><span class="toc-number">2.5.</span> <span class="toc-text">使用 chunk 内容 hash</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#chunkFilename"><span class="toc-number">3.</span> <span class="toc-text">chunkFilename</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E5%90%8D%E7%A7%B0-1"><span class="toc-number">3.1.</span> <span class="toc-text">静态名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%85%A5%E5%8F%A3%E5%90%8D%E7%A7%B0-1"><span class="toc-number">3.2.</span> <span class="toc-text">使用入口名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-hash-%E7%94%9F%E6%88%90-1"><span class="toc-number">3.3.</span> <span class="toc-text">使用 hash 生成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-chunk-%E5%86%85%E5%AE%B9-hash-1"><span class="toc-number">3.4.</span> <span class="toc-text">使用 chunk 内容 hash</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">4.</span> <span class="toc-text">最后</span></a></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">webpack中的filename和chunkFilename及其区别</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-02-07</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/webpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">webpack学习笔记</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p><code>webpack</code>中<code>output</code>对象有很多的配置选项，其中<code>output.filename</code>和<code>output.chunkFilename</code>两者都是给输出 <code>bundle</code> 命名的。那么它们具体怎么使用呢？两者之间又有什么区别呢？</p>
+<span id="more"></span>
+
+<h1 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h1><p>首先我们先来看打包输出的字段分别代表什么意思？ 好为我们下面讲的 <code>filename</code> 和 <code>chunkFilename</code>做基础。</p>
+<p>我们先来做我们的项目结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir webpack-demo</span><br><span class="line">$ cd  webpack-demo</span><br></pre></td></tr></table></figure>
+
+<p>然后本地安装 <code>webpack</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev webpack@4.9.0</span><br></pre></td></tr></table></figure>
+
+<p>因为安装的是 <code>webpack4</code>版本的， 所以需要安装<code>CLI</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev webpack-cli</span><br></pre></td></tr></table></figure>
+
+<p>然后在<code>package.json</code>的<code>script</code>字段中添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build&quot;: &quot;webpack --config webpack.config.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>这个配置的可以用来执行<code>webpack</code>。</p>
+<p>具体的<code>webpack</code>安装方式，<a target="_blank" rel="noopener" href="https://webpack.docschina.org/guides/installation/">点击查看</a></p>
+<p>在当前的目录上添加一些文件夹和文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ touch webpack.config.js</span><br><span class="line">$ mkdir src</span><br><span class="line">$ cd src</span><br><span class="line">$ touch index.js</span><br></pre></td></tr></table></figure>
+
+<p>那么我们目前的项目机构为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">|--package.json</span><br><span class="line">|--node_modules</span><br><span class="line">|--package-lock.json</span><br><span class="line">|--src</span><br><span class="line">  |--index.js</span><br><span class="line">|--webpack.config.js</span><br></pre></td></tr></table></figure>
+
+<p>那么现在开始我们的正题。</p>
+<p>假如我们有如下的配置 <code>webpack.config.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">index</span>: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;shuliqi.js&#x27;</span>,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build&quot;: &quot;webpack --config webpack.config.js&quot;,</span><br></pre></td></tr></table></figure>
+
+<p>最后执行命令 <code>npm run build</code> 使用<code>webpack</code>打包， 输出字段如下：</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/1.png" class="">
+
+<p>打包的时候我们可得到上面如图的输出字段：</p>
+<ul>
+<li>Hash： 表示本次打包的唯一<code>hash</code>值，每次打包的<code>hash</code>值是不一样的。</li>
+<li>Version: 当前项目使用的<code>webpack</code>版本</li>
+<li>Time：这次打包用的时间</li>
+<li>Asset：打包输出的文件的名称</li>
+<li>Size：打包的文件的大小</li>
+<li>Chunks：打包后的文件的<code>id</code>号，从0 开始， 往后递增</li>
+<li>Chunks Names：打包的文件的名字。</li>
+</ul>
+<p>其中 <code>hash</code> 和 <code>chunkhash</code> 的长度是可指定的，<code>[hash:8]</code> 代表取8位 Hash 值，默认是20位。</p>
+<h1 id="filename"><a href="#filename" class="headerlink" title="filename"></a>filename</h1><p>在<code>output</code>对象中的<code>filename</code> 是一个比较常见的属性，它对应的是 <code>entry</code>配置项中的输入文件，经过<code>webpack</code>打包之后的文件名。</p>
+<p>webpack 常用的输出文件名内置的模板变量：</p>
+<table>
+<thead>
+<tr>
+<th align="left">模板</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[hash]</td>
+<td align="left">模块标识符(module identifier)的 hash</td>
+</tr>
+<tr>
+<td align="left">[chunkhash]</td>
+<td align="left">chunk 内容的 hash</td>
+</tr>
+<tr>
+<td align="left">[name]</td>
+<td align="left">模块名称</td>
+</tr>
+<tr>
+<td align="left">[id]</td>
+<td align="left">模块标识符(module identifier)</td>
+</tr>
+</tbody></table>
+<h2 id="静态名称"><a href="#静态名称" class="headerlink" title="静态名称"></a>静态名称</h2><p>如果输出文件只有一个， 可以把<code>filename</code>属性写成静态不变的名称。</p>
+<p><code>webpack.config_single.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单个文件输出文件，可以把filename写成静态不可变的名称</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="comment">// 配置打包输出的文件名称为静态名称：index.js</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;index.js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样的配置打包输出的文件就是固定的名字<code>index.js</code>了。</p>
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_single&quot;: &quot;webpack --config webpack.config_single.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>最后执行命令 <code>npm run build_single</code> 使用<code>webpack</code>打包。</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/2.png" class="">
+
+<p>可以看出打包输出的文件名称(<code>Asset</code>)为 <code>index.js</code>。</p>
+<p>但是， 当有多个入口起点，代码拆分或者插件从而创建多个输出文件时， 应该使用模板来为每个输出赋予不用的名称。</p>
+<h2 id="使用入口名称"><a href="#使用入口名称" class="headerlink" title="使用入口名称"></a>使用入口名称</h2><p><code>webpack.config_name.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 打包输出的文件名称使用入口的文件名称</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="comment">// 两个入口的名称分别为： main，common</span></span><br><span class="line">    <span class="attr">main</span>: <span class="string">&#x27;/src/index.js&#x27;</span>,</span><br><span class="line">    <span class="attr">common</span>: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="comment">// 打包输出的文件名称为： 入口名称（main，common） + &#x27;_name.js&#x27;</span></span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[name]_name.js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面配置中，<code>filename</code>值中的 <code>[name]</code>指入口起点键值对的键，即<code>main</code>和 <code>common</code>。 输出的文件名称应该分别是：<code>main_name.js</code>，<code>common_name.js</code>.</p>
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_name&quot;: &quot;webpack --config webpack.config_name.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>最后执行命令 <code>npm run build_name</code> 使用<code>webpack</code>打包。</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/3.png" class="">
+
+<p>以看出打包输出的文件名称是 <code>main_name.js</code>，<code>common_name.js</code>.</p>
+<h2 id="使用内部的-chunk-id"><a href="#使用内部的-chunk-id" class="headerlink" title="使用内部的 chunk id"></a>使用内部的 chunk id</h2><p><code>webpack.config_id.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用内部的chunk  id 作为输出的文件的名称</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">index</span>: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">    <span class="attr">common</span>: <span class="string">&#x27;./src/common.js&#x27;</span>,</span><br><span class="line">  &#125;, </span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[id].js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面配置中 <code>filename</code> 中的<code>[id]</code>表示 <code>chunk</code>内部的<code>id</code>。即输出字段的 <code>Chunks</code>字段。</p>
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_id&quot;: &quot;webpack --config webpack.config_id.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>最后执行命令 <code>npm run build_id</code> 使用<code>webpack</code>打包。</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/4.png" class="">
+
+<p>可以看出， 我们的输出的文件的名称是以内部<code>chunk id</code>来命名的</p>
+<h2 id="使用-hash-生成"><a href="#使用-hash-生成" class="headerlink" title="使用 hash 生成"></a>使用 hash 生成</h2><p><code>webpack.config_hash.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">index</span>: <span class="string">&#x27;./src/index.js&#x27;</span>,</span><br><span class="line">    <span class="attr">common</span>: <span class="string">&#x27;/src/common.js&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[hash]_[name].js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面配置中的<code>[hash]</code>是指本次打包的唯一<code>hash</code>值，即输出字段<code>Hash</code>字段。因为<code>hash</code>是一样的， 再加上<code>[name]</code>是为了区分各个文件。</p>
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_hash&quot;: &quot;webpack --config webpack.config_hash.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>最后执行命令 <code>npm run build_hash</code> 使用<code>webpack</code>打包。</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/5.png" class="">
+
+<p>可以看出来打包的输出文件的名称是由输出字段的<code>[hash]</code> + <code>[name]</code> + <code>.js</code>拼接而成的。</p>
+<h2 id="使用-chunk-内容-hash"><a href="#使用-chunk-内容-hash" class="headerlink" title="使用 chunk 内容 hash"></a>使用 chunk 内容 hash</h2><p><code>webpack.config_chunkhash.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">index</span>: <span class="string">&#x27;/src/index.js&#x27;</span>,</span><br><span class="line">    <span class="attr">common</span>: <span class="string">&#x27;/src/common.js&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;[chunkhash]_[name].js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面配置中的 <code>[chunk_hash]</code>是指：chunk 内容的 hash。加上<code>[name]</code>是为了区分各个文件。</p>
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_chunkhash&quot;: &quot;webpack --config webpack.config_chunkhash.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>最后执行命令 <code>npm run build_chunkhash</code> 使用<code>webpack</code>打包。</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/6.png" class="">
+
+<h1 id="chunkFilename"><a href="#chunkFilename" class="headerlink" title="chunkFilename"></a>chunkFilename</h1><p><code>chunkFilename</code>指未被列在<code>entry</code>中，却又是需要被打包出来的<code>chunk</code>的文件名称。</p>
+<p>什么样的场景会需要呢？在项目中按需加载（异步）模块的时候， 这样的文件就是没有被列在<code>entry</code>中的。但是有时需要打包的。 <code>chunkFilename</code>就可以对这些文件进行命名。</p>
+<blockquote>
+<p><code>chunk</code>是指<code>webpack</code>在進行模块的依赖分析时候，代码分割出来的代码块。</p>
+</blockquote>
+<p><code>chunkFilename</code> 支持和 <code>filename</code> 一致的内置模板变量。</p>
+<p>我们在<code>src</code>文件夹中添加<code>chunkFilename.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&#x27;shuliqi&#x27;</span>);</span><br><span class="line"><span class="comment">// 引入一个外部的js 文件</span></span><br><span class="line"><span class="keyword">import</span>(<span class="string">&#x27;./common.js&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>如果我们对这个文件打包的时候， 因为我们引入了外部的<code>js</code>文件，这个文件没有别列在<code>entry</code>中，但是又需要被打包的。</p>
+<h2 id="静态名称-1"><a href="#静态名称-1" class="headerlink" title="静态名称"></a>静态名称</h2><p><code>chunkFilename_single.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;./src/chunkFilename.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;main.js&#x27;</span>,</span><br><span class="line">    <span class="comment">// 没有列在entry 中， 但是又不得不打包的文件的命名</span></span><br><span class="line">    <span class="attr">chunkFilename</span>: <span class="string">&#x27;chunkFilename.js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_chunkFilename&quot;: &quot;webpack --config chunkFilename_single.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>打包结果：</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/7.png" class="">
+
+<h2 id="使用入口名称-1"><a href="#使用入口名称-1" class="headerlink" title="使用入口名称"></a>使用入口名称</h2><p><code>chunkFilename</code>是不能使用<code>[name]</code>的，因为它就没有被列入<code>entry</code>中、所以无法知道入口名称是多少， 如果<code>chunkFilename</code>使用了了<code>[name]</code>。 那么会自动转换成是使用默认设置:<code>[id].js</code>。即：</p>
+<blockquote>
+<p><code>output.chunkFilename</code> 默认使用 <code>[id].js</code> 或从 <code>output.filename</code> 中推断出的值（<code>[name]</code> 会被预先替换为 <code>[id]</code> 或 <code>[id].</code>）</p>
+</blockquote>
+<p><code>chunkFilename_name.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports= &#123;</span><br><span class="line">  <span class="attr">entry</span>: &#123;</span><br><span class="line">    <span class="attr">chunkfilename</span>: <span class="string">&#x27;./src/chunkFilename.js&#x27;</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;main.js&#x27;</span>,</span><br><span class="line">    <span class="attr">chunkFilename</span>: <span class="string">&#x27;[name].js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;build_chunkFilename_name&quot;: &quot;webpack --config chunkFilename_name.js&quot;</span><br></pre></td></tr></table></figure>
+
+<p>执行打包命令<code>npm run build_chunkFilename_name</code>，结果：</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/8.png" class="">
+
+<p>可以看出来，没有列在<code>entry</code>中的文件，打包之后的文件名是是 1.js， 其中1 是该 <code>chunk</code>的<code>id</code>.</p>
+<h2 id="使用-hash-生成-1"><a href="#使用-hash-生成-1" class="headerlink" title="使用 hash 生成"></a>使用 hash 生成</h2><p><code>chunkFilename_hash.js</code>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    <span class="attr">entry</span>: <span class="string">&#x27;./src/chunkFilename.js&#x27;</span>,</span><br><span class="line">    <span class="attr">output</span>: &#123;</span><br><span class="line">      <span class="attr">filename</span>:<span class="string">&#x27;main.js&#x27;</span>,</span><br><span class="line">      <span class="attr">chunkFilename</span>: <span class="string">&#x27;[hash].js&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;build_chunkFilename_hash&quot;</span>: <span class="string">&quot;webpack --config chunkFilename_hash.js&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行打包命令<code>npm run  build_chunkFilename_hash</code>，结果：</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/9.png" class="">
+
+<p>可以看出来， 没有列入<code>entry</code>但是有需要打包的<code>common.js</code>的<code>chunk</code>的名称为输出字段的<code>hash</code> + <code>.js</code>的拼接</p>
+<h2 id="使用-chunk-内容-hash-1"><a href="#使用-chunk-内容-hash-1" class="headerlink" title="使用 chunk 内容 hash"></a>使用 chunk 内容 hash</h2><p><code>chunkFilename_chunkhash.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="attr">entry</span>: <span class="string">&#x27;/src/chunkFilename.js&#x27;</span>,</span><br><span class="line">  <span class="attr">output</span>: &#123;</span><br><span class="line">    <span class="attr">filename</span>: <span class="string">&#x27;main.js&#x27;</span>,</span><br><span class="line">    <span class="attr">chunkFilename</span>: <span class="string">&#x27;[chunkhash].js&#x27;</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们在<code>package.json</code> 的<code>script</code>字段添加：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;build_chunkFilename_hash&quot;</span>: <span class="string">&quot;webpack --config chunkFilename_hash.js&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>执行打包命令`npm run  build_chunkFilename_hash，结果：</p>
+<img src="/2021/02/07/webpack%E4%B8%AD%E7%9A%84filename%E5%92%8CchunkFilename%E5%8F%8A%E5%85%B6%E5%8C%BA%E5%88%AB/10.png" class="">
+
+<p>可以看出来， 没有列入<code>entry</code>但是有需要打包的<code>common.js</code>的<code>chunk</code>的名称为输出字段的<code>chunkhash</code> + <code>.js</code>的拼接</p>
+<h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p><strong>总结<code>filename 和 chunkFilename</code>：</strong></p>
+<ul>
+<li><p><code>filename</code> 指<strong>列在</strong> <code>entry</code> 中，打包后输出的文件的名称。</p>
+</li>
+<li><p><code>chunkFilename</code> 指<strong>未列在</strong> <code>entry</code> 中，却又需要被打包出来的文件的名称。</p>
+</li>
+</ul>
+<p>关于上面的例子可移步<a target="_blank" rel="noopener" href="https://github.com/shuliqi/webpack-filename-chunkFilename">webpack-filename-chunkFilename</a></p>
+<p><strong>输出文件名内置的模板变量:</strong></p>
+<p>当然输出文件名内置的模板变量不仅是上列出来的这些，我觉得这些是常用的， 还有很多其他的。如：</p>
+<ul>
+<li>可在编译层面进行替换的内容：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">模板</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[fullhash]</td>
+<td align="left">compilation 完整的 hash 值</td>
+</tr>
+<tr>
+<td align="left">[hash]</td>
+<td align="left">同上</td>
+</tr>
+</tbody></table>
+<ul>
+<li>可在 chunk 层面进行替换的内容：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">模板</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[id]</td>
+<td align="left">此 chunk 的 ID</td>
+</tr>
+<tr>
+<td align="left">[name]</td>
+<td align="left">如果设置，则为此 chunk 的名称，否则使用 chunk 的 ID</td>
+</tr>
+<tr>
+<td align="left">[chunkhash]</td>
+<td align="left">此 chunk 的 hash 值，包含该 chunk 的所有元素</td>
+</tr>
+<tr>
+<td align="left">[contenthash]</td>
+<td align="left">此 chunk 的 hash 值，只包括该内容类型的元素（受 <code>optimization.realContentHash</code> 影响）</td>
+</tr>
+</tbody></table>
+<ul>
+<li>可在模块层面替换的内容：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">模板</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[id]</td>
+<td align="left">模块的 ID</td>
+</tr>
+<tr>
+<td align="left">[moduleid]</td>
+<td align="left">同上，但已弃用</td>
+</tr>
+<tr>
+<td align="left">[hash]</td>
+<td align="left">模块的 Hash 值</td>
+</tr>
+<tr>
+<td align="left">[modulehash]</td>
+<td align="left">同上，但已弃用</td>
+</tr>
+<tr>
+<td align="left">[contenthash]</td>
+<td align="left">模块内容的 Hash 值</td>
+</tr>
+</tbody></table>
+<ul>
+<li>可在文件层面替换的内容：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">模板</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[file]</td>
+<td align="left">filename和路径，不含 query 或 fragment</td>
+</tr>
+<tr>
+<td align="left">[query]</td>
+<td align="left">带前缀 <code>?</code> 的 query</td>
+</tr>
+<tr>
+<td align="left">[fragment]</td>
+<td align="left">带前缀 <code>#</code> 的 fragment</td>
+</tr>
+<tr>
+<td align="left">[base]</td>
+<td align="left">只有 filename（包含扩展名），不含 path</td>
+</tr>
+<tr>
+<td align="left">[filebase]</td>
+<td align="left">同上，但已弃用</td>
+</tr>
+<tr>
+<td align="left">[path]</td>
+<td align="left">只有 path，不含 filename</td>
+</tr>
+<tr>
+<td align="left">[name]</td>
+<td align="left">只有 filename，不含扩展名或 path</td>
+</tr>
+<tr>
+<td align="left">[ext]</td>
+<td align="left">带前缀 <code>.</code> 的扩展名</td>
+</tr>
+</tbody></table>
+<ul>
+<li>可在 URL 层面替换的内容：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">模块</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">[url]</td>
+<td align="left">URL</td>
+</tr>
+</tbody></table>
+<p>具体也移步<a target="_blank" rel="noopener" href="https://webpack.docschina.org/configuration/output/#outputfilename">官网</a></p>
+<!-- flag of hidden posts --></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2021/02/07/webpack中的filename和chunkFilename及其区别/">https://shuliqi.github.io/2021/02/07/webpack中的filename和chunkFilename及其区别/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/webpack%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">webpack学习笔记</a></div><nav id="pagination"></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>

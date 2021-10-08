@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="CSS 实现动画边框的奇思妙想"><meta name="keywords" content="CSS"><meta name="author" content="舒丽琦"><meta name="copyright" content="舒丽琦"><title>CSS 实现动画边框的奇思妙想 | 舒丽琦的Blog</title><link rel="shortcut icon" href="http://s3.qhres.com/static/2ff15e92f72e1a0b.ico"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%80%83%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">思考？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#border-%E5%B1%9E%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">border 属性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C1%EF%BC%9Ahover%E8%BE%B9%E6%A1%86%E9%95%BF%E5%BA%A6%E5%8F%98%E5%8C%96"><span class="toc-number">3.</span> <span class="toc-text">效果1：hover边框长度变化</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%90%E5%8F%98"><span class="toc-number">4.</span> <span class="toc-text">渐变</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BA%BF%E6%80%A7%E6%B8%90%E5%8F%98"><span class="toc-number">4.1.</span> <span class="toc-text">线性渐变</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C2%EF%BC%9A%E8%99%9A%E7%BA%BF%E8%BE%B9%E6%A1%86%E5%8A%A8%E7%94%BB"><span class="toc-number">5.</span> <span class="toc-text">效果2：虚线边框动画</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C3%EF%BC%9A%E5%8A%A8%E7%94%BB%E5%BD%A9%E6%9D%A1%E8%BE%B9%E6%A1%86"><span class="toc-number">6.</span> <span class="toc-text">效果3：动画彩条边框</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#clip-path"><span class="toc-number">7.</span> <span class="toc-text">clip-path</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#inset"><span class="toc-number">7.1.</span> <span class="toc-text">inset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ellipse"><span class="toc-number">7.2.</span> <span class="toc-text">ellipse</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#polygon"><span class="toc-number">7.3.</span> <span class="toc-text">polygon</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%88%E6%9E%9C4%EF%BC%9A-%E8%BF%BD%E9%80%90%E7%9A%84%E8%BE%B9%E6%A1%86"><span class="toc-number">8.</span> <span class="toc-text">效果4： 追逐的边框</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F1"><span class="toc-number">8.1.</span> <span class="toc-text">方式1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B9%E5%BC%8F2"><span class="toc-number">8.2.</span> <span class="toc-text">方式2</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒丽琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">52</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">11</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">12</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒丽琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">CSS 实现动画边框的奇思妙想</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2021-06-26</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/CSS/">CSS</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>最近在找一些周刊文章的时候读到一篇挺有意思的文章 <a target="_blank" rel="noopener" href="https://juejin.cn/post/6918921604160290830">CSS 奇思妙想边框动画</a>，经过学习之后，每实现一个效果的背后都有一些值得去复习或者是学习的知识点，觉得收获挺大。记录一下学习或者是复习到的一些知识点。</p>
+<span id="more"></span>
+
+<h1 id="思考？"><a href="#思考？" class="headerlink" title="思考？"></a>思考？</h1><p>如果我们希望实现一个有样式的边框，比如说：给边框加上一些动画，我们改如何实现呢？</p>
+<p>既然说到边框， 我们肯定会想到 <code>border</code>。那么<code>border</code>都有哪些属性呢？那我们了可以先复习一下<code>border</code></p>
+<h1 id="border-属性"><a href="#border-属性" class="headerlink" title="border 属性"></a>border 属性</h1><p><code>border</code> 主要有三个属性：</p>
+<ul>
+<li><code>border-width</code>: 设置盒子模型的边框宽度</li>
+<li><code>border-style</code>：用来设定元素所有边框的样式</li>
+<li><code> border-color</code>:  用于设置元素四个边框颜色的快捷属性</li>
+</ul>
+<p>而我们一般可以简写成：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  <span class="attribute">border</span>: <span class="number">2px</span> solid <span class="number">#000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/border">MDN-border 详情</a></p>
+<p>而关于<code>border-style</code>我们常用到的可能就是<code>solid</code>，<code>dashed</code>，<code>dotted</code>。但是还有很多其他的设置， 我们来看看：</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title=" border-style" src="https://codepen.io/shuliqi/embed/wvJLdqE?defaultTab=html%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/wvJLdqE">
+   border-style</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<hr>
+<h1 id="效果1：hover边框长度变化"><a href="#效果1：hover边框长度变化" class="headerlink" title="效果1：hover边框长度变化"></a>效果1：hover边框长度变化</h1><img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/1.gif" class="">
+
+<p>这种效果的实现，我们的<code>border</code>属性好像实现不了， 那有没有其他的方式来实现呢？</p>
+<p><strong>实现思路：</strong>我们有一个元素，然后生成这个元素的两个伪元素，目的是用来设置上、左边框 和 下、右边框， 鼠标hover改变伪元素长度。</p>
+<img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/2.png" class="">
+
+<p>蓝色的是我们的元素，绿色和红色是两个伪元素，这两个元素的是有宽和高的。</p>
+<p>最后我们只需要 <code>hover</code>上去的时候，改变这两个伪元素的宽和高即可。</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="hover边框长度变化" src="https://codepen.io/shuliqi/embed/OJpegdV?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/OJpegdV">
+  hover边框长度变化</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+
+<hr>
+<h1 id="渐变"><a href="#渐变" class="headerlink" title="渐变"></a>渐变</h1><p>因为下面的效果会用到渐变相关的内容， 所以我们先来复习一下渐变。</p>
+<p>浏览器支持的渐变类型三种：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/orphaned/Web/CSS/linear-gradient()">线性渐变 (linear-gradient)</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/orphaned/Web/CSS/radial-gradient()">径向渐变 (radial-gradient)</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/gradient/conic-gradient()">圆锥渐变(conic-gradient)</a></li>
+</ul>
+<p>渐变在 CSS 中属于一种 Image 类型，可以结合 background-image 属性使用。</p>
+<p>由于篇幅有限， 我们主要讲下面特效用到的线性渐变相关的一些小知识点。</p>
+<h2 id="线性渐变"><a href="#线性渐变" class="headerlink" title="线性渐变"></a>线性渐变</h2><p><strong>使用方式：</strong></p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">linear-gradient( angle, start-<span class="attribute">color</span>, end-<span class="attribute">color</span> )</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>angle</code>：是渐变的角度，可以是具体的角度（45deg），也可以是 to + 方向（to bottom right）</li>
+<li><code> start-color</code>：是渐变的初始颜色。</li>
+<li><code>end-color</code>：是结束的颜色。</li>
+</ul>
+<p>其中颜色的 <code> start-color</code> 和<code> end-color</code> 我们可以称为<strong>色标</strong>, 色标可以是多个的,只是至少两个。</p>
+<p>例子1:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.item</span> &#123;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">  <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background</span>: <span class="built_in">linear-gradient</span>(<span class="number">70deg</span>, <span class="number">#077373</span>, <span class="number">#1b6708</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/4.png" class="">
+
+<p>例子2：色标可以是多个的</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.item2</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">linear-gradient</span>(<span class="number">70deg</span>, <span class="number">#077373</span>, yellow, red, <span class="number">#1b6708</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/5.png" class="">
+
+<p>例子3: 如果需要自定义间距，可以在色标后面接具体的位置</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.item3</span> &#123;</span><br><span class="line">    <span class="attribute">margin-top</span>: <span class="number">10px</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="built_in">linear-gradient</span>(<span class="number">90deg</span>, <span class="number">#077373</span> <span class="number">30px</span>, red <span class="number">80%</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/6.png" class="">
+
+
+
+<p><strong>特点：</strong>如果多个色标具有相同的位置，他们会产生一个无限小的过渡区域，过渡的起止色分别是第一个和最后一个指定值。从效果上看，颜色会在那个位置突然变化，而不是一个平滑的渐变过程。</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="线性渐变特点" src="https://codepen.io/shuliqi/embed/mdWZZej?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/mdWZZej">
+  线性渐变特点</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<hr>
+<h1 id="效果2：虚线边框动画"><a href="#效果2：虚线边框动画" class="headerlink" title="效果2：虚线边框动画"></a>效果2：虚线边框动画</h1><img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/3.gif" class="">
+
+<p>提到虚线，我们是不是就想到了 <code>border-style</code>的<code>dashed</code> 属性？</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="border-style" src="https://codepen.io/shuliqi/embed/YzZoboY?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/YzZoboY">
+  border-style</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+
+<p>但是存在一个问题：<code>dashed</code> 不能让边框动起来呀。所以这个方法 <code>pass</code>掉。</p>
+<p>那有没有其他的方法呢？那当然是有的， 实现虚线的方式在<code>CSS</code>中有很多种，比如我们上面复习到的渐变。</p>
+<p><strong>实现思路:</strong></p>
+<ol>
+<li>我们首先来实现一条横着的虚线，这个虚线其实就是“—”的循环，所以我们只需要实现一个“—”， 然后使用 <code>background-repea</code>t进行循环即可。</li>
+</ol>
+<iframe height="300" style="width: 100%;" scrolling="no" title="一条虚线" src="https://codepen.io/shuliqi/embed/OJpevXG?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/OJpevXG">
+  一条虚线</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>我们使用<code> linear-gradient</code>来生成一个背景图，或利用<code> linear-gradient</code>的特点</p>
+<blockquote>
+<p>如果多个色标具有相同的位置，他们会产生一个无限小的过渡区域，过渡的起止色分别是第一个和最后一个指定值。从效果上看，颜色会在那个位置突然变化，而不是一个平滑的渐变过程</p>
+</blockquote>
+<p>来生成元素的50%曲线是黑色，50%是透明的背景图。并且渐变方向是<code>90deg</code>即使左右渐变的。使用<a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-size"> background-size</a>来设置背景图片的大小，背景图片宽<code>10px</code>，高<code>4px</code>。背景图的循环方式是 x 轴循环。使用 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/background-position">background-position</a>来设置初始位置。</p>
+<ol>
+<li>有了第一条， 同理， 就可以有第二，三，四条, 然后，利用 animation 变换每条虚线边框位置，然后虚线动起来。</li>
+</ol>
+<iframe height="300" style="width: 100%;" scrolling="no" title="虚线动画" src="https://codepen.io/shuliqi/embed/qBrzXyW?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/qBrzXyW">
+  虚线动画</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>画其他虚线的时候， 需要注意的 背景图片的大小，和位置。</p>
+<hr>
+<h1 id="效果3：动画彩条边框"><a href="#效果3：动画彩条边框" class="headerlink" title="效果3：动画彩条边框"></a>效果3：动画彩条边框</h1><img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/7.gif" class="">
+
+<p>这个效果也是可以使用渐变来实现的， 我们来一步一步的实现它</p>
+<p>首先使用伪元素和渐变实现一个如下效果：</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="彩条框" src="https://codepen.io/shuliqi/embed/MWpMGbQ?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/MWpMGbQ">
+  彩条框</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>上面这个效果的重要的一点为：伪元素实现这个元素， 每一个色块都是父元素的2倍大， 再通过父级的<code>overflow: hidden</code>将超出部分隐藏</p>
+<p>然后给色块加上动画效果，让色块动起来:</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="动画彩条框" src="https://codepen.io/shuliqi/embed/NWpZMvg?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/NWpZMvg">
+  动画彩条框</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>上面代码中的 1turn：一圈，一个圆共一圈。 90deg = 0.25turn。</p>
+<p>最后再添加一个伪元素， 将div内部部分遮住， 即可实现想要的效果，</p>
+<iframe height="285" style="width: 100%;" scrolling="no" title="动画边框" src="https://codepen.io/shuliqi/embed/PoprRaM?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/PoprRaM">
+  动画边框</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<hr>
+<h1 id="clip-path"><a href="#clip-path" class="headerlink" title="clip-path"></a>clip-path</h1><p>下面的效果会用到这个<code>CSS</code>属性， 我们先来了解下：</p>
+<p>CSS 的 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/clip-path">clip-path</a> 属性是 <a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/CSS/clip">clip</a> 属性的升级版，它们的作用都是对元素进行 “剪裁”，不同的是 clip 只能作用于 position 为 absolute 和 fixed 的元素且剪裁区域只能是正方形，而 clip-path 更加强大，可以以任意形状去裁剪元素，且对元素的定位方式没有要求。基于这样的特性，clip-path 常用于实现一些炫酷的动画效果。</p>
+<p><strong>clip-path 的其中两大类，分别为：</strong></p>
+<ol>
+<li><code>basic-shape</code>：基本图形，包括<code> inset()</code>、<code>circle()</code>、<code>ellipse()</code>、<code>polygon()</code></li>
+<li><code>clip-source</code>：通过 url() 方法引用一段 SVG 的 <clipPath> 来作为剪裁路径</li>
+</ol>
+<p> 我们接下来重点学习 <code>basic-shape</code></p>
+<h2 id="inset"><a href="#inset" class="headerlink" title="inset"></a>inset</h2><p>用于定义一个插进的矩形，即剪裁元素内部的一块矩形区域。</p>
+<p>参数类型：<code>inset( &lt;shape-arg&gt;&#123;1,4&#125; [round &lt;border-radius&gt;]? )</code></p>
+<ul>
+<li><code>shape-arg</code>：分别为矩形的上右下左边框到被剪裁元素边缘的距离</li>
+</ul>
+<img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/10.PNG" class="">
+
+<ul>
+<li><code>border-radius</code>：为可选参数，用于定义 <code>border</code> 的圆角。</li>
+</ul>
+<p>我们举个例子：</p>
+<iframe height="298" style="width: 100%;" scrolling="no" title="clip-path:inset" src="https://codepen.io/shuliqi/embed/ExWBGBB?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/ExWBGBB">
+  clip-path:inset</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>这里例子中，我们初始是没有做任何的裁剪的（clip-path: inset(0);）。当hover 上去的时候我们使用<code>inset</code>来进行一个矩形的裁剪，并且裁剪出来的是矩形是有<code>30px</code>的圆角的。</p>
+<h2 id="ellipse"><a href="#ellipse" class="headerlink" title="ellipse"></a>ellipse</h2><p> 用于定义一个椭圆。</p>
+<p>参数类型：<code>ellipse( [&lt;shape-radius&gt;&#123;2&#125;]? [at &lt;position&gt;]? )</code></p>
+<ul>
+<li><code>shape-radius</code>: 为椭圆x、y轴的半径</li>
+<li><code>position</code>: 为椭圆中心的位置。</li>
+</ul>
+<p>举个例子：</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="clip-path:ellipes" src="https://codepen.io/shuliqi/embed/poeXGvx?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/poeXGvx">
+  clip-path:ellipes</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<h2 id="polygon"><a href="#polygon" class="headerlink" title="polygon"></a>polygon</h2><p> 用于定义一个多边形。</p>
+<p>参数类型：<code>polygon( [&lt;fill-rule&gt;,]? [&lt;shape-arg&gt; &lt;shape-arg&gt;]# )</code></p>
+<ul>
+<li>fill-rule： 可选，表示填充规则用来确定该多边形的内部。可能的值有nonzero和evenodd,默认值是nonzero</li>
+<li>后面的每对参数表示多边形的顶点坐标（X,Y），也就是连接点</li>
+</ul>
+<p>举个例子:</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="clip-path:polygon" src="https://codepen.io/shuliqi/embed/YzZoByp?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/YzZoByp">
+  clip-path:polygon</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+
+
+<hr>
+<h1 id="效果4：-追逐的边框"><a href="#效果4：-追逐的边框" class="headerlink" title="效果4： 追逐的边框"></a>效果4： 追逐的边框</h1><img src="/2021/06/26/CSS-%E5%AE%9E%E7%8E%B0%E5%8A%A8%E7%94%BB%E8%BE%B9%E6%A1%86%E7%9A%84%E5%A5%87%E6%80%9D%E5%A6%99%E6%83%B3/8.gif" class="">
+
+<h2 id="方式1"><a href="#方式1" class="headerlink" title="方式1"></a>方式1</h2><p>根据我们上一个例子的效果，我们实现这个效果其实就很简单了， 我们只需要把：我们将 彩条边框 4个背景图变成 1 个背景图就可实现了。</p>
+<iframe height="300" style="width: 100%;" scrolling="no" title="追逐边框" src="https://codepen.io/shuliqi/embed/wvJLjje?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/wvJLjje">
+  追逐边框</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p><strong>缺陷：</strong>如果是单线条，边框的末尾是一个小三角而不是垂直的，可能些      场景不适用或者 PM 接受不了</p>
+
+
+
+
+<h2 id="方式2"><a href="#方式2" class="headerlink" title="方式2"></a>方式2</h2><p>有没有什么办法可以消除这些小三角形呢? 肯定是有的。那就是我们上面学到的 <code>clip</code>。</p>
+<p><strong>实现思路：</strong>借用伪元素作为背景进行裁剪并动画即可</p>
+<iframe height="350" style="width: 100%;" scrolling="no" title="clip-path: 追逐边框" src="https://codepen.io/shuliqi/embed/QWpXPBO?defaultTab=css%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a target="_blank" rel="noopener" href="https://codepen.io/shuliqi/pen/QWpXPBO">
+  clip-path: 追逐边框</a> by shuliqi (<a target="_blank" rel="noopener" href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a target="_blank" rel="noopener" href="https://codepen.io">CodePen</a>.
+</iframe>
+
+<p>这种方式的优点就是：切割出来的边框不会产生小三角</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒丽琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2021/06/26/CSS-实现动画边框的奇思妙想/">https://shuliqi.github.io/2021/06/26/CSS-实现动画边框的奇思妙想/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒丽琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CSS/">CSS</a></div><nav id="pagination"><div class="prev-post pull-left"><a href="/2021/07/30/%E5%89%8D%E7%AB%AF%E5%8F%91%E9%80%81http%E8%AF%B7%E6%B1%82%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E5%BC%8F/"><i class="fa fa-chevron-left">  </i><span>前端如何发起http请求及各方法的优缺点</span></a></div><div class="next-post pull-right"><a href="/2021/06/21/vue%E9%A1%B9%E7%9B%AE%E9%A6%96%E5%B1%8F%E5%8A%A0%E8%BD%BD%E4%BC%98%E5%8C%96/"><span>vue项目首屏加载优化</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2021 By 舒丽琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
