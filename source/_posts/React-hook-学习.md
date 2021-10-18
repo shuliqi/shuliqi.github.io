@@ -66,6 +66,10 @@ tags:
 
   所以 `React`  更提倡函数式编程，因为函数更加灵活，更容易拆分。但是呢！！！！ 函数组件又太简单， 所以才出现了` hook`；`hook` 就是用来增强函数组件的功能的
 
+----
+
+
+
 # Hook 的规则
 
  `Hook`  有两条比较重要的规则；
@@ -111,6 +115,10 @@ tags:
 >
 > 
 
+---
+
+
+
   # React 内置的 Hook
 
    我们来看看`React` 内置的`hook`  有哪些：
@@ -127,7 +135,11 @@ tags:
 
   下面我们来分别学习一下这些内置的`Hook`
 
-# useState 状态管理
+---
+
+
+
+# useState 
 
  在` class` 组件中，我们获取 ` state` 是从`this.state` 中获取的。但是在函数组件中是没有 ` this` 的。
 
@@ -153,8 +165,11 @@ const [name,setName] = useState(initName)
   React Hook useEffect()</a> by shuliqi (<a href="https://codepen.io/shuliqi">@shuliqi</a>)
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
+---
 
-# useEffect 生命周期管理
+
+
+# useEffect 
 
 `useEffect` 可以看作是函数式组件的生命周期管理，因为在函数式组件中无法使用生命周期。这就可以使用`useEffect`来进行管理了。
 
@@ -222,6 +237,166 @@ useEffect( ()=> {
   React Hook useEffect()</a> by shuliqi (<a href="https://codepen.io/shuliqi">@shuliqi</a>)
   on <a href="https://codepen.io">CodePen</a>.
 </iframe>
+
+
+# useRef 
+
+`useRef`返回一个 `ref` 对象。这个对象的`.current`属性被初始化为`useRef`传入的参数。该对象在整个生命周期内持续存在。
+
+```
+const domRef = useRef(initialValue);
+```
+
+> `ref` 对象:`ref`是`React`提供的用来操纵`React`组件实例或者`DOM`元素的接口。 回调函数就是在`dom`节点或组件上挂载函数，函数的入参是`dom`节点或组件实例，达到的效果与字符串形式是一样的， 都是获取其引用。
+>
+> 如果你将 `ref` 对象以 `<div ref={myRef} />` 形式传入组件，则无论该节点如何改变，React 都会将 ref 对象的 `.current` 属性设置为相应的` DOM` 节点
+
+这个 `hook`的作用：获取`Dom`操作。如获取一个`input`的焦点
+
+## 举个🌰
+
+
+
+<iframe height="459" style="width: 100%;" scrolling="no" title="React Hook useEffect()" src="https://codepen.io/shuliqi/embed/oNeNeNY?default-tab=js%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/shuliqi/pen/oNeNeNY">
+  React Hook useEffect()</a> by shuliqi (<a href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+
+---
+
+
+
+# useContext
+
+```react
+const value = useContext(MyContext);
+```
+
+`useContext`接受以一个`context`对象（`React.createContext`的返回值）， 并返回当前 `Context`的当前值。`Context`的当前值是由上层组件中距离当前组件最近的`MyContext.Provider` 的`value`决定。
+
+上面我们提到了 `Context`对象， 那么这个对象能帮助我们解决什么问题呢？
+
+## Context 能解决什么问题
+
+在平成的开发过程中，我们进行通信（父子）使用之最多的是 `props`来进行通信； 但是 跨级组件 的通信我们就不好用 `props`来通信了。那这时候我们怎么可以把组件状态共享出去呢？ `Redux`?， 或者 `Context`
+
+> `react` 中的 `Context`: 在典型的 React 应用程序中，数据通过 props 自上而下（父到子）传递，但对于应用程序中许多组件所需的某些类型的 props（例如环境偏好,UI主题），这可能很麻烦。 上下文(Context) 提供了在组件之间共享这些值的方法，而不必在树的每个层级显式传递一个 prop
+
+> 注意：`Context`主要的应用场景是很多不同层级的组件需要访问同样一些数据， 谨慎使用， 因为这会让组件的复用性变差
+
+
+
+## 创建 Context 
+
+使用 `Context`的前提，必须创建它
+
+```react
+import React from 'react';
+
+export const MyContext = React.createContext();
+```
+
+## 使用 Context
+
+在使用 `Context`的时候，它通常用在顶层组件上，它包裹的内部组件都可以享受到 `state`的使用和修改， 一般是通过 `Context.provider`来包裹， 通过`value`来传递。
+
+```react
+<MyContext.Provider value={{ name }}>
+   <div>
+    <input onChange={handleName}/>
+    <ComponentA/>
+   </div>
+</MyContext.Provider>
+```
+
+## 子组件使用 context 传过来的值
+
+子组件通过`useContext()` `Hook`就可以很方便的拿到值
+
+```js
+const { name } = React.useContext(MyContext);
+```
+
+## 完整的🌰
+
+<iframe height="712" style="width: 100%;" scrolling="no" title="React Hook useRef()" src="https://codepen.io/shuliqi/embed/qBXZaOM?default-tab=js%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/shuliqi/pen/qBXZaOM">
+  React Hook useRef()</a> by shuliqi (<a href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+----
+
+
+
+#  useMemo
+
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+`useMemo`返回的是一个` memoized `值(具有记忆的值)，`useMemo`主要是用于性能优化，通过记忆值来避免在每个渲染上进行高开销的计算。
+
+有两个参数：
+
+- 第一个是一个回调函数， 主要是暴露出来让我们自己如何去计算这个值的。
+- 第二个参数是一个数组，数组中的`state` 发生改变才会重新执行回调函数。
+
+> 注意：
+>
+> - 如果不传数组，则每次更新都会重新计算
+> - 空数组，只会计算一次
+> - 数组里面有依赖值，则当对应的值发生变化时，才会重新计算
+
+## 举个🌰
+
+<iframe height="556" style="width: 100%;" scrolling="no" title="React Hook useContext()" src="https://codepen.io/shuliqi/embed/zYdqKLm?default-tab=js%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/shuliqi/pen/zYdqKLm">
+  React Hook useContext()</a> by shuliqi (<a href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
+
+上面的例子中， 我们点击**count 自增** `newValue`会发生改变； 但是我们点击**num 自增** ，`newValue`是不会发生改变的。
+
+那是因为在`useMemo`依赖的是 `count`的变化
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
