@@ -452,6 +452,8 @@ useImperativeHandle(ref, createHandle, [deps])
 
 
 
+---
+
 
 
 # useLayoutEffect
@@ -505,9 +507,32 @@ useImperativeHandle(ref, createHandle, [deps])
 
 
 
-未完待续....最近太忙了， 救救孩纸吧！
+---
 
 
+
+# useReducer
+
+```js
+const [state, dispatch] = useReducer(reducer, initialArg, init);
+```
+
+`useReducer`是`useState`的升级版（实际上是原始版）， 可以实现复杂的逻辑修改，而不是像`useState`那样只是直接赋值修改。
+
+> 在 `React` 源码中，实际上`useState`是由`useReducer`实现的，所以准确来说`useReducer`是`useState `的原始版
+
+`useReducer` 通常传入两个参数：
+
+- 第一个参数：由`dispatch`引发的数据修改的处理函数
+- 第二个参数：自定义数据的默认值
+
+## 举个🌰
+
+<iframe height="722" style="width: 100%;" scrolling="no" title="React Hook useReducer" src="https://codepen.io/shuliqi/embed/zYdZGON?default-tab=js%2Cresult" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+  See the Pen <a href="https://codepen.io/shuliqi/pen/zYdZGON">
+  React Hook useReducer</a> by shuliqi (<a href="https://codepen.io/shuliqi">@shuliqi</a>)
+  on <a href="https://codepen.io">CodePen</a>.
+</iframe>
 
 
 
