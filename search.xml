@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>为什么函数组件也需要引入 React？</title>
+      <link href="/2021/11/22/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%87%BD%E6%95%B0%E7%BB%84%E4%BB%B6%E4%B9%9F%E9%9C%80%E8%A6%81%E5%BC%95%E5%85%A5-React%EF%BC%9F/"/>
+      <url>/2021/11/22/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%87%BD%E6%95%B0%E7%BB%84%E4%BB%B6%E4%B9%9F%E9%9C%80%E8%A6%81%E5%BC%95%E5%85%A5-React%EF%BC%9F/</url>
+      
+        <content type="html"><![CDATA[<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>最近一直使用 <code>React</code> 开发， 是遇到一些觉得比较疑惑的问题；如： 我写的都是纯粹的函数组件，我们明明没有使用<code>React</code>， 为什么仍然需要在头部引入 <code>import React from &#39;react&#39;;</code>呢？如下面的例子：</p><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> Hello = <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">div</span>&gt;</span>Hello shuliqi<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> Hello;</span><br></pre></td></tr></table></figure><span id="more"></span><p>如这个例子， 我们在头部引入了 <code>import React from &#39;react&#39;;</code>但是我们在代码中并没有使用<code>React</code>，但是我们去掉的话， 程序执行的时候就会报错：</p><img src="/2021/11/22/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%87%BD%E6%95%B0%E7%BB%84%E4%BB%B6%E4%B9%9F%E9%9C%80%E8%A6%81%E5%BC%95%E5%85%A5-React%EF%BC%9F/1.png" class=""><p>这是为什么呢？</p><h1 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h1><p>深入了解<code>React</code> 的底层执行原理之后我们其实就能找到答案。</p><p>原因是： <code>JSX</code> 语法只是一种语法糖，它最终是会被转译成<code>javaScript</code>语法，因为在<code>babel</code>转译之后，我们的代码就变成了：</p><img src="/2021/11/22/%E4%B8%BA%E4%BB%80%E4%B9%88%E5%87%BD%E6%95%B0%E7%BB%84%E4%BB%B6%E4%B9%9F%E9%9C%80%E8%A6%81%E5%BC%95%E5%85%A5-React%EF%BC%9F/2.png" class=""><p>在<code>babel</code>转译我们的函数组件的代码之后， 会把<code>JSX</code>语法糖转换成<code>React.createElement</code>。所以说这就是为什么我们在写纯粹的函数组件的时候， 也需要引入<code>import React from &#39;react&#39;;</code></p><h1 id="自动引入-React"><a href="#自动引入-React" class="headerlink" title="自动引入 React"></a>自动引入 React</h1><p>当然，我们有时候频繁的手动引入<code>React</code>过于繁琐，我们能不能直接写纯函数组件，不需要在头部引入<code>React</code>语句：<code>import React from &#39;react&#39;;</code>呢？</p><p>当然是可以的，我们可以使用插件<code>babel-plugin-react-require</code>: <a href="https://github.com/vslinko/babel-plugin-react-require">babel-plugin-react-require</a>来实现自动实现<code>React</code>的自动导入， 实际上这个插件的功能非常简单，在转移的时候，在文件头部插入<code>import React from &#39;react&#39;</code>。</p><p>安装：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install babel-plugin-react-require --save-dev</span><br></pre></td></tr></table></figure><p><code>.babelrcreact-require</code></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;plugins&quot;: [</span><br><span class="line">    &quot;react-require&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> React </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> React </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>React hook 学习</title>
       <link href="/2021/09/14/React-hook-%E5%AD%A6%E4%B9%A0/"/>
       <url>/2021/09/14/React-hook-%E5%AD%A6%E4%B9%A0/</url>
