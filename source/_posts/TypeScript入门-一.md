@@ -5,7 +5,7 @@ tags: JavaScript
 categories: JavaScript
 ---
 
-最近做的项目用到了`TypeScript` ，之前也看过一些，但是没有看完。所以既然项目用到了，觉得还是有必要过一遍，趁着最近正好有点时间可以再看看，把之前没看完的也不充上。本文就当是一个学习的记录，方便供后期翻阅。
+最近做的项目用到了`TypeScript` ，之前也看过一些，但是没有看完。所以既然项目用到了，觉得还是有必要过一遍，趁着最近正好有点时间可以再看看，把之前没学习完也正好补上。本文就当是一个学习的记录，方便供后期翻阅。
 
 > TypeScript [官方文档](http://www.typescriptlang.org/docs/handbook/basic-types.html), [非官方中文文档](https://zhongsp.gitbooks.io/typescript-handbook/content/doc/handbook)
 
