@@ -1,5 +1,5 @@
 ---
-title: TypeScript 学习
+title: TypeScript 基础学习
 date: 2021-11-24 13:36:19
 tags: JavaScript
 categories: JavaScript
@@ -769,6 +769,117 @@ function toDo(value: string | number | any ): void {
 }
 ```
 
+# TypeScript 类
+
+## 类的类型
+
+在 `TypeScript` 中，我们也是可以通过 `Class` 关键字来定义一个类。 类的类型和接口类型类似。
+
+```javascript
+class People {
+  name: string
+  constructor(_name: string) {
+    this.name = _name
+  }
+  getName() {
+    return this.name
+  }
+}
+const people = new People("shuliqi");
+console.log(people.getName()); // shuliqi
+```
+
+## 存取器
+
+在`TypeScript`中， 我们可以通过存取器来来改变一个类中属性的读取和赋值的行为：
+
+```javascript
+class People {
+  myName: string
+  constructor(_name: string) {
+    this.myName = _name
+  }
+  get name() {
+    return this.myName
+  }
+  set name(value) {
+    this.myName = value;
+  }
+}
+const people = new People("shuliqi");
+people.name = "世界那么大";
+console.log(people.name); //  世界那么大
+```
+
+## readonly 
+
+只读属性关键字，只允许出现在属性声明或者索引签名或构造函数中。
+
+```javascript
+class People {
+  readonly myName: string
+  constructor(_name: string) {
+    this.myName = _name
+  }
+}
+const people = new People("shuliqi");
+people.myName = "世界那么大"; // error:  无法分配到 "myName" ，因为它是只读属性。
+```
+
+## 类修饰符
+
+在`TypeScript` 中可以使用三种修饰符：`public`,`private`,`protected`:
+
+- `public` 修饰的属性或方法是公有的，可以在任何地方被访问到，默认的所有属性和方法都是`public`的
+- `private`修饰的属性或方法是私有的，不可以在声明它的类的外部访问
+- `protected`修饰的属性或方法都是搜保护的，它和`private`类似，区别是它在子类中也是允许被访问的
+
+```javascript
+  class People {
+    public myName: string
+    private age: string
+    protected sex: string
+    constructor(_name: string) {
+      this.myName = _name
+    }
+    getAge() {
+      console.log(this.age)
+    }
+  }
+  class MyPeople  extends People {
+    constructor(name) {
+      super(name);
+      console.log(this.sex); // 可以被访问
+      console.log(this.age); // err：属性“age”为私有属性，只能在类“People”中访问
+    }
+  }
+  const people = new MyPeople("shuliqi");
+  console.log(people.age); // err: 属性“age”为私有属性，只能在类“People”中访问
+```
+
+## 抽象类
+
+使用`abstract`来定义一个抽象类；所谓的抽象类就是指不能被实例化的类：
+
+```javascript
+// 定义一个抽象类
+abstract class People {
+  public myName: string
+  private age: string
+  protected sex: string
+  constructor(_name: string) {
+    this.myName = _name
+  }
+  getAge() {
+    console.log(this.age)
+  }
+}
+// 抽象类是不允许被实例化的
+const people = new People("shuliqi"); // ERR: 无法创建抽象类的实例。
+```
+
+
+
 # TypeScript 接口
 
 接口既可以在面向对象编程中表示为行为的抽象，也可以用来描述对象的形状。
@@ -795,9 +906,10 @@ interface Props {
 }
 ```
 
-举个例子：
+## 对象形状
 
 ```javascript
+// 描述对象的形状
 interface Person {
   name: string;
   age: number;
@@ -915,15 +1027,334 @@ Found 2 errors.
 
 **原因**：可选属性age的值的类型是number， 任意属性的值的类型 是string。number 不是stringl类型。所以会报错.
 
+## 只读属性
+
+一些对象的属性只能在对象刚刚创建的时候能修改其值。 可以在属性，可以在属性前面加`readonly` 来指定可读属性：
+
+```javascript
+interface User {
+  // name 属性的值是只读的
+  readonly name: string
+  age: number
+}
+let people: User = { name: "shuliqi", age: 12 };
+// 尝试修改 name 属性的值， 会 err
+people.name = "haha"; // err
+
+```
+
+## 实现(implements)接口
+
+实现是面向对象中的一个重要概念，一般来讲，一个类只能继承自另外一个类， 但是有时候不同类之间可以有一些共有的特性，这时候就可以把特性提取成接口`interface`。
+
+举个例子：门是一个类，防盗门是门的子类。 如果防盗门有一个报警器的功能，我们就可以简单的给防盗门添加一个报警方法。这时候如果有另外一个类 车，也有该报警器的功能，我们就可以考虑把报警器提取出来，作为一个接口，让防盗门和车都去实现它：
+
+```javascript
+// 报警器
+interface Alarm {
+  // 报警方法
+  alert(): void;
+}
+// 类 门
+class Door {}
+
+// 子类：SecurityDoor继承Door; 并且要实现（implements）报警器接口(Alarm)
+class SecurityDoor extends Door implements Alarm {
+  alert() {
+    console.log("我是防盗门的报警方法")
+  }
+}
+
+// 类：Car 实现 Alarm 接口
+class Car implements Alarm {
+  alert() {
+    console.log("我是车的报警方法")
+  }
+}
+```
+
+一个也可以实现多个接口：
+
+```javascript
+// Alarm接口
+interface Alarm {
+  // 报警方法
+  alert(): void;
+}
+// Light 接口
+interface Light {
+  lightOn(): void;
+  lightOff(): void;
+}
+// 类 门
+class Door {}
+
+// 子类：SecurityDoor继承Door; 并且要实现（implements）报警器接口(Alarm)
+class SecurityDoor extends Door implements Alarm, Light{
+  alert() {
+    console.log("我是防盗门的报警方法")
+  }
+  lightOn() {
+    console.log("防盗门灯打开")
+  }
+  lightOff() {
+    console.log("防盗门灯关闭")
+  }
+}
+```
+
+`implements`的意义是什么？
 
 
 
+## 接口(extends)继承
+
+除了类可以继承，接口同样也是可以继承。同样的使用 `extends`关键字。
+
+```javascript
+interface User {
+  name: string
+  age: number
+}
+// 接口 DetailUser 继承了 User
+interface  DetailUser extends User {
+  sex: string
+  getName: () => string
+  other: Object
+}
+class Person implements DetailUser {
+  name = "shuliqi"
+  age =  12
+  sex = '女'
+  getName() {
+    return this.name
+  }
+  other = {}
+}
+```
+
+## 函数类型接口
+
+在`javaScript`中，有两种常见定义函数的方法--- 函数声明 和 函数表达式。
+
+```javascript
+// 函数声明
+function getDetail(name, age) {
+  console.log("name:", name, "age:", age)
+} 
+
+// 函数表达式
+const getDetail = (name, age) => {
+  console.log("name:", name, "age:", age)
+}
+```
+
+如果用接口来定义函数的形状：
+
+**函数声明:**
+
+函数声明的类型定义比较简单
+
+```javascript
+// 函数声明 类型定义
+function getDetail(name: string, age: number): void {
+  console.log("name:", name, "age:", age)
+} 
+```
+
+**函数表达式:**
+
+如果我们现在要对一个函数表达式的ts 约定， 可能会写成这样：
+
+```javascript
+// 函数表达式 类型定义
+const getDetail = (name: string, age: number) : void  => {
+  console.log("name:", name, "age:", age)
+}
+```
+
+当然这种方式是可以通过编译的。但是事实上，上面的代码只是对等号右边的匿名函数进行了类型定义。而等号右边的`getDetail`是通过赋值操作进行类型推论而推断出来的。 如果需要我们手动给`getDetail`添加类型的话，则应该是这样：
+
+```javascript
+// 给等号右边的 getDetail 进行类型定义
+const getDetail:(name: string, age: number)=> void= (name: string, age: number) : void  => {
+  console.log("name:", name, "age:", age)
+}
+```
+
+> 注意： 不要混淆 `TypeScript`中的 `=>`  和 `ES6`中的`=>`
+>
+> 在`TypeScript`的类型定义中，`=>`是用来表示函数的定义，左边是输入的类型。需要用括号括起来，右边是输出的类型
+
+ 上面函数表达式的类型定义我们可以使用接口的方式来定义一个函数需要符合的形状：
+
+```javascript
+  interface Detail {
+    (name: string, age: number): void;
+  }
+  const getDetail:Detail = (name: string, age: number) : void  => {
+    console.log("name:", name, "age:", age)
+  }
+```
+
+采用接口这种方式，对函数表达式等号左边的进行类型限制，就可以保证以后对该函数赋值时保证参数个数，参数类型，返回值类型不变。
+
+## 构造函数的类型接口
+
+当我们需要把一个类作为参数的时候， 需要对传入的构造函数类型进行约束就需要使用 `new`  关键字来代表类的构造函数类型，用以与普通函数进行区别。
+
+```javascript
+class People {
+  constructor (name: string) { }
+}
+interface NewPeople {
+  // 使用 new  说明是构造函数
+  new (name: string): People
+}
+function createPeople( createClass:NewPeople ) {
+    return new createClass("shuliqi")
+}
+```
+
+# TypeScript 泛型
+
+泛型（Generics）是指在定义函数，接口或者类的时候，不预先指定具体的类型，而是在使用的时候再指定类型的一种特性。
+
+## 简单例子：
+
+为了更加了解泛型的作用， 我们先来看一个简单的例子：实现可以创建指定的长度的数组，每一项都是填充一个默认值。
+
+```javascript
+function createArray(length: number, value: any): Array<any> {
+    let result = [];
+    for (let i = 0; i < length; i++) {
+        result[i] = value;
+    }
+    return result;
+}
+
+createArray(3, 'x'); // ['x', 'x', 'x']
+```
+
+上面的代码编译是不会出错的， 但是有一个缺陷，它没有准确的定义返回值的类型： 无论我们传入什么类型的`value`。返回的数组用以是`any`类型。如果我们想要的效果是： 我们预先不知道会传入什么类型的值，但是我们希望不管我们传入什么类型，我们返回的数组里面的类型应该和参数一致。那么这时候就需要用到泛型了。
+
+```javascript
+function createArray<T>(length: number, value: T): Array<T> {
+  let result = [];
+  for (let i = 0; i < length; i++) {
+      result[i] = value;
+  }
+  return result;
+}
+createArray<string>(3, 'x'); // ['x', 'x', 'x']
+```
+
+我们在函数名后端添加`<T>`,其中`T`用来指代任意输入的类型，在后面输入 `value: T` 和`Array<T>`即可。
+
+## 多个类型参数
+
+定义泛型的时候，可以一次性定义多个类型参数：
+
+```javascript
+function swap<T,U>(value: [T,U]): [U,T] {
+  return [value[1], value[0]]
+}
+swap([1,'str'])
+```
+
+## 泛型约束
+
+在函数内部使用泛型变量的时候，由于事先不知道它是哪种类型，所以不能随意操作它的属性或方法：
+
+```javascript
+function logLen<T>(arr: T): void {
+  console.log(arr.length); // err: 类型“T”上不存在属性“length”
+}
+```
+
+例子中 泛型 `T` 不一定包含属性`length`， 所以编译的时候出错了。 
+
+这时候我们可以对泛型进行约束，只允许这个函数传入那些包含`length` 属性的变量。这就是泛型约束：
+
+```javascript
+interface Length{
+  length: number
+}
+function logLen<T extends Length>(arr: T): void {
+  console.log(arr.length);  // OK
+}
+```
+
+例子使用`extends`约束了泛型`T`必须符合接口`Length`。 
+
+## 泛型接口
+
+上面有说道可以使用接口的方式来定义一个函数需要符合的形状：
+
+```javascript
+interface Detail {
+  (name: string, age: number): void;
+}
+const getDetail:Detail = (name: string, age: number) : void  => {
+   console.log("name:", name, "age:", age)
+}
+```
+
+当然也是可以使用泛型的接口来定义函数的形状
+
+```javascript
+interface Detail {
+  <T>(name: string, age: T): void;
+}
+const getDetail:Detail = <T>(name: string, age: T) : void  => {
+   console.log("name:", name, "age:", age)
+}
+```
+
+我们可以把泛型提到接口名上, 但是这时候需要注意使用泛型接口的时候，需要定义泛型的类型：
+
+```javascript
+// 将泛型提到接口名上
+interface Detail<T> {
+  (name: string, age: T): void;
+}
+// 使用泛型的时候，需要定义泛型的类型
+const getDetail:Detail<any> = <T>(name: string, age: T) : void  => {
+   console.log("name:", name, "age:", age)
+}
+```
+
+## 泛型类
+
+与泛型接口类似，泛型也可以用于类的类型定义中：
+
+```javascript
+class People<T> {
+  name: string
+  age: T
+}
+const user = new People<number>();
+user.name = "shuliqi";
+user.age =  12;
+```
+
+## 泛型参数的默认类型
+
+我们可以为泛型中的类型参数指定默认类型。当使用泛型时没有在代码中直接指定类型采纳数， 从实际值参数中也无法推测出时，这个默认值类型就会起到作用:
+
+```javascript
+class People<T = string> {
+  name: string
+  age: T
+}
+```
 
 
 
+学习参考文章：
 
-
-未整理完….待继续整理
+-  https://ts.xcatliu.com/advanced/class-and-interfaces.html
+- https://juejin.cn/post/7031787942691471396#heading-35
 
 
 
