@@ -550,6 +550,327 @@ export default () => <Foo title="我是一个例子" />;
 
 
 
+# 结构优化
+
+上面的构建虽然大体的流程是可以的， 但是结构上有点混乱: 组件里面包含了单元测试，文档md等。其实我们可以把文件目录改成如下：
+
+{% asset_img 16.png %}
+
+这样的目录就很清晰明了。
+
+# 开发组件遇到的抗
+
+上面的步骤虽然都完毕了， 但不可避免有一些坑在实际开发的时候才会遇到的。 接下来的篇幅将会记录实际开发过程中遇到的坑以及如何解决。
+
+## 组件的 css 无法被加载
+
+当我开发一个`Button`组件的时候， 用了一个`less` 文件。 整体如下：
+
+{% asset_img 15.png %}
+
+我们在写`Demo`文档的时候， 是直接引用的源文件组件，所以预览是完全符预期的。但是我们测试组件（如果还不知道如何调试：可以看**组件调试**）， 发现我们的组件`css`  没有引用上。我们打包之后看到的`less`文件没有被打包。应该是要打包成`css` 文件才可以呀。
+
+由于组件是 由[father](https://github.com/umijs/father)打包的。 我们看它的配置有这么一个配置 [lessInBabelMode](https://github.com/umijs/father#lessinbabelmode)。 这配置用于在`babel`模式下作品`less`编译。默认不开启。
+
+那我们只需要在我们的`.fatherrc.ts`开启这个配置即可。
+
+```javascript
+export default {
+  esm: 'babel',
+  lessInBabelMode: true,
+};
+```
+
+这之后再打包，` less` 就被转义成`css`文件了。 组件调试的时候完全符合预期。
+
+
+
+# 组件开发值得记录的点
+
+## Button 按钮
+
+写`Button` 按钮的时候， 主要是参考 [element Button](https://element-plus.gitee.io/zh-CN/component/button.html)功能来做的。主要包含 按钮类型，按钮大小，是否是朴素按钮，是否是圆形，是否是文字按钮，是否禁用， 支持自己添加`class` 和 `style`。
+
+### 容易实现的点
+
+其中做：按钮类型，按钮大小，是否是朴素按钮，是否是圆形，是否是文字按钮，支持自己添加`class` 和 `style` 很容易就能得出方案如何做。可通过添加不同的`class` 来完成：
+
+```javascript
+ const btnClassName = cs({
+    'slq--button': true,
+    [`slq--button--${type}`]: true,
+    [`slq--button--type--${type}`]: true,
+    [`slq--button--size--${size}`]: true,
+    'is--plain': plain,
+    'is--round': round,
+    [`${className}`]: className,
+  });
+```
+
+而我们的`css` 是需要做成有可以覆盖的。 所以我们把一些可能需要定制的属性值设置成变量：
+
+```css
+/* variables.less */
+
+/* 主题 */
+@--theme-primary: #66b1ff;
+@--theme-success: #67c23a;
+@--theme-warning: #e6a23c;
+@--theme-danger: #f56c6c;
+
+/* 常用变量 */
+@--white: #fff;
+@--grey: #ccc;
+
+/* button */
+@--button-default: #ecf5ff;
+@--button-primary: @--theme-primary;
+@--button-success: @--theme-success;
+@--button-warning: @--theme-warning;
+@--button-danger: @--theme-danger;
+@--button-info: #909399;
+@--button-border-radius-round: 20px;
+@--button-text-color: #606266;
+@--button-size-default: 40px;
+@--button-size-medium: 36px;
+@--button-size-small: 32px;
+@--button-size-mini: 28px;
+```
+
+这个文件我们不同的按钮类型，大小等定义了不同的颜色值变量。
+
+接下来就是定义这些不同的`class`样式。 由于我们很多的样式属性是一致的， 只是属性值不一样。 所以我们可以使用  [less 函数](https://less.bootcss.com/functions/)方式来写：
+
+```javascript
+/* 按钮类型函数 */
+.slq-button-type(@type) {
+  .slq--button--type--@{type} {
+    color: @--white;
+    background-color: ~'@{--button-@{type}}';
+    border: 1px solid ~'@{--button-@{type}}';
+    &:hover {
+      background-color: rgba(color(~'@{--button-@{type}}'), 0.8);
+      border-color: rgba(color(~'@{--button-@{type}}'), 0.8);
+    }
+    &:active {
+      color: @--white;
+      background-color: ~'@{--button-@{type}}';
+      border-color: ~'@{--button-@{type}}';
+    }
+  }
+}
+/* 是否朴素按钮函数 */
+.slq-button-plain(@type) {
+  .slq--button--@{type}.is--plain {
+    color: ~'@{--button-@{type}}';
+    background-color: rgba(color(~'@{--button-@{type}}'), 0.2);
+    border-color: rgba(color(~'@{--button-@{type}}'), 0.8);
+    &:hover {
+      color: @--white;
+      background-color: rgba(color(~'@{--button-@{type}}'), 0.9);
+      border-color: rgba(color(~'@{--button-@{type}}'), 0.9);
+    }
+    &:active,
+    &:visited {
+      background-color: ~'@{--button-@{type}}';
+      border-color: ~'@{--button-@{type}}';
+    }
+  }
+}
+
+
+/* 按钮大小函数  */
+.slq-button-size(@type) {
+  .slq--button.slq--button--size--@{type} {
+    min-height: ~'@{--button-size-@{type}}';
+  }
+}
+
+.slq-button-type(primary);
+.slq-button-plain(primary);
+
+.slq-button-type(success);
+.slq-button-plain(success);
+
+.slq-button-type(info);
+.slq-button-plain(info);
+
+.slq-button-type(warning);
+.slq-button-plain(warning);
+
+.slq-button-type(danger);
+.slq-button-plain(danger);
+
+.slq-button-size(medium);
+.slq-button-size(small);
+.slq-button-size(mini);
+
+
+/*  是否是圆形按钮*/
+.is--round {
+  border-radius: @--button-border-radius-round;
+}
+
+/*  是否是文字按钮 */
+.slq--button--text {
+  color: @--theme-primary;
+  background: transparent;
+  border-color: transparent;
+  &:hover {
+    color: rgba(color(@--theme-primary), 0.8);
+    background: transparent;
+    border-color: transparent;
+  }
+}
+```
+
+而默认按钮的样式属性和属性值都和别的不太一样，所以我们还是单独写；还有一些公共的样式：
+
+```css
+.slq--button {
+  box-sizing: border-box;
+  min-height: @--button-size-default;
+  padding: 1px 20px;
+  color: @--button-text-color;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.slq--button--type--default {
+  background-color: @--white;
+  border: 1px solid @--grey;
+  &:hover {
+    color: @--theme-primary;
+    background-color: @--button-default;
+    border-color: rgba(@--theme-primary, 0.3);
+  }
+}
+
+.slq--button--type--default.is--plain {
+  background-color: @--white;
+  &:hover {
+    border-color: @--theme-primary;
+  }
+}
+```
+
+这样这些功能就已经完成了，效果如下：
+
+{% asset_img 17.png %}
+
+### 有点有趣的点
+
+而我在做 是否禁用 的时候，遇到了一点困难；刚开始我的想法是：如果是禁用的按钮， 那么就添加`is-disabled`的  `class`， 设置`cursor` 为 不可选，然后按钮的整体透明度是0.5。
+
+```css
+.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+```
+
+但是效果不太理想：
+
+{% asset_img 18.gif %}
+
+效果就是如此，按钮的不同类型，是有不同的状态的，如`hover`, `visited`等； 而我们的禁用只是加了一个透明度和`cursor`。 `cursor: not-allowed;`只是改变了鼠标的样式而已。
+
+那有其他的办法呢？ 假如我们禁掉事件？-->` pointer-events: none;` 这样就不会有`hover`等这样的样式出现了， 但是点击事件啥的也不能了呀。 这办法行不通的。
+
+那还有其他的办法呢？我如何知道每个按钮类型的样色值呢？
+
+于是我去看了 [element](https://github.com/element-plus/element-plus) 和 [arco.design](https://github.com/arco-design/arco-design)实现禁用的源码。
+
+{% asset_img 20.png %}
+
+{% asset_img 19.png %}
+
+他们实现的原理都是：不同的类型的按钮都需要设置相应的`background-color` 和 `border`等。而不是靠统一的一个样式如我们值设置了`.is-disabled `来实现的。
+
+name解决的办法来了，我们在禁用的按钮的时候根据不同的类型添加不同的禁用`class`：
+
+```css
+[`is--disabled--${type}`]: disabled,
+```
+
+```css
+.slq-button-disabled(@type) {
+  .slq--button--@{type}.is--disabled--@{type} {
+    background-color: ~'@{--button-@{type}}';
+    border: 1px solid ~'@{--button-@{type}}';
+    cursor: not-allowed;
+    opacity: 0.5;
+    &:hover {
+      background-color: ~'@{--button-@{type}}';
+      border-color: ~'@{--button-@{type}}';
+      opacity: 0.5;
+    }
+  }
+
+  .slq--button--@{type}.is--plain.is--disabled--@{type} {
+    color: ~'@{--button-@{type}}';
+    background-color: rgba(color(~'@{--button-@{type}}'), 0.2);
+    border-color: rgba(color(~'@{--button-@{type}}'), 0.8);
+    cursor: not-allowed;
+    opacity: 0.5;
+    &:hover {
+      background-color: rgba(color(~'@{--button-@{type}}'), 0.2);
+      border-color: rgba(color(~'@{--button-@{type}}'), 0.8);
+      opacity: 0.5;
+    }
+  }
+}
+.slq-button-disabled(primary);
+.slq-button-disabled(success);
+.slq-button-disabled(info);
+.slq-button-disabled(warning);
+.slq-button-disabled(danger);
+```
+
+ 最后实现的效果如下：
+
+{% asset_img 21.gif %}
+
+这样就实现我们想要的效果了。
+
+上面可能只贴出了一部分的代码，如果想看具体的完整实现 可到  [shuliqi-design](https://github.com/shuliqi/shuliqi-design/tree/master)查看。
+
+
+
+**感悟**： 有时间多看看源码， 学习学习别人的思想也是很有用的 😄
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 参考文章：
 
 - https://d.umijs.org/zh-CN
