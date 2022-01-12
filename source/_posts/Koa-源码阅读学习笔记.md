@@ -147,12 +147,14 @@ use (fn) {
 
 # listen 方法
 
- 最后就使用到了`app.listen` 方法，我们来看看逻辑：
+看我们的简单实用案例，我们知道在 `new Koa` 的时候是并没有启动 `Server`的，是在`listen` 启动的。我们来看看逻辑：
 
 ```javascript
-
 listen (...args) {
   debug('listen')
+  // 调用Node原生的http.createServer([requestListener])
+  // 参数requestListener是请求处理函数，用来响应request事件；
+	//此函数有两个参数req,res。当有请求进入的时候就会执行this.callback函数
   const server = http.createServer(this.callback())
   return server.listen(...args)
 }
@@ -160,7 +162,65 @@ listen (...args) {
 
 `listen` 主要是封装了 `node`的 `http` 模块提供的`createServer` 方法方法来创建一个`http`服务对象和使用 `listen`方法来监听。
 
-创建`http`服务对象的时候，传入了 `callback`方法。
+我们看 [http.createServer([options][, requestListener])](http://nodejs.cn/api/http.html#httpcreateserveroptions-requestlistener)的函数签名不难猜出 `this.callback`返回的是`options` 或 `requestListener`； 那我们来看 `callback` 方法。
 
+```javascript
+  callback () {
+    // koa-compose 是Koa中间件洋葱模型的核心，具体讲解在下面
+    const fn = compose(this.middleware)
 
-待续....
+    // listenerCount和on均是父类Emitter中的成员
+    // 判断我们自己代码是否有自己写监听，如果没有就直接用 Koa 的 this.onerror 方法
+    if (!this.listenerCount('error')) this.on('error', this.onerror)
+
+   	// Koa 的委托模式主要在这个函数体现
+    const handleRequest = (req, res) => {
+      // 每个请求过来时，都创建一个context
+      const ctx = this.createContext(req, res)
+      
+      // 注意： 这里的 this.handleRequest 是父类上的 handleRequest。不是本 handleRequest
+      return this.handleRequest(ctx, fn)
+    }
+    return handleRequest
+  }
+```
+
+`callback` 中我们遇到了 Koa 的核心库：`koa-compose` 洋葱模型。 它用于精心组合所有`middleware`，并按照期望的顺序调用。
+
+# koa-compose（洋葱模型）
+
+我们找到包`koa-compose`打开它， 只有一个函数：
+
+```javascript
+// middleware 就是我们使用app.use(fn) 传传入的函数数组(中间件)
+function compose (middleware) {
+  
+  // 判断 middleware 是否是数组
+  if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
+ 
+  // 判断 middleware 数组的每一个函数是否是函数
+  for (const fn of middleware) {
+    if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
+  }
+
+  // compose 函数返回一个函数
+  return function (context, next) {
+    let index = -1
+    return dispatch(0)
+    function dispatch (i) {
+      if (i <= index) return Promise.reject(new Error('next() called multiple times'))
+      index = i
+      let fn = middleware[i]
+      if (i === middleware.length) fn = next
+      if (!fn) return Promise.resolve()
+      try {
+        return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
+      } catch (err) {
+        return Promise.reject(err)
+      }
+    }
+  }
+}
+```
+
+待续.... 还没看懂
