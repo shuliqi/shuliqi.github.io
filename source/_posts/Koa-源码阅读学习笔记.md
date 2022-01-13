@@ -26,6 +26,14 @@ tags: Koa
  touch index.js && npm init && npm i koa
 ```
 
+安装 `nodemon`
+
+```bash
+npm install --save-dev nodemon
+```
+
+> [nodemon](https://www.npmjs.com/package/nodemon) 是一个当我们的代码变动之后， 能够及时的帮助我们重启服务，而不需要我们手动的启动了
+
 `index.js` 文件直接使用官方提供的例子：
 
 ```javascript
@@ -34,22 +42,20 @@ const app = new Koa();
 
 app.use(async ctx => {
   ctx.body = 'Hello World';
-});
+});                    
 
 app.listen(3000);
 ```
-
-
 
 2. 启动应用
 
 在项目的根目录下执行： 
 
    ```js
-    node index.js
+    nodemon index.js
    ```
 
-   
+​              
 
 
 3. 查看结果
@@ -62,12 +68,11 @@ app.listen(3000);
     Hello World
    ```
 
-   结果返回了了"Hello World"文案
+   结果返回了了"Hello World"文案   
 
-   
+我们可以看到我们的项目中`index.js` 引用了`Koa`。然后用`new`来实例化一个`app`。然后使用`app.use`传入一个`async`函数（又称：`koa`中间件）。 最后调用`app.listen`方法，这样一个`web`应用就跑起来了。
 
-
-我们可以看到我们的项目中`index.js` 引用了`koa`。然后用`new`来实例化一个`app`。然后使用`app.use`传入一个`async`函数（又称：`koa`中间件）。 最后调用`app.listen`方法，这样一个`web`应用就跑起来了。
+如果有需要看例子的可到： [官方的例子](https://github.com/shuliqi/koa-study/tree/example/one)
 
 # 代码结构
 
@@ -77,11 +82,9 @@ app.listen(3000);
 
 其实从文件名上，我们就能猜到每个文件是做什么的了， 接下来我们根据流程来看每个文件的代码逻辑。
 
-
-
 # 启动流程
 
-启动的入口在哪里呢？ 我们找到`package.json`文件，可知道`Koa` 的入口是 `lib`下的`application.js`。 那我们就先来看看该文件。
+启动的入口在哪里呢？ 我们找到`package.json`文件的`nain`字段，可知道`Koa` 的入口是 `lib`下的`application.js`。 那我们就先来看看该文件。
 
 # application.js
 
@@ -118,7 +121,7 @@ module.exports = class Application extends Emitter {
 这里的`constructor`  主要是做了一些配置的处理, 主要的是： 
 
 ```javascript
-this.middleware = [] // 配置了中间件数组
+this.middlewar-e = [] // 配置了中间件数组
 this.context = Object.create(context)
 this.request = Object.create(request)
 this.response = Object.create(response)
@@ -167,6 +170,7 @@ listen (...args) {
 ```javascript
   callback () {
     // koa-compose 是Koa中间件洋葱模型的核心，具体讲解在下面
+    // 核心：中间件的管理和next的实现
     const fn = compose(this.middleware)
 
     // listenerCount和on均是父类Emitter中的成员
@@ -189,7 +193,63 @@ listen (...args) {
 
 # koa-compose（洋葱模型）
 
-我们找到包`koa-compose`打开它， 只有一个函数：
+在看 `koa-compose` 之前，我们先看一下它的具体体现，看一个例子：
+
+`index.js：`
+
+```javascript
+const Koa = require('koa');
+
+const app = new Koa();
+
+app.use(async(ctx, next) => {
+ console.log("----start1----");
+  await next();
+  console.log("----end1----");
+});
+
+app.use(async(ctx, next) => {
+  console.log("----start2----");
+  await next();
+  console.log("----end2----");
+});
+
+app.use(async(ctx, next) => {
+  console.log("----start3----");
+  await next();
+  console.log("----end3----");
+ });
+
+app.use(async(ctx, next)=> {
+  console.log("----start4----");
+  await next();
+  console.log("----end4----");
+});
+
+app.listen(3000);
+
+```
+
+执行 ` nodemon index.js`  之后在命令行书输入： `curl http://localhost:3000` 可到结果为：
+
+```
+----start1----
+----start2----
+----start3----
+----start4----
+----end4----
+----end3----
+----end2----
+----end1----
+```
+
+我们再来回忆一下这个过程： `new` 一个 `app` 之后，使用`use(fn)` 将函数`push` 到 ` this.middleware`。然后`lisen`创建了`http.createServer(requestListener)`参数`requestListener`是请求处理函数，用来响应`request`事件，而这里的`requestListener` 是我们的`this.callback`, 而`this.callback`的第一行代码就是我们的`koa-compose`。
+
+> 注意：这个过程就是上面那些源码的解释
+
+而从得出的结果来看我们知道 ：当程序运行到`await next()`的时候就会暂停当前程序，进入下一个中间件，**处理完之后才会回过头来继续处理**。而`koa-compose`就是用来做这个处理的--->`next`实现的。
+
+那接下来我们就来看看`koa-compose` 的源码。我们找到包`koa-compose`打开它， 只有一个函数：
 
 ```javascript
 // middleware 就是我们使用app.use(fn) 传传入的函数数组(中间件)
@@ -212,8 +272,12 @@ function compose (middleware) {
       index = i
       let fn = middleware[i]
       if (i === middleware.length) fn = next
+      // 当循环完中间件数组的函数，直接 return Promise.resolve(
       if (!fn) return Promise.resolve()
       try {
+        // 核心代码：返回Promise
+        // next时，交给下一个dispatch（下一个中间件方法）
+        // 同时，当前同步代码挂起，直到中间件全部完成后继续
         return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
       } catch (err) {
         return Promise.reject(err)
@@ -223,4 +287,71 @@ function compose (middleware) {
 }
 ```
 
-待续.... 还没看懂
+`dispatch`函数，它将遍历整个`middleware`，然后将`context`和`dispatch(i + 1)`传给`middleware`中的方法。其中的`dispatch(i + 1)`就是`middleware`中的方法的`next`函数。
+
+主要是实现:
+
+1. `context`传给中间件
+2. 将`middleware`中的下一个中间件`fn`作为未来`next`的返回值。
+
+**剖析：**
+
+**`next()`返回的是`promise`，需要使用`await`去等待`promise`的`resolve`值。**`promise`的嵌套就像是洋葱模型的形状就是一层包裹着一层，直到`await`到最里面一层的`promise`的`resolve`值返回。
+
+代码解析如下：
+
+```javascript
+const middleware1 = async (context, next) => {
+  console.log("----start1----");
+  await next();
+  console.log("----end1----");
+}
+const middleware2 = async (context, next) => {
+  console.log("----start2----");
+  await next();
+  console.log("----end2----");
+}
+const middleware3 = async (context, next) => {
+  console.log("----start3----");
+  await next();
+  console.log("----end3----");
+}
+const middleware4 = async (context, next) => {
+  console.log("----start4----");
+  await next();
+  console.log("----end4----");
+}
+const MyCompose = () => {
+  return Promise.resolve(middleware1(this, ()=>{
+    return Promise.resolve(middleware2(this, () => {
+      return Promise.resolve(middleware3(this, () => {
+        return Promise.resolve(middleware4(this, () => {
+          return Promise.resolve();
+        }));
+      }))
+    }))
+  } ))
+}
+MyCompose();
+```
+
+结果：
+
+```
+----start1----
+----start2----
+----start3----
+----start4----
+----end4----
+----end3----
+----end2----
+----end1----
+```
+
+当前的`Koa`例子代码： [洋葱模型](https://github.com/shuliqi/koa-study/tree/example/two)
+
+
+
+
+
+未完待续....
