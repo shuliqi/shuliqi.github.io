@@ -4,9 +4,7 @@ date: 2022-01-04 15:54:43
 tags: Koa
 ---
 
-最近看了 [Koa](https://koajs.com/#) 源码， 觉得`Koa`源码设计得特别巧妙而且也很简单，易读懂。基础的代码只有不到 2000 行。我们知道 `Koa` 是一个很轻量级的`web`框架， 里面除了`middleware` 和 `ctx` 之外就什么没有了。虽然很简单， 但是功能还是很强大的，它仅仅是靠中间件就是搭建完整的`web`应用。我们谈到`Koa`总能想它的： **洋葱模型**， **context的委托模式**，**错误处理**等优点。学习的时候也是重点围绕这三点来学习的。
-
-这篇文章主要记录一下学习的笔记， 供之后翻阅。
+最近看了 [Koa](https://koajs.com/#) 源码， 觉得`Koa`源码设计得特别巧妙而且也很简单，易读懂。基础的代码只有不到 2000 行。我们知道 `Koa` 是一个很轻量级的`web`框架， 里面除了`middleware` 和 `ctx` 之外就什么没有了。虽然很简单， 但是功能还是很强大的，它仅仅是靠中间件就是搭建完整的`web`应用。这篇文章主要记录一下学习的笔记， 供之后翻阅。
 
 > [Koa官方](https://koajs.com/#)  [Koa  中文文档](https://koa.bootcss.com/)。
 >
@@ -193,6 +191,8 @@ listen (...args) {
 
 # koa-compose（洋葱模型）
 
+## 使用Demo
+
 在看 `koa-compose` 之前，我们先看一下它的具体体现，看一个例子：
 
 `index.js：`
@@ -243,7 +243,9 @@ app.listen(3000);
 ----end1----
 ```
 
-我们再来回忆一下这个过程： `new` 一个 `app` 之后，使用`use(fn)` 将函数`push` 到 ` this.middleware`。然后`lisen`创建了`http.createServer(requestListener)`参数`requestListener`是请求处理函数，用来响应`request`事件，而这里的`requestListener` 是我们的`this.callback`, 而`this.callback`的第一行代码就是我们的`koa-compose`。
+## 主要原理
+
+我们来回忆一下上面这个`Demo`的过程： `new` 一个 `app` 之后，使用`use(fn)` 将函数`push` 到 ` this.middleware`。然后`lisen`创建了`http.createServer(requestListener)`参数`requestListener`是请求处理函数，用来响应`request`事件，而这里的`requestListener` 是我们的`this.callback`, 而`this.callback`的第一行代码就是我们的`koa-compose`。
 
 > 注意：这个过程就是上面那些源码的解释
 
@@ -268,6 +270,7 @@ function compose (middleware) {
     let index = -1
     return dispatch(0)
     function dispatch (i) {
+      // 为什么会有这个？ 是因为可能开发者在中间件函数中对此调用next函数， 是为了解决这个问题的， 具体看下面的问题2
       if (i <= index) return Promise.reject(new Error('next() called multiple times'))
       index = i
       let fn = middleware[i]
@@ -348,10 +351,181 @@ MyCompose();
 ----end1----
 ```
 
+## 问题1
+
+以上的例子是符合的我们的预期的，但是会有人觉得奇怪，造成这样的预期是因为我们在中间件函数中使用了`async`函数， 但是真的是`async`函数起的作用吗？显然是不是的：，**async并不是koa洋葱模型的必要条件**
+
+{% asset_img 2.png %}
+
+{% asset_img 3.png %}
+
+## 问题2
+
+如果在中间件函数多次调用了`next` 函数会怎么样? `Koa` 如何处理呢？
+
+`Koa`做了一个标记 `i`， 默认为 -1。 每一次调用`dispatch` `i`都会加1，在每个`dispatch`内部判断这个`index`是否小于等于现在的i（也就是在middleware的index），然后将更新这个`index`为i。 这时如果多次调用`next`，`i`就会>=现在的`index`，抛出错误。
+
+也就是这段代码：
+
+```javascript
+  // ...
+  let index = -1
+    return dispatch(0)
+    function dispatch (i) {
+      if (i <= index) return Promise.reject(new Error('next() called multiple times'))
+      index = i
+      // ...
+```
+
 当前的`Koa`例子代码： [洋葱模型](https://github.com/shuliqi/koa-study/tree/example/two)
 
 
 
+# createContext
+
+在 `callback` 函数中， 洋葱模型之后， 返回了一个处理`request` 的函数（`handleRequest`）:
+
+```javascript
+  const handleRequest = (req, res) => { 
+      // 将req, res包装成一个ctx返回
+      const ctx = this.createContext(req, res); 
+      return this.handleRequest(ctx, fn); 
+  }
+```
 
 
-未完待续....
+
+ 这函数里面 使用 ` this.createContext(req, res)` 创建 `context`。这里传入了`http`模块提供的两个参数`req`、`res`，然后声明`ctx`为`this.createContext(req, res)`的返回值。看下这个`this.createContext`。
+
+```javascript
+createContext(req, res) {
+  const context = Object.create(this.context);
+  const request = context.request = Object.create(this.request);
+  const response = context.response = Object.create(this.response);
+  context.app = request.app = response.app = this;
+  context.req = request.req = response.req = req;
+  context.res = request.res = response.res = res;
+  request.ctx = response.ctx = context;
+  request.response = response;
+  response.request = request;
+  context.originalUrl = request.originalUrl = req.url;
+  context.state = {};
+  return context;
+}
+```
+
+这个函数的目的就是包装出一个全局唯一的 `context`
+
+上面的`constructor` 里面声明了 
+
+```javascript
+this.context = Object.create(context);
+this.request = Object.create(request);
+this.response = Object.create(response);
+```
+
+而在这里使用`Object.create` 又包装了一层
+
+```javascript
+const context = Object.create(this.context);
+const request = context.request = Object.create(this.request);
+const response = context.response = Object.create(this.response);
+```
+
+目的是让每一次的`http`请求都生成全局唯一，相互之间隔离的`context`,`request`, `response`。
+
+最后总结一下 `callback` 函数: 首先`koa-compose`生成统一的中间件，然后`handleRequest`被调用。`handleRequest` 里面生成全局唯一的且包装好`context`。然后调用`this.handleRequest`  传入包装好`context`和中间件函数。
+
+# handleRequest
+
+接下来就是`this.handleRequest` 了。 这个函数主要是用于真正的进行业务逻辑处理了。
+
+```javascript
+
+  handleRequest(ctx, fnMiddleware) {
+    const res = ctx.res;
+    res.statusCode = 404;
+    const onerror = err => ctx.onerror(err);
+    const handleResponse = () => respond(ctx);
+    onFinished(res, onerror);
+    return fnMiddleware(ctx).then(handleResponse).catch(onerror);
+  }
+```
+
+`fnMiddleware`是`koa-compose`包装后的函数， 函数签名是`(context, next) => Promise`， 内部会依次调用每个中间件。
+
+`onFinished` 用于在请求`close`，`finish`，`error`时执行传入的错误回。
+
+`respond` 函数用于将中间件处理后的结果通过`res.end`返回给客户端：
+
+```javascript
+// Response helper.
+function respond(ctx) {
+  // allow bypassing koa
+  if (false === ctx.respond) return; // ctx.respond = false用于设置自定义的Response策略
+
+  if (!ctx.writable) return;
+
+  const res = ctx.res;
+  let body = ctx.body;
+  const code = ctx.status;
+
+  // ignore body
+  if (statuses.empty[code]) {
+    // strip headers
+    ctx.body = null;
+    return res.end();
+  }
+
+  // HEAD请求不返回body
+  if ('HEAD' == ctx.method) {
+    // headersSent表示是否发送过header
+    if (!res.headersSent && isJSON(body)) {
+      ctx.length = Buffer.byteLength(JSON.stringify(body));
+    }
+    return res.end();
+  }
+
+  // status body
+  if (null == body) {
+    if (ctx.req.httpVersionMajor >= 2) {
+      body = String(code);
+    } else {
+      body = ctx.message || String(code);
+    }
+    if (!res.headersSent) {
+      ctx.type = 'text';
+      ctx.length = Buffer.byteLength(body);
+    }
+    return res.end(body);
+  }
+
+  // responses
+  if (Buffer.isBuffer(body)) return res.end(body);
+  if ('string' == typeof body) return res.end(body);
+  if (body instanceof Stream) return body.pipe(res); // 流式响应使用pipe，更好的利用缓存
+
+  // body: json
+  body = JSON.stringify(body);
+  if (!res.headersSent) {
+    ctx.length = Buffer.byteLength(body);
+  }
+  res.end(body);
+}
+```
+
+它做的是**ctx返回不同情况的处理**，如`method`为`head`时加上`content-length`字段、`body`为空时去除`content-length`等字段，返回相应状态码、`body`为`Stream`时使用`pipe`等
+
+
+
+# context、request、reponse
+
+`这三个变量分别对应相应的文件:
+
+```javascript
+const response = require('./response');
+const context = require('./context');
+const request = require('./request');
+```
+
+`request、reponse`都是对原生`res、req`的封装，`context`本质上也是一个普通的对象，他们的代码都不是很难，在这里就不一一赘述了。
