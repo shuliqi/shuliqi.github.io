@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="你真的了解 npm 脚本吗？"><meta name="keywords" content=""><meta name="author" content="舒小琦"><meta name="copyright" content="舒小琦"><title>你真的了解 npm 脚本吗？ | 舒小琦的Blog</title><link rel="shortcut icon" href="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-npm-%E8%84%9A%E6%9C%AC-%EF%BC%9F"><span class="toc-number">1.</span> <span class="toc-text">什么是 npm 脚本 ？</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%A7%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">执行原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%9A%E9%85%8D%E7%AC%A6"><span class="toc-number">3.</span> <span class="toc-text">通配符</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E8%84%9A%E6%9C%AC"><span class="toc-number">4.</span> <span class="toc-text">生命周期脚本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90%E5%87%86%E5%A4%87"><span class="toc-number">5.</span> <span class="toc-text">例子准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#pre-%E5%92%8C-post-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">6.</span> <span class="toc-text">pre 和 post 生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B3%BB%E7%BB%9F%E8%87%AA%E5%B8%A6%E5%91%BD%E4%BB%A4%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">6.1.</span> <span class="toc-text">系统自带命令生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#npm-publish"><span class="toc-number">6.1.1.</span> <span class="toc-text">npm publish</span></a></li></ol></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒小琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">57</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">13</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">13</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒小琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/shuliqi-design">组件</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">你真的了解 npm 脚本吗？</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2022-02-23</time></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>最近在写一个<code>npm</code>包。写的过程中主要存在的问题是如何在 <code>npm i &lt;package&gt;</code> 之前能够先执行一个脚本。我们本篇文章带着这个问题去了解 <code>  npm</code> 脚本。</p>
+<h1 id="什么是-npm-脚本-？"><a href="#什么是-npm-脚本-？" class="headerlink" title="什么是 npm 脚本 ？"></a>什么是 npm 脚本 ？</h1><p><code>npm  </code>  脚本是 <code>package.json </code>文件 <code>scripts</code>  字段存储的脚本命令。存储的脚本命令可以是：</p>
+<ul>
+<li><p>内置的脚本</p>
+</li>
+<li><p>预设的生命周期事件</p>
+</li>
+<li><p>自定义的任何脚本</p>
+</li>
+</ul>
+<p><code>npm  </code>  脚本的目的是提供一种简单的方法来执行重复的任务。比如：</p>
+<ul>
+<li>启动项目</li>
+<li>打包项目</li>
+<li>执行单元测试</li>
+<li>…</li>
+</ul>
+<p>当我们要定义一个 <code>npm</code> 脚本时， 我们需要做的就是设置它的名称，并且在 <code>package.json </code>文件 <code>scripts</code>添加该名称和脚本。如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;build&quot;</span>: <span class="string">&quot;node index.js&quot;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上是 <code>package.json</code>文件的一个片段，可看出 <code>scripts</code> 字段是一个对象， 它每一个属性名称对应着一个脚本。如 <code>build</code> 对应的脚本是 <code>nnode index.js</code>。</p>
+<p>可以使用 <code>npm run [NAME-OF-YOUR-SCRIPT]  </code>  或者 <code>npm run-script [NAME-OF-YOUR-SCRIPT] </code>来执行相应的命令。 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ npm run  build</span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line">$ npm run-script build</span><br><span class="line"></span><br><span class="line"><span class="comment"># 等同于执行</span></span><br><span class="line">$ node index.js</span><br></pre></td></tr></table></figure>
+
+
+
+<p>想要查看当前的所有的 <code>npm</code> 脚本命令。可以使用不带任何参数的 <code>npm run </code>来查看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm run </span><br></pre></td></tr></table></figure>
+
+<h1 id="执行原理"><a href="#执行原理" class="headerlink" title="执行原理"></a>执行原理</h1><p><code>npm</code> 脚本的原理是每当执行 <code>npm run </code> 时，就会自动新建一个<code>shell</code>，然后在这个  <code>shell</code>  里面执行指定的脚本命令。因此，只要是 <code>shell</code>可以运行的命令，就可以写在 <code>npm</code> 脚本里面。</p>
+<blockquote>
+<p>上面所说的 <code>shell</code> 一般是指 <code>Bash</code></p>
+</blockquote>
+<p>但是有一点需要注意， <code>npm run </code> 新建 <code>shell</code>的时候,  会把当前的目录的 <code>node_modules/.bin</code>  子目录加入<code>PATH </code>变量。 执行完之后再将 <code>PATH</code> 变量恢复原样。</p>
+<blockquote>
+<p><code>PATH </code>变量即<code>PATH </code>环境变量，一般是指在操作系统中用来指定系统运行环境的一些参数，如： 临时文件夹和系统文件夹位置等。<code>windows</code>和<code>iOS</code>操作系统中的<code>PATH</code>环境变量，当要求系统运行一个程序而没有告诉告诉它程序所在的完整路径时，系统除了在当前目录下面寻找此程序外，如果找不到， 可以到 <code>PATH</code> 中执行的路径去找。</p>
+</blockquote>
+<p>由于这一特点，所以当前目录的<code>node_modules/.bin</code>子目录里面的所有脚本，都可以直接用脚本名调用 ，而不必加上路径。如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;lint&quot;</span>: <span class="string">&quot;./node_modules/.bin/eslint .&quot;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而不用写成这样:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;lint&quot;</span>: <span class="string">&quot;eslint .&quot;</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>npm </code>脚本唯一要求就是可以在 <code>shell</code>执行，因此它不一定是 <code>NODE</code> 脚本，任何可执行的文件都可以可以写在里面。</p>
+<p><code>npm  </code>脚本的退出码，也遵守 <code>Shell</code> 脚本规则，如果退出码不是 0， <code>npm </code> 就认为这个脚本执行失败。</p>
+<h1 id="通配符"><a href="#通配符" class="headerlink" title="通配符"></a>通配符</h1><p>因为 <code>npm</code> 脚本就是 <code>shell</code> 脚本，所以是可以使用<code>shell</code> 通配符。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;lint&quot;</span>: <span class="string">&quot;eslint *.js&quot;</span>,</span><br><span class="line">  <span class="string">&quot;lint&quot;</span>: <span class="string">&quot;eslint **/*.js&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码表示 <code>*</code> 表示任意文件名，<code>**</code>表示任意一层子目录。</p>
+<h1 id="生命周期脚本"><a href="#生命周期脚本" class="headerlink" title="生命周期脚本"></a>生命周期脚本</h1><p>文章一开始我们就有一个问题： 如何在 <code>npm install &lt;packge&gt;</code> 之前先执行一个脚本呢？ 其实这就用到了 <code>npm </code>的生命周期脚本了。即官方自己的命令属性。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">  <span class="string">&quot;build&quot;</span>: <span class="string">&quot;npm run clean &amp;&amp; rollup -c&quot;</span>,</span><br><span class="line">  <span class="string">&quot;postinstall&quot;</span>: <span class="string">&quot;node index.js&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上这个<code>package.json</code>字段，其中<code>build</code> 是用户自己自定义的命令属性，而<code>prepublish</code>则是<code>npm</code>自带的生命周期钩子，表示在<code>npm publish</code> 之前执行该脚本。</p>
+<p>那么下面的内容我们就主要来介绍生命周期脚本。在这之前， 我们先初始化一个例子以供我们之后演示。</p>
+<h1 id="例子准备"><a href="#例子准备" class="headerlink" title="例子准备"></a>例子准备</h1><p>我们先做个前期的例子准备， 之后用例子一一介绍相关的钩子</p>
+<ol>
+<li>创建文件夹</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir shuliqi-npm-demo &amp; <span class="built_in">cd</span> shuliqi-npm-demo</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li> 初始化</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm init</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>创建 <code>index.js</code>文件</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ touch index.js</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// index.js</span><br><span class="line">console.log(<span class="string">&quot;shuliqi-npm-demo&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>那么我们现在已经有了一个基础的例子。   </p>
+<h1 id="pre-和-post-生命周期"><a href="#pre-和-post-生命周期" class="headerlink" title="pre 和 post 生命周期"></a>pre 和 post 生命周期</h1><p>当我们执行任意的 <code>npm run xxx</code> 脚本的时候， 回依次自动触发<code>prexxx</code>, <code>postxxx</code>的生命周期。</p>
+<p>假如有一个命令叫 <code>build</code>。那么当执行<code>npm run build</code>时：</p>
+<ol>
+<li>在此之前先执行 <code>npm run prebuild</code></li>
+<li>在此之后执行 <code>npm run postbuild</code></li>
+</ol>
+<p>例子：</p>
+<p><code>packge.json:</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;shuliqi-npm-demo&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.0&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;main&quot;</span>: <span class="string">&quot;index.js&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;prebuild&quot;</span>: <span class="string">&quot;node prebuild.js&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;build&quot;</span>: <span class="string">&quot;node build.js&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;postbuild&quot;</span>: <span class="string">&quot;node postbuild.js&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>: <span class="string">&quot;shuliqi&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;license&quot;</span>: <span class="string">&quot;ISC&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>prebuild.js:</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;--------------prebuild--------------&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p> <code>build.js:</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;----------build---------------&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p><code>postbuild.js：</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;----------postbuild--------------&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>如上代码我们执行 <code>npm run build</code> 的时候，结果如下：</p>
+<img src="/2022/02/23/npm%20scripts%20%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F/1.png" class="">
+
+
+
+<p>如需代码可点击： <a target="_blank" rel="noopener" href="https://github.com/shuliqi/npm-demo/tree/auto_pre_post">npm-demo</a></p>
+<h2 id="系统自带命令生命周期"><a href="#系统自带命令生命周期" class="headerlink" title="系统自带命令生命周期"></a>系统自带命令生命周期</h2><p>这部分主要列举一些常用系统自带的生命周期脚本。</p>
+<h3 id="npm-publish"><a href="#npm-publish" class="headerlink" title="npm publish"></a>npm publish</h3><p>该命令是对包进行发布。当执行 <code>npm publish</code>  会执行如下的顺序脚本：</p>
+<ul>
+<li>在此之前会执行 <code>npm run prepublishOnly</code></li>
+<li>在此之后会执行 <code>npm run postpublish</code></li>
+</ul>
+<p>例子：</p>
+<p><code>packge.json:</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;shuliqi-npm-demo&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;version&quot;</span>: <span class="string">&quot;1.0.1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;description&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;main&quot;</span>: <span class="string">&quot;index.js&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;scripts&quot;</span>: &#123;</span><br><span class="line">    <span class="attr">&quot;prepublishOnly&quot;</span>: <span class="string">&quot;node prepublishOnly.js&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;postpublish&quot;</span>: <span class="string">&quot;node postpublish.js&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">&quot;author&quot;</span>: <span class="string">&quot;shuliqi&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;license&quot;</span>: <span class="string">&quot;ISC&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>prepublishOnly.js:</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;--------prepublishOnly-----&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code> postpublish.js:</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">&quot;-------postpublish------&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<img src="/2022/02/23/npm%20scripts%20%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F/2.png" class="">
+
+<p>如需代码可点击： <a target="_blank" rel="noopener" href="https://github.com/shuliqi/npm-demo/tree/npm_publish">npm publish</a></p>
+<p>未完待续….</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2022/02/23/npm scripts 你真的了解吗？/">https://shuliqi.github.io/2022/02/23/npm scripts 你真的了解吗？/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"></div><nav id="pagination"><div class="next-post pull-right"><a href="/2022/01/04/Koa-%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><span>Koa 源码阅读学习笔记</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2022 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
