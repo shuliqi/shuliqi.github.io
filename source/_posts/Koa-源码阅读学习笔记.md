@@ -515,17 +515,3 @@ function respond(ctx) {
 ```
 
 它做的是**ctx返回不同情况的处理**，如`method`为`head`时加上`content-length`字段、`body`为空时去除`content-length`等字段，返回相应状态码、`body`为`Stream`时使用`pipe`等
-
-
-
-# context、request、reponse
-
-`这三个变量分别对应相应的文件:
-
-```javascript
-const response = require('./response');
-const context = require('./context');
-const request = require('./request');
-```
-
-`request、reponse`都是对原生`res、req`的封装，`context`本质上也是一个普通的对象，他们的代码都不是很难，在这里就不一一赘述了。
