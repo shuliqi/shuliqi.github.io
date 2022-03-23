@@ -5,7 +5,14 @@ tags: React
 categories: React
 ---
 
-又要开始抗起`React` 搬砖了，感觉棒棒哒 😭。多了很多的 `hook`， 嗯 😔，先好好学学吧！
+又要开始抗起`React` 搬砖了，多了很多的 `hook`， 嗯 😔，先好好学学吧！做个简单的学习记录。读完本篇文章可以了解到：
+
+- 什么是 `Hook`?
+- `Hook` 解决什么问题?
+- `Hook`有哪些规格？
+- `React`内置了哪些 `Hook`？
+
+<!--more-->
 
 # 什么是 Hook？
 
@@ -17,8 +24,6 @@ categories: React
 - `useEffect`
 - `useContext`
 - `useReducer`
-
-<!--more-->
 
 # Hook 解决什么问题
 

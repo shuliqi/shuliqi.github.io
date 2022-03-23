@@ -5,9 +5,11 @@ tags: React
 categories: React
 ---
 
-# 问题
+最近一直使用 `React` 开发， 是遇到一些觉得比较疑惑的问题；如： 我写的都是纯粹的函数组件，我们明明没有使用`React`， 为什么仍然需要在头部引入 `import React from 'react';`呢？ 本篇文章将来解答这个问题。
 
-最近一直使用 `React` 开发， 是遇到一些觉得比较疑惑的问题；如： 我写的都是纯粹的函数组件，我们明明没有使用`React`， 为什么仍然需要在头部引入 `import React from 'react';`呢？如下面的例子：
+<!--more-->
+
+如下面的例子：
 
 ```js
 import React from 'react';
@@ -17,8 +19,6 @@ const Hello = () => {
 };
 export default Hello;
 ```
-
-<!--more-->
 
 如这个例子， 我们在头部引入了 `import React from 'react';`但是我们在代码中并没有使用`React`，但是我们去掉的话， 程序执行的时候就会报错：
 

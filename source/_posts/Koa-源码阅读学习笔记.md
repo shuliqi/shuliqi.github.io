@@ -6,11 +6,12 @@ tags: Koa
 
 最近看了 [Koa](https://koajs.com/#) 源码， 觉得`Koa`源码设计得特别巧妙而且也很简单，易读懂。基础的代码只有不到 2000 行。我们知道 `Koa` 是一个很轻量级的`web`框架， 里面除了`middleware` 和 `ctx` 之外就什么没有了。虽然很简单， 但是功能还是很强大的，它仅仅是靠中间件就是搭建完整的`web`应用。这篇文章主要记录一下学习的笔记， 供之后翻阅。
 
-> [Koa官方](https://koajs.com/#)  [Koa  中文文档](https://koa.bootcss.com/)。
->
-> `Koa`的源码可直接从 [github](https://github.com/koajs/koa) 上获取
+读完这篇文章将会了解到：
 
+- 著名的洋葱模型
+- 上下文如何构建
 
+> [Koa官方](https://koajs.com/#)  [Koa  中文文档](https://koa.bootcss.com/)。`Koa`的源码可直接从 [github](https://github.com/koajs/koa) 上获取
 
 <!--more-->
 
