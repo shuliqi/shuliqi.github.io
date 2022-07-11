@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="description" content="React 18 新特性"><meta name="keywords" content="React"><meta name="author" content="舒小琦"><meta name="copyright" content="舒小琦"><title>React 18 新特性 | 舒小琦的Blog</title><link rel="shortcut icon" href="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"><link rel="stylesheet" href="/css/index.css?version=1.9.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css?version=1.9.0"><meta name="format-detection" content="telephone=no"><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://v1.hitokoto.cn/?encode=js&amp;charset=utf-8&amp;select=.footer_custom_text" defer></script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容:${query}"}},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  hexoVersion: '5.4.0'
+} </script><meta name="generator" content="Hexo 5.4.0"></head><body><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true"></i><div id="sidebar" data-display="true"><div class="toggle-sidebar-info text-center"><span data-toggle="切换文章详情">切换站点概览</span><hr></div><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar"></div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Render-API"><span class="toc-number">1.</span> <span class="toc-text">Render API</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Automatic-Batching"><span class="toc-number">2.</span> <span class="toc-text">Automatic Batching</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#flushSync"><span class="toc-number">2.1.</span> <span class="toc-text">flushSync</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Transitons"><span class="toc-number">3.</span> <span class="toc-text">Transitons</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#startTransition"><span class="toc-number">3.1.</span> <span class="toc-text">startTransition</span></a></li></ol></li></ol></div></div><div class="author-info hide"><div class="author-info__avatar text-center"><img src="http://p6.qhimg.com/t01f5a5270b7946b505.jpg"></div><div class="author-info__name text-center">舒小琦</div><div class="author-info__description text-center"></div><hr><div class="author-info-articles"><a class="author-info-articles__archives article-meta" href="/archives"><span class="pull-left">文章</span><span class="pull-right">59</span></a><a class="author-info-articles__tags article-meta" href="/tags"><span class="pull-left">标签</span><span class="pull-right">13</span></a><a class="author-info-articles__categories article-meta" href="/categories"><span class="pull-left">分类</span><span class="pull-right">13</span></a></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(/webp.webp)"><div id="page-header"><span class="pull-left"> <a id="site-name" href="/">舒小琦的Blog</a></span><i class="fa fa-bars toggle-menu pull-right" aria-hidden="true"></i><span class="pull-right menus">   <a class="site-page" href="/">首页</a><a class="site-page" href="/archives">归档</a><a class="site-page" href="/tags">标签</a><a class="site-page" href="/categories">分类</a><a class="site-page" href="/shuliqi-design">组件</a><a class="site-page" href="/about">关于</a></span><span class="pull-right"><a class="site-page social-icon search"><i class="fa fa-search"></i><span> 搜索</span></a></span></div><div id="post-info"><div id="post-title">React 18 新特性</div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 2022-07-11</time><span class="post-meta__separator">|</span><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/React/">React</a></div></div></div><div class="layout" id="content-inner"><article id="post"><div class="article-container" id="post-content"><p>最近太忙好久不写博客了， 欠了三篇啊！！！！！！！！！！！！！（以后有时间再补上）</p>
+<p>本次博客， 是因为同事最近分享了<code>React 18</code> 新出的特性， 觉得长见识了，就一起学学习吧！！了解<code>React 18</code>新特性。</p>
+<blockquote>
+<p>本文主要参考最近同事分享的<a target="_blank" rel="noopener" href="https://juejin.cn/post/7118671121251057700">一文让你搞懂React18新特性及其实现</a> ， <a target="_blank" rel="noopener" href="https://juejin.cn/post/7117512204059934733">react18新特性及实践总结</a>。</p>
+</blockquote>
+ <span id="more"></span>
+
+
+
+<h1 id="Render-API"><a href="#Render-API" class="headerlink" title="Render API"></a>Render API</h1><p>我们知道， <code>React 17 </code> 提供了 三种入口模式：</p>
+<ul>
+<li><p><code>legacy</code>模式：表示没有开启新功能，是<code>React 17</code>的默认模式。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.render(, rootNode)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>blocking</code>模式：是作为迁移到<code>concurrent</code>模式的过渡模式。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.createBlockingRoot(rootNode).render()</span><br></pre></td></tr></table></figure></li>
+<li><p><code>concurrent</code>模式：这模式表示开启了所有的新功能。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ReactDOM.createRoot(rootNode).render()</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>而<code>React 18</code> 正式迁移到了 <code>concurrent</code> 模式。但是同时， 用户还是可以继续使用<code>React 17</code>的下的旧<code>API</code>（只是会有警告提示）。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// React 17</span></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">&#x27;react-dom&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> root = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>)!;</span><br><span class="line">ReactDOM.render(<span class="xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>, root);</span><br><span class="line"></span><br><span class="line"><span class="comment">// React 18</span></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">&#x27;react-dom/client&#x27;</span>;</span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> root = <span class="built_in">document</span>.getElementById(<span class="string">&#x27;root&#x27;</span>)!;</span><br><span class="line">ReactDOM.createRoot(root).render(<span class="xml"><span class="tag">&lt;<span class="name">App</span> /&gt;</span></span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="Automatic-Batching"><a href="#Automatic-Batching" class="headerlink" title="Automatic Batching"></a>Automatic Batching</h1><p>批处理是<code>React</code> 将多个状态更新分组到一个渲染中一次获得更好的性能；即:<code>React</code>将多次的<code>setState</code>合并到一次进行渲染。</p>
+<p>也就是说 <code>setState</code> 并不是试试修改<code>State</code>的，而是将多次的<code>setState</code>调用合并起来仅发出一次渲染，即可以减少数据状态存在中间值而导致的不稳定性，也可以提升渲染性能。</p>
+<p>在<code>React 18</code> 之前，只能在事件处理程序中批处理更新；举个例子如下： </p>
+<iframe src="https://codesandbox.io/embed/react-17-yi-bu-han-shu-shi-jian-chu-li-cheng-xu-pi-chu-li-m0g5go?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="react 17 异步函数事件处理程序批处理"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
+<blockquote>
+<p>注意：<code>index.js</code> 中使用的 <code>Render</code> 模式</p>
+</blockquote>
+<p>以上例子中采用的是<code>React 17 </code> 版本， 在事件处理程序(<code>handleClick</code>) 进行了两个<code>setState</code>。但我们可以看到 <code>log</code> 每次只打印一次。这就表明在事件处理程序中 <code>React 17</code> 采用了批处理更新。</p>
+<p>但是在<code>React 18</code> 之前，异步函数（定时器，<code> Promise</code> 等）中的<code>setState</code> 并不会执行合并， 由于丢失上下文，无法做到合并处理，所以每次<code>setState</code>调用都会立即发出一次重新渲染，除了重复的<code>setState</code>。举个例子如下：</p>
+<iframe src="https://codesandbox.io/embed/react-17-yi-bu-han-shu-shi-jian-chu-li-cheng-xu-pi-chu-li-m0g5go?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="react 17 异步函数事件处理程序批处理"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
+<blockquote>
+<p>注意：<code>index.js</code> 中使用的 <code>Render</code> 模式</p>
+</blockquote>
+<p>以上例子中采用的是<code>React 17 </code> 版本，在异步事件处理程序(<code>setTimeOut</code>) 进行了两个<code>setState</code>。 可以看到每次 <code>log</code> 都会打印两次。说明在异步函数（定时器，<code> Promise</code> 等）中的<code>setState</code> 并不会执行合并批处理。</p>
+<p><code>React 18</code> 则无论是在普通的事件处理程序中还是异步的事件处理程序中， 都会进行批处理。举个例子如下：</p>
+<iframe src="https://codesandbox.io/embed/bold-sea-r04ze4?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="bold-sea-r04ze4"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
+<blockquote>
+<p>注意：<code>index.js</code> 中使用的 <code>Render</code> 模式</p>
+</blockquote>
+<p>以上例子中采用的是<code>React 18 </code> 版本，在异步事件处理程序进行了两个<code>setState</code>。 可以看到每次 <code>log</code> 都会打印一次。说明在<code>React 18</code>中异步函数（定时器，<code> Promise</code> 等）中的<code>setState</code> 会执行合并批处理。</p>
+<blockquote>
+<p>但是，有些情况下， 我不想要批处理， 那该怎么解决的呢？！！！！！！！</p>
+</blockquote>
+<h2 id="flushSync"><a href="#flushSync" class="headerlink" title="flushSync"></a>flushSync</h2><p>官方提供了一个 <code>API</code>  <code>flushSync</code>  来用于退出批处理。<code>flushSync</code> 会以函数为作用域，函数内部的多个<code>setState</code>仍然为批更新，这样就可以很精确的控制哪些不需要批量的更新。</p>
+<iframe src="https://codesandbox.io/embed/react-18-flushsynckong-zhi-pi-geng-xin-y57ewy?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="react 18 flushSync控制批更新"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
+<blockquote>
+<p>注意：<code>index.js</code> 中使用的 <code>Render</code> 模式</p>
+</blockquote>
+<p>以上例子中采用的是<code>React 18 </code> 版本，在异步事件处理程序进行了两个<code>setState</code>。但是其中一个使用<code>flushSync</code> 来退出了批更新。结果可以看到每次 <code>log</code> 都会打印两次。</p>
+<h1 id="Transitons"><a href="#Transitons" class="headerlink" title="Transitons"></a>Transitons</h1><p><code>React 18</code>中的一个新概念是过渡，用于区分紧急和非紧急更新。</p>
+<ul>
+<li>紧急更新：表示反映了直接交互，如：键入，单击，按下等等。</li>
+<li>过渡（非紧急更新）：表示UI 从一个视图转换到另外一个视图。</li>
+</ul>
+<p>像一些行为，如 打字，点击或者按下等紧急更新需要立即响应， 以符合我们对物理对行为方式的直觉。否则用户就会觉得“不对劲”。但是过渡是不一样的，因为用户不希望在屏幕上看到每个中间值。</p>
+<p>看如下的例子： 当滑块滑动的时候，下方的图表会一起更新，然后图表更新是一个<code>cpu</code>密集型操作，比较耗时，由于阻塞了渲染导致页面失去响应，用户就会非常明显的感受到卡顿。</p>
+<img src="/2022/07/11/React-18-%E6%96%B0%E7%89%B9%E6%80%A7/1.webp" class="">
+
+<p>实际上在这个例子中， 我们滑动滑块的时候，需要做两次更新。一个是滑块的条的更新 ； 另外一个是图表的更新</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 滑块的条的更新</span></span><br><span class="line">setSliderValue(input);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 图表的更新</span></span><br><span class="line">setGraphValue(input);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="startTransition"><a href="#startTransition" class="headerlink" title="startTransition"></a>startTransition</h2><p><code>React</code> 提供 <code>startTransition</code> API，可以用来包装费紧急更新，如果出现更紧急的更新（如点击，键入）等则会中断。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; startTransition &#125; <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 滑块的条的更新</span></span><br><span class="line">setSliderValue(input);</span><br><span class="line"><span class="comment">//  使用 startTransition 来包装非紧急的更新</span></span><br><span class="line">startTransition( <span class="function">() =&gt;</span> &#123;</span><br><span class="line">   <span class="comment">//  图表的更新</span></span><br><span class="line">   setGraphValue(input);</span><br><span class="line">&#125;); </span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<p>使用后可以明显的感受到，虽然图表的更新还是会有些延迟，但是整体的用户体验相对之前是非常好的。</p>
+<p>未完待续….</p>
+</div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">舒小琦</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://shuliqi.github.io/2022/07/11/React-18-新特性/">https://shuliqi.github.io/2022/07/11/React-18-新特性/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://shuliqi.github.io">舒小琦的Blog</a>！</span></div></div><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/React/">React</a></div><nav id="pagination"><div class="next-post pull-right"><a href="/2022/03/13/%20%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Javascript%E7%BC%96%E5%86%99shell%E8%84%9A%E6%9C%AC---Google:zx/"><span>如何使用 Javascript 编写 shell 脚本---Google/zx</span><i class="fa fa-chevron-right"></i></a></div></nav></div></div><footer class="footer-bg" style="background-image: url(/webp.webp)"><div class="layout" id="footer"><div class="copyright">&copy;2013 - 2022 By 舒小琦</div><div class="framework-info"><span>驱动 - </span><a target="_blank" rel="noopener" href="http://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 - </span><a target="_blank" rel="noopener" href="https://github.com/Molunerfinn/hexo-theme-melody"><span>Melody</span></a></div><div class="footer_custom_text">hitokoto</div><div class="busuanzi"><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><span id="busuanzi_container_page_pv"><i class="fa fa-file"></i><span id="busuanzi_value_page_pv"></span><span></span></span></div></div></footer><i class="fa fa-arrow-up" id="go-up" aria-hidden="true"></i><script src="https://cdn.jsdelivr.net/npm/animejs@latest/anime.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-animate@latest/velocity.min.js"></script><script src="https://cdn.jsdelivr.net/npm/velocity-ui-pack@latest/velocity.ui.min.js"></script><script src="/js/utils.js?version=1.9.0"></script><script src="/js/fancybox.js?version=1.9.0"></script><script src="/js/sidebar.js?version=1.9.0"></script><script src="/js/copy.js?version=1.9.0"></script><script src="/js/fireworks.js?version=1.9.0"></script><script src="/js/transition.js?version=1.9.0"></script><script src="/js/scroll.js?version=1.9.0"></script><script src="/js/head.js?version=1.9.0"></script><script src="/js/search/local-search.js"></script><script>if(/Android|webOS|iPhone|iPod|iPad|BlackBerry/i.test(navigator.userAgent)) {
+  $('#nav').addClass('is-mobile')
+  $('footer').addClass('is-mobile')
+  $('#top-container').addClass('is-mobile')
+}</script><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章"></div></div></div><hr><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fa fa-times"></i></span></div><div class="search-mask"></div></body></html>
