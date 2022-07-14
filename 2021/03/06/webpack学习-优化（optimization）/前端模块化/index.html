@@ -13,7 +13,7 @@
 <span id="more"></span>
 
 <p>首先先来看一张图片，说明这种模式的整体区别：</p>
-
+<img src="/2021/03/06/webpack%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%EF%BC%88optimization%EF%BC%89/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/2.png" class="">
 
 <p>那么接下来具体讲讲！</p>
 <h1 id="CommonJS"><a href="#CommonJS" class="headerlink" title="CommonJS"></a>CommonJS</h1><p><code>CommonJS</code>是以在浏览器之外构建 <code>Javascript </code>生态系统为目标而产生的项目，比如在服务器里面。<code>CommonJS</code>的代表：Node应用中的模块，通俗的来说就是<code> npm</code> 安装的模块。</p>
@@ -167,7 +167,7 @@
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">&#x27;./module1&#x27;</span>, <span class="string">&#x27;./mosule2&#x27;</span>], <span class="function"><span class="keyword">function</span>(<span class="params">module1, mosule2</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(module1.name);</span><br><span class="line">  mosule2.getMsg();</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>打来我们的index,html文件，结果如下：</p>
-
+<img src="/2021/03/06/webpack%E5%AD%A6%E4%B9%A0-%E4%BC%98%E5%8C%96%EF%BC%88optimization%EF%BC%89/%E5%89%8D%E7%AB%AF%E6%A8%A1%E5%9D%97%E5%8C%96/1.png" class="">
 
 <p> 结果说明：浏览器能使用我们的AMD模块了</p>
 <h1 id="CMD"><a href="#CMD" class="headerlink" title="CMD"></a>CMD</h1><p><code>ReuireJS</code>在声明依赖的模块时会在第一时间加载并且执行模块内部的代码：</p>
